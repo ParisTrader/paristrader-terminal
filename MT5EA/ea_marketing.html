@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParisTrader EA Strategy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            background-color: transparent; 
+            color: #F1F5F9;
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 20px; overflow-x: hidden;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* 玻璃擬態卡片 */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 標題區 */
+        .hero-title {
+            font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 10px;
+            color: #FFFFFF;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 
+                         0 0 40px rgba(59, 130, 246, 0.3); 
+            letter-spacing: -0.02em;
+        }
+        .hero-subtitle {
+            text-align: center; color: #60A5FA; font-size: 1.1rem; margin-bottom: 40px;
+            font-weight: 600; letter-spacing: 0.05em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 數據儀表板 */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 40px;
+        }
+        .stat-box {
+            background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 20px; border-radius: 15px; text-align: center; transition: transform 0.2s;
+        }
+        .stat-box:hover { transform: translateY(-5px); border-color: #60A5FA; }
+        .stat-value {
+            font-size: 2rem; font-weight: 700; color: #34D399; font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+        }
+        .stat-label {
+            color: #CBD5E1; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 0.1em; margin-top: 5px;
+        }
+
+        /* 圖片容器 */
+        .chart-container {
+            margin-bottom: 30px; text-align: center;
+            background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chart-img {
+            max-width: 100%; height: auto; width: auto; display: block; margin: 0 auto;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease; cursor: zoom-in;
+        }
+        .chart-img:hover { transform: scale(1.01); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }
+        .chart-caption { color: #CBD5E1; font-size: 0.85rem; margin-top: 10px; font-style: italic; }
+        .chart-link { text-decoration: none; border: none; }
+
+        /* 特點列表 */
+        .feature-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
+            margin-top: 30px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;
+            border-left: 4px solid #3B82F6;
+        }
+        .feature-title { font-weight: 700; color: #FFFFFF; margin-bottom: 8px; font-size: 1.05rem; }
+        .feature-desc { color: #E2E8F0; font-size: 0.9rem; line-height: 1.6; text-align: justify; }
+
+        /* 優惠區塊 */
+        .offer-section {
+            background: linear-gradient(180deg, rgba(234, 179, 8, 0.05) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(234, 179, 8, 0.3); text-align: center; 
+        }
+        .offer-badge {
+            background: rgba(234, 179, 8, 0.2); color: #FCD34D; font-weight: 600; padding: 5px 15px;
+            border: 1px solid #EAB308;
+            border-radius: 20px; display: inline-block; margin-bottom: 15px; font-size: 0.85rem;
+        }
+        .offer-text { color: #E2E8F0; font-size: 0.95rem; line-height: 1.6; max-width: 700px; margin: 10px auto; }
+
+        .gift-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 25px; }
+        .gift-item {
+            background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; width: 220px;
+            border: 1px solid rgba(255,255,255,0.15); transition: 0.3s;
+        }
+        .gift-title { font-size: 1.05rem; font-weight: bold; color: #FCD34D; margin-bottom: 5px; }
+        .gift-desc { font-size: 0.85rem; color: #E2E8F0; }
+
+        /* 按鈕 */
+        .cta-btn {
+            display: block; width: 100%; max-width: 450px; margin: 30px auto 10px; padding: 18px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6); color: white; text-align: center;
+            text-decoration: none; font-weight: 700; font-size: 1.1rem; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .cta-btn:hover { transform: scale(1.01); box-shadow: 0 0 25px rgba(37, 99, 235, 0.6); background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .tnc-link { color: #CBD5E1; font-size: 0.8rem; text-decoration: underline; display: block; margin-top: 10px; }
+        .tnc-link:hover { color: #FFFFFF; }
+
+        /* 步驟 */
+        .step-item {
+            display: flex; align-items: flex-start; margin-bottom: 15px; padding: 15px;
+            background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .step-num {
+            background: #3B82F6; color: white; width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;
+            margin-right: 15px; flex-shrink: 0; margin-top: 2px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        .step-text { color: #E2E8F0; font-size: 0.95rem; line-height: 1.5; }
+
+        /* 免責聲明 */
+        .legal-block {
+            margin-top: 50px; padding: 25px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.85rem; color: #CBD5E1; text-align: justify; line-height: 1.7;
+        }
+        .legal-title {
+            color: #F8FAFC; font-weight: bold; margin-bottom: 12px; display: block; 
+            text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;
+        }
+        .legal-block strong { color: #E2E8F0; }
+
+        .footer-info {
+            text-align: right; font-size: 0.8rem; color: #94A3B8; margin-top: 20px; font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div>
+            <h1 class="hero-title">Professional XAUUSD M1 Setup v4.0</h1>
+            <p class="hero-subtitle">Powered by Fate Strategy Engine | High-Freq Trading</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value">34.67%</div>
+                <div class="stat-label">Historical Win Rate*</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">1.35</div>
+                <div class="stat-label">Profit Factor</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: #F87171;">6.72%</div>
+                <div class="stat-label">Max Drawdown</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">+32.8%</div>
+                <div class="stat-label">Avg. Monthly Return*</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="margin-top:0; border-left: 4px solid #3B82F6; padding-left: 10px; color: #FFFFFF; margin-bottom: 25px; font-size: 1.4rem;">
+                📊 Historical Data Analysis (歷史數據分析)
+            </h3>
+
+            <div class="chart-container">
+                <a href="MT3.jpg" target="_blank" class="chart-link" title="View Full Chart">
+                    <img src="MT3.jpg" alt="Cumulative Profit Chart" class="chart-img" onerror="this.style.display='none'">
+                </a>
+                <div class="chart-caption">▲ Cumulative PnL Curve (3 Months Winter Time) - 僅供學術研究參考，非未來獲利保證</div>
+            </div>
+
+            <div class="chart-container">
+                <a href="MT2.jpg" target="_blank" class="chart-link" title="View Full Report">
+                    <img src="MT2.jpg" alt="Detailed Statistics" class="chart-img" onerror="this.style.display='none'">
+                </a>
+                <div class="chart-caption">▲ Detailed Statistical Report - 點擊圖片查看完整模型參數報告</div>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-item" style="border-left-color: #8B5CF6;">
+                    <div class="feature-title">🔮 Fate Strategy Engine (雙核心引擎)</div>
+                    <div class="feature-desc">
+                        搭載獨家 <strong>Fate Diamond (動量突破)</strong> 與 <strong>Fate CC/PP (均值回歸)</strong> 雙策略。不依賴單一指標，透過量價分析 (Volume & PA) 精準識別趨勢爆發與市場反轉點。
+                    </div>
+                </div>
+
+                <div class="feature-item" style="border-left-color: #EF4444;">
+                    <div class="feature-title">👻 Stealth Mode (隱形殺手)</div>
+                    <div class="feature-desc">
+                        使用「虛擬止損/止盈」技術，隱藏真實目標價位，不發送至伺服器。有效防止滑點與經紀商「獵殺止損 (Stop Hunting)」，保護您的資金免受惡意掃單。
+                    </div>
+                </div>
+
+                <div class="feature-item" style="border-left-color: #F59E0B;">
+                    <div class="feature-title">📰 Auto News Filter (新聞過濾)</div>
+                    <div class="feature-desc">
+                        內建財經日曆，自動識別美元 (USD) 高風險新聞。在數據發布前自動平倉並暫停交易，避開不可控的劇烈波動，不賭數據行情。
+                    </div>
+                </div>
+
+                <div class="feature-item" style="border-left-color: #10B981;">
+                    <div class="feature-title">🛡️ Hard Cap & Smart Time (絕對防禦)</div>
+                    <div class="feature-desc">
+                        強制性美元最大虧損上限 (Hard Cap Safety)，無論市場如何跳空皆強制風控。針對亞洲與歐美盤高流動性時段優化，避免在垃圾時間交易。
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-info">
+                Data source: MT5 Strategy Tester • Analysis Date: 2025-12-18 16:34
+            </div>
+        </div>
+
+        <div class="glass-card offer-section">
+            <div class="offer-badge">🤝 Research Partner Environment</div>
+            <h2 style="margin: 0; color: #FFFFFF;">Trading Environment & Benefits</h2>
+            <p class="offer-text">
+                本模型基於 <strong>Vantage Markets</strong> 的流動性環境開發。為確保模型運作的一致性，建議使用指定合作連結開戶，並享有以下交易環境優勢：
+            </p>
+
+            <div class="gift-grid">
+                <div class="gift-item">
+                    <span class="gift-icon">💰</span>
+                    <div class="gift-title">50% Welcome Bonus</div>
+                    <div class="gift-desc">首次入金享 50% 信用贈金 (Credit Bonus)<br>增加保證金緩衝</div>
+                </div>
+                <div class="gift-item">
+                    <span class="gift-icon">📈</span>
+                    <div class="gift-title">10% Recurring Bonus</div>
+                    <div class="gift-desc">後續入金享 10% 贈金<br>上限 $30,000 USD<br>(受條款約束)</div>
+                </div>
+                <div class="gift-item">
+                    <span class="gift-icon">🥇</span>
+                    <div class="gift-title">Community Token</div>
+                    <div class="gift-desc">ParisTrader 社群專屬<br>999 純金紀念金牌<br>(限量紀念品)</div>
+                </div>
+            </div>
+
+            <a href="https://vigco.co/la-com/LyingFlat" target="_blank" class="cta-btn">
+                🚀 免費申請模型使用權限 (Open Account)
+            </a>
+
+            <a href="https://www.vantagemarkets.com/en/promotions/deposit-bonus-5010-V2-tnc/?_gl=1*gi2nyi*_ga*MTg0NzUzNzQ0Mi4xNzY2MDIwOTAw*_ga_H4ZB9TE1TD*czE3NjYwMzc3NzkkbzMkZzEkdDE3NjYwMzgwODYkajM2JGwwJGgw*_gcl_au*MTk5MDUxNjMzNS4xNzY2MDIwOTAwLjg5OTUxMDMxOC4xNzY2MDM3NzgzLjE3NjYwMzc3ODM." target="_blank" class="tnc-link">
+                *Terms & Conditions Apply. Bonus is for margin support.
+            </a>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="margin-top:0; border-left: 4px solid #10B981; padding-left: 10px; color: #FFFFFF; margin-bottom: 25px; font-size: 1.4rem;">
+                🛠️ Access Procedure (獲取流程)
+            </h3>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <strong style="color:#FFFFFF;">Register (註冊)</strong><br>
+                        使用上方連結在合作券商開設真實/DEMO帳戶。
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <strong style="color:#FFFFFF;">Deposit (入金)</strong><br>
+                        完成首次入金以激活帳戶。建議資金 $1,000 USD 起以符合模型風控參數要求。
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <strong style="color:#FFFFFF;">License Activation (授權)</strong><br>
+                        將 MT4/MT5 帳號發送給 <a href="https://t.me/ParisTrader" style="color:#60A5FA; text-decoration:none; font-weight:bold;">@ParisTrader</a>。經核實後將開通 EA 測試使用權限。
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="legal-block">
+            <span class="legal-title">⚠️ Disclaimer & Risk Warning (免責聲明與風險揭露)</span>
+            <p><strong>1. 學術研究性質 (Educational Purpose):</strong> 本頁面所展示之內容、數據、圖表及程式 (EA)，僅供學術研究、技術交流與教育用途。所有內容均不構成任何形式的投資建議、金融產品推薦或交易信號。作者不持有任何金融監管牌照。</p>
+            <p><strong>2. 歷史數據限制 (Past Performance):</strong> 文中展示的勝率、回報率等數據均基於歷史回測或特定時期的實盤樣本。<strong>過去的表現不保證未來的結果 (Past performance is not indicative of future results)。</strong> 市場狀況隨時可能發生劇烈變化，模型可能失效。</p>
+            <p><strong>3. 風險揭露 (High Risk Warning):</strong> 外匯保證金 (Forex) 與差價合約 (CFD) 交易涉及高風險，可能導致損失超過您的初始本金。請確保您完全了解相關風險，並根據自身財務狀況量力而為。本工具 (EA) 之使用風險由使用者完全自負。</p>
+            <p><strong>4. 第三方連結 (Third-Party Links):</strong> 本頁面提供的券商開戶連結及優惠活動由第三方 (Vantage Markets) 提供，與作者無直接僱傭關係。開戶前請詳閱券商之條款與細則 (T&C)。贈金 (Credit Bonus) 通常不可直接提現，僅作交易保證金用途。</p>
+            <p><strong>5. 責任限制 (Limitation of Liability):</strong> ParisTrader 及其運營者對使用本程式所造成的任何直接或間接盈虧概不負責。</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
+    

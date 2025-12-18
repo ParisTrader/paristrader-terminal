@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParisTrader Pro | Quant Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 全局設置 --- */
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-bg: #1e293b; /* 深藍灰色 */
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #3b82f6; /* 亮藍色 */
+            --main-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #334155;
+        }
+        
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background-color: var(--main-bg); margin: 0; padding: 0; color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- 1. 登入遮罩 (保留您的密碼鎖) --- */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .login-box { background: white; padding: 40px; border-radius: 10px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 90%; max-width: 400px; }
+        .login-input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 16px; text-align: center; letter-spacing: 2px; }
+        .login-btn { width: 100%; padding: 12px; background: var(--sidebar-active); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .login-btn:hover { background: #2563eb; }
+
+        /* --- 2. 側邊欄 (Sidebar) --- */
+        .sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); display: flex; flex-direction: column; height: 100%; transition: 0.3s; flex-shrink: 0; }
+        .logo-area { padding: 25px; font-size: 1.2rem; font-weight: bold; color: white; border-bottom: 1px solid rgba(255,255,255,0.1); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        
+        .nav-menu { list-style: none; padding: 20px 10px; margin: 0; flex: 1; }
+        .nav-item { margin-bottom: 5px; }
+        .nav-link { display: flex; align-items: center; padding: 12px 15px; color: var(--sidebar-text); text-decoration: none; border-radius: 8px; transition: 0.2s; cursor: pointer; font-size: 0.95rem; }
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-link.active { background: var(--sidebar-active); color: white; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5); }
+        .nav-link i { width: 25px; margin-right: 10px; text-align: center; }
+
+        .user-profile { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; gap: 10px; font-size: 0.9em; }
+        .user-avatar { width: 35px; height: 35px; background: #64748b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* --- 3. 主要內容區 (Main Content) --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* 頂部導航欄 (Header) */
+        .top-bar { height: 64px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .page-title { font-size: 1.2rem; font-weight: 600; color: #1e293b; }
+        .data-status { font-size: 0.85em; color: #64748b; background: #f1f5f9; padding: 5px 12px; border-radius: 20px; }
+
+        /* 內容捲動區 */
+        .scrollable-content { flex: 1; overflow-y: auto; padding: 30px; }
+        
+        /* 內容卡片樣式 */
+        .dashboard-card { background: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        
+        /* --- 4. 具體工具樣式 (移植自原版) --- */
+        .control-panel { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 25px; }
+        input[type="text"], input[type="number"] { padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.2s; text-transform: uppercase; font-weight: bold; text-align: center; width: 200px; }
+        input:focus { border-color: var(--sidebar-active); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        
+        /* 篩選按鈕 */
+        .filter-section { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
+        .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: white; color: #64748b; cursor: pointer; transition: 0.2s; font-size: 0.85em; font-weight: 500; }
+        .filter-btn:hover { border-color: var(--sidebar-active); color: var(--sidebar-active); }
+
+        /* 篩選結果 */
+        #filter-results-container { display: none; margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; }
+        .stock-btn { background: white; border: 1px solid var(--sidebar-active); color: var(--sidebar-active); padding: 4px 10px; border-radius: 4px; cursor: pointer; margin: 3px; font-weight: bold; font-size: 0.9em; }
+        .stock-btn:hover { background: var(--sidebar-active); color: white; }
+
+        /* 圖表佈局 */
+        .grid-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; align-items: start; }
+        .canvas-container { height: 450px; position: relative; }
+        
+        /* 分析面板 */
+        .insight-panel { background: #f8fafc; border-radius: 10px; padding: 20px; border-left: 4px solid var(--sidebar-active); }
+        .insight-title { font-weight: bold; font-size: 1.1em; margin-bottom: 15px; color: #1e293b; display: flex; align-items: center; gap: 8px; }
+        .insight-list { padding-left: 20px; margin: 0; }
+        .insight-list li { margin-bottom: 10px; font-size: 0.95em; line-height: 1.5; color: #475569; }
+        .highlight { font-weight: 700; color: #0f172a; }
+
+        /* 趨勢圖 */
+        .trend-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+        .trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .trend-tag { font-size: 0.8em; background: #e2e8f0; padding: 4px 8px; border-radius: 4px; color: #475569; }
+
+        /* 投資組合表格 */
+        .pf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .pf-table th { text-align: left; padding: 10px; color: #64748b; font-size: 0.9em; border-bottom: 1px solid #e2e8f0; }
+        .pf-table td { padding: 8px 5px; }
+        .action-btn { background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .action-btn:hover { background: #059669; }
+        .remove-btn { color: #ef4444; cursor: pointer; font-size: 1.2em; }
+
+        /* Tab 內容切換機制 (核心) */
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 手機版響應式 */
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .sidebar { width: 100%; height: auto; }
+            .nav-menu { display: flex; overflow-x: auto; padding: 10px; gap: 5px; }
+            .nav-link { white-space: nowrap; padding: 8px 12px; font-size: 0.9em; }
+            .user-profile { display: none; }
+            .grid-layout { grid-template-columns: 1fr; }
+            .main-content { height: auto; overflow: visible; }
+            .scrollable-content { padding: 15px; }
+        }
+        
+        /* 標籤雲 */
+        #tags-container { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .tag { padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: 600; }
+        .tag.blue { background: #e0f2fe; color: #0284c7; }
+        .tag.red { background: #fee2e2; color: #dc2626; }
+        .tag.green { background: #dcfce7; color: #16a34a; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="margin-top:0; color:#1e293b;">🔒 ParisTrader Pro</h2>
+            <p style="color:#64748b; font-size:0.9em;">Private Quantitative Research Platform</p>
+            <input type="password" id="passwordInput" class="login-input" placeholder="ACCESS CODE">
+            <button onclick="checkPassword()" class="login-btn">ENTER SYSTEM</button>
+            <p id="error-msg" style="color:#ef4444; display:none; margin-top:10px; font-size:0.9em;">Access Denied</p>
+        </div>
+    </div>
+
+    <nav class="sidebar">
+        <div class="logo-area">
+            <i class="fa-solid fa-chart-radar"></i> ParisTrader
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link active" onclick="switchView('single', this)">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i> 個股體檢
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="switchView('peer', this)">
+                    <i class="fa-solid fa-scale-balanced"></i> 同業比對
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="switchView('portfolio', this)">
+                    <i class="fa-solid fa-briefcase"></i> 投資組合
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="switchView('about', this)">
+                    <i class="fa-solid fa-circle-info"></i> 關於系統
+                </a>
+            </li>
+        </ul>
+        <div class="user-profile">
+            <div class="user-avatar">PT</div>
+            <div>
+                <div style="font-weight:bold;">Client User</div>
+                <div style="font-size:0.8em; color:#94a3b8;">VIP Access</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="page-title" id="page-title">Stock Factor DNA</div>
+            <div class="data-status" id="data-date">Data Date: Loading...</div>
+        </header>
+
+        <div class="scrollable-content">
+
+            <div id="view-single" class="view-section active">
+                <div class="dashboard-card">
+                    <div class="control-panel">
+                        <input type="text" id="tickerInput" placeholder="輸入代碼 (e.g. AAPL)" onkeyup="if(event.key==='Enter') updateSingleChart()">
+                    </div>
+                    
+                    <div class="filter-section">
+                        <button onclick="filterStocks('High Quality')" class="filter-btn">💎 High Quality</button>
+                        <button onclick="filterStocks('High Growth')" class="filter-btn">🚀 High Growth</button>
+                        <button onclick="filterStocks('Deep Value')" class="filter-btn">💰 Deep Value</button>
+                        <button onclick="filterStocks('Small Cap')" class="filter-btn">🐣 Small Cap</button>
+                        <button onclick="filterStocks('Defensive')" class="filter-btn">🛡️ Defensive</button>
+                    </div>
+
+                    <div id="filter-results-container">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                            <span style="font-size:0.9em; color:#64748b;">符合條件的股票：</span>
+                            <span style="cursor:pointer; color:#ef4444;" onclick="document.getElementById('filter-results-container').style.display='none'"><i class="fa-solid fa-xmark"></i></span>
+                        </div>
+                        <div id="filter-results-buttons"></div>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    <div class="dashboard-card" style="margin-bottom:0;">
+                        <div class="canvas-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                        <div id="tags-container"></div>
+                        
+                        <div id="trend-wrapper" class="trend-container" style="display:none;">
+                            <div class="trend-header">
+                                <span style="font-weight:bold; color:#334155;"><i class="fa-solid fa-arrow-trend-up"></i> 歷史風險走勢 (Beta Trend)</span>
+                                <span class="trend-tag">Last 2 Years</span>
+                            </div>
+                            <div style="font-size:0.85em; color:#64748b; margin-bottom:10px;">
+                                紅線為實際 Beta，虛線 (1.0) 為大盤基準。持續高於虛線代表高風險。
+                            </div>
+                            <div style="height: 120px; width:100%;">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insight-panel" id="insight-panel" style="display:none;">
+                        <div class="insight-title">
+                            <i class="fa-solid fa-robot"></i> AI 分析報告: <span id="insight-title-text">--</span>
+                        </div>
+                        <ul class="insight-list" id="insight-content"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-peer" class="view-section">
+                <div class="dashboard-card">
+                    <div class="control-panel">
+                        <input type="text" id="peerA" placeholder="股票 A (e.g. KO)">
+                        <span style="font-weight:bold; color:#94a3b8; align-self:center;">VS</span>
+                        <input type="text" id="peerB" placeholder="股票 B (e.g. PEP)">
+                        <button class="action-btn" onclick="updatePeerChart()">開始比較</button>
+                    </div>
+                </div>
+                </div>
+
+            <div id="view-portfolio" class="view-section">
+                <div class="dashboard-card">
+                    <table class="pf-table" id="portfolioTable">
+                        <thead><tr><th>股票代碼</th><th>權重 %</th><th>操作</th></tr></thead>
+                        <tbody>
+                            <tr><td><input type="text" class="portfolio-input" value="AAPL" style="width:100px;"></td><td><input type="number" class="weight-input" value="50" style="width:80px;"></td><td><i class="fa-solid fa-trash remove-btn" onclick="removeRow(this)"></i></td></tr>
+                            <tr><td><input type="text" class="portfolio-input" value="KO" style="width:100px;"></td><td><input type="number" class="weight-input" value="50" style="width:80px;"></td><td><i class="fa-solid fa-trash remove-btn" onclick="removeRow(this)"></i></td></tr>
+                        </tbody>
+                    </table>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button onclick="addPortfolioRow()" style="background:#3b82f6; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-plus"></i> 新增股票</button>
+                        <button class="action-btn" onclick="updatePortfolioChart()"><i class="fa-solid fa-calculator"></i> 計算組合 DNA</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-about" class="view-section">
+                <div class="dashboard-card">
+                    <h3 style="border-bottom:2px solid #3b82f6; padding-bottom:10px; display:inline-block;">關於系統</h3>
+                    <p style="line-height:1.8; color:#475569;">
+                        <strong>Stock Factor DNA</strong> 是一套基於 Fama-French 多因子模型的量化分析系統。數據源自 Kenneth French Data Library。
+                        本系統旨在協助投資者以機構視角透視股票的結構性風險特徵。
+                    </p>
+                    <div style="background:#f1f5f9; padding:20px; border-radius:8px; margin-top:20px;">
+                        <strong>Developed by ParisTrader</strong><br>
+                        <div style="margin-top:10px;">
+                            <a href="https://t.me/algoparistrader" target="_blank" style="text-decoration:none; color:#3b82f6; font-weight:bold; margin-right:15px;"><i class="fa-brands fa-telegram"></i> Telegram Channel</a>
+                            <a href="https://t.me/ParisTrader" target="_blank" style="text-decoration:none; color:#3b82f6; font-weight:bold;"><i class="fa-solid fa-envelope"></i> Contact Me</a>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:30px; font-size:0.85em; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:20px;">
+                        <strong>免責聲明：</strong> 本工具僅供學術交流與輔助分析，非投資建議。過往表現不代表未來。因子數據具有約 1-1.5 個月的滯後性，僅反映中長期結構特徵。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+    // --- 密碼鎖邏輯 ---
+    function checkPassword() {
+        if(document.getElementById('passwordInput').value === "VIP888") {
+            document.getElementById('login-overlay').style.display = 'none';
+        } else {
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    }
+
+    // --- 核心變數 ---
+    let stockData = {};
+    let myChart = null;
+    let trendChart = null;
+    let lastState = { tab: 'single', singleTicker: '', peerA: '', peerB: '', hasPortfolioRun: false };
+
+    // --- 初始化 ---
+    window.onload = function() {
+        Papa.parse("stock_factor_data.csv", {
+            download: true, header: true,
+            complete: function(results) {
+                results.data.forEach(row => { if(row.Ticker) stockData[row.Ticker] = row; });
+                if(Object.keys(stockData).length > 0) {
+                    let first = Object.keys(stockData)[0];
+                    document.getElementById('tickerInput').value = first;
+                    document.getElementById('data-date').innerText = "Data Updated: " + stockData[first].Last_Date;
+                    updateSingleChart();
+                }
+            }
+        });
+    };
+
+    // --- 頁面切換邏輯 (App 路由) ---
+    function switchView(viewId, navElement) {
+        // 1. 更新 Sidebar 狀態
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        if(navElement) navElement.classList.add('active');
+
+        // 2. 更新主要內容區
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('view-' + viewId).classList.add('active');
+
+        // 3. 更新標題
+        const titles = { 'single': '個股體檢', 'peer': '同業比對', 'portfolio': '投資組合診斷', 'about': '關於與參考' };
+        document.getElementById('page-title').innerText = titles[viewId];
+
+        // 4. 移動 Canvas (重要！為了復用 Canvas，我們將它移動到當前 View)
+        // 注意：Chart.js 需要 Canvas 在 DOM 中可見才能渲染，所以如果是 peer 或 portfolio，我們要確保邏輯正確
+        // 這裡簡化處理：如果不是 About 頁面，且需要圖表，我們將圖表容器移動到當前 View 的 grid-layout 中
+        // 但為了代碼簡單，我們使用 "共用圖表區" 的概念，或者簡單地在 switch 時重繪
+        
+        // 更簡單的做法：所有圖表邏輯共用同一個 Canvas ID，但在切換時我們把圖表容器 "搬家" (AppendChild)
+        // 或者，為了避免複雜度，我們在 View Peer 和 Portfolio 中不寫死 HTML，而是用 JS 動態生成。
+        // **修正策略**：因為 CSS Grid 佈局，直接讓 Canvas 留在原位，只在 Peer/Portfolio 顯示時，
+        // 我們手動隱藏 single 的 control panel，顯示 peer 的 control panel。
+        // 但為了模仿 App 感覺，我這裡做一個簡單的處理：
+
+        // 清理舊圖表
+        if(myChart) myChart.destroy();
+        if(trendChart) trendChart.destroy();
+        document.getElementById('insight-panel').style.display = 'none';
+        document.getElementById('tags-container').innerHTML = '';
+        document.getElementById('trend-wrapper').style.display = 'none';
+
+        // 狀態恢復
+        if (viewId === 'single') {
+            // 將圖表容器搬回 single view
+            let container = document.querySelector('.grid-layout'); 
+            let chartCard = document.querySelectorAll('.dashboard-card')[1]; // 這是放圖表的卡片
+            if(!document.getElementById('view-single').contains(chartCard)) {
+               document.querySelector('#view-single .grid-layout').prepend(chartCard);
+            }
+            if(lastState.singleTicker) updateSingleChart(true);
+
+        } else if (viewId === 'peer') {
+            // 將圖表卡片搬到 peer view
+            let chartCard = document.querySelectorAll('.dashboard-card')[1]; // 永遠抓那個有 canvas 的 card
+            document.getElementById('view-peer').appendChild(chartCard);
+            if(lastState.peerA && lastState.peerB) updatePeerChart(true);
+
+        } else if (viewId === 'portfolio') {
+            let chartCard = document.querySelectorAll('.dashboard-card')[1];
+            document.getElementById('view-portfolio').appendChild(chartCard);
+            if(lastState.hasPortfolioRun) updatePortfolioChart();
+        }
+    }
+
+    // --- 功能 1: 個股 ---
+    function updateSingleChart(isRestore = false) {
+        let ticker = isRestore ? lastState.singleTicker : document.getElementById('tickerInput').value.toUpperCase().trim();
+        if(!isRestore) lastState.singleTicker = ticker;
+
+        let data = stockData[ticker];
+        if(!data) { if(!isRestore) alert("找不到股票"); return; }
+
+        showInsightPanel(ticker);
+        renderTags(data.Baskets);
+        generateInsights(data, 'single');
+        renderRadar([{ label: ticker, data: getScores(data), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.2)' }]);
+        
+        if (data.Beta_Trend) {
+            document.getElementById('trend-wrapper').style.display = 'block';
+            renderTrendChart(data.Beta_Trend);
+        }
+        document.getElementById('filter-results-container').style.display = 'none';
+    }
+
+    // --- 功能 2: 同業 ---
+    function updatePeerChart(isRestore = false) {
+        let tA = isRestore ? lastState.peerA : document.getElementById('peerA').value.toUpperCase().trim();
+        let tB = isRestore ? lastState.peerB : document.getElementById('peerB').value.toUpperCase().trim();
+        if(!isRestore) { lastState.peerA = tA; lastState.peerB = tB; }
+
+        let dataA = stockData[tA], dataB = stockData[tB];
+        if(!dataA || !dataB) return;
+
+        showInsightPanel(`${tA} vs ${tB}`);
+        generateInsightsPeer(dataA, dataB);
+        renderRadar([
+            { label: tA, data: getScores(dataA), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.2)' },
+            { label: tB, data: getScores(dataB), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.2)' }
+        ]);
+    }
+
+    // --- 功能 3: 投資組合 ---
+    function addPortfolioRow() {
+        let tbody = document.querySelector('#portfolioTable tbody');
+        if(tbody.rows.length >= 10) return;
+        let row = tbody.insertRow();
+        row.innerHTML = `<td><input type="text" class="portfolio-input" style="width:100px;"></td><td><input type="number" class="weight-input" value="0" style="width:80px;"></td><td><i class="fa-solid fa-trash remove-btn" onclick="removeRow(this)"></i></td>`;
+    }
+    function removeRow(btn) { btn.closest('tr').remove(); }
+
+    function updatePortfolioChart() {
+        let rows = document.querySelectorAll('#portfolioTable tbody tr');
+        let scores = [0,0,0,0,0], totalWeight = 0;
+        
+        for(let row of rows) {
+            let t = row.querySelector('.portfolio-input').value.toUpperCase().trim();
+            let w = parseFloat(row.querySelector('.weight-input').value);
+            if(t && stockData[t]) {
+                totalWeight += w;
+                let s = getScores(stockData[t]);
+                for(let i=0; i<5; i++) scores[i] += s[i]*(w/100);
+            }
+        }
+        if(Math.abs(totalWeight-100)>0.5) { alert("總權重需為 100%"); return; }
+        
+        lastState.hasPortfolioRun = true;
+        showInsightPanel("My Portfolio");
+        generateInsights({Score_Beta: scores[0], Score_Mom: scores[1], Score_Quality: scores[2], Score_Size: scores[3], Score_Value: scores[4]}, 'portfolio');
+        renderRadar([{ label: 'Portfolio', data: scores, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.2)' }]);
+    }
+
+    // --- 繪圖與輔助 ---
+    function getScores(d) { return [d.Score_Beta, d.Score_Mom, d.Score_Quality, d.Score_Size, d.Score_Value]; }
+    
+    function showInsightPanel(title) {
+        document.getElementById('insight-panel').style.display = 'block';
+        document.getElementById('insight-title-text').innerText = title;
+    }
+
+    function renderRadar(datasets) {
+        if(myChart) myChart.destroy();
+        myChart = new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: { labels: ['Beta (波動)', 'Momentum (動能)', 'Quality (品質)', 'Size (規模)', 'Value (價值)'], datasets: datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { r: { suggestedMin: 0, suggestedMax: 10, pointLabels: { font: { size: 12, weight: 'bold' } } } }
+            }
+        });
+    }
+
+    // 趨勢圖邏輯 (含 1.0 基準線)
+    const linePlugin = {
+        id: 'hLine', beforeDraw: (c) => {
+            const { ctx, scales: { x, y } } = c;
+            const yVal = y.getPixelForValue(1.0);
+            ctx.save(); ctx.strokeStyle = '#94a3b8'; ctx.setLineDash([5,5]); 
+            ctx.beginPath(); ctx.moveTo(x.left, yVal); ctx.lineTo(x.right, yVal); ctx.stroke(); ctx.restore();
+        }
+    };
+    function renderTrendChart(trendStr) {
+        if(trendChart) trendChart.destroy();
+        let data = trendStr.split(',').map(Number);
+        trendChart = new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: { labels: data.map((_,i)=>i), datasets: [{ data: data, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { x: {display:false}, y: {suggestedMin: 0.5, suggestedMax: 1.5} } },
+            plugins: [linePlugin]
+        });
+    }
+
+    // AI 分析邏輯 (整合版)
+    function generateInsights(d, mode) {
+        const ul = document.getElementById('insight-content'); ul.innerHTML = '';
+        const add = (t, c) => ul.innerHTML += `<li><span class="highlight">${t}</span> ${c}</li>`;
+        
+        let beta = parseFloat(d.Score_Beta || d[0]); // 相容 array
+        let val = parseFloat(d.Score_Value || d[4]);
+        
+        if(mode === 'portfolio') {
+            add(beta > 7 ? "高風險警示:" : beta < 4 ? "防禦型配置:" : "平衡型:", beta > 7 ? "組合波動劇烈，建議降低槓桿。" : "適合保守投資者。");
+        } else {
+            if(beta > 8) add("極高波動:", "心跳股，務必設止損。");
+            else if(beta < 3) add("避風港:", "抗跌屬性強。");
+            else if(beta >=4 && beta <=6) add("跟隨大盤:", "標準市場風險。");
+            
+            if(val > 7) add("深度價值:", "估值便宜，留意價值陷阱。");
+            else if(val >= 2.5 && val <= 5) add("合理成長 (GARP):", "估值合理，具成長性。");
+        }
+    }
+    
+    function generateInsightsPeer(dA, dB) {
+        const ul = document.getElementById('insight-content'); ul.innerHTML = '';
+        ul.innerHTML = `<li><span class="highlight">比較重點:</span> 觀察兩者形狀重疊度。</li>`;
+        ul.innerHTML += `<li><span class="highlight">${dA.Ticker}:</span> Beta ${dA.Score_Beta}, Value ${dA.Score_Value}</li>`;
+        ul.innerHTML += `<li><span class="highlight">${dB.Ticker}:</span> Beta ${dB.Score_Beta}, Value ${dB.Score_Value}</li>`;
+    }
+
+    function filterStocks(c) {
+        let div = document.getElementById('filter-results-buttons'); div.innerHTML = '';
+        let count = 0;
+        for(let t in stockData) {
+            if(stockData[t].Baskets && stockData[t].Baskets.includes(c)) {
+                let btn = document.createElement('button'); btn.className = 'stock-btn'; btn.innerText = t;
+                btn.onclick = function() { document.getElementById('tickerInput').value = t; updateSingleChart(); };
+                div.appendChild(btn); count++;
+            }
+        }
+        document.getElementById('filter-results-container').style.display = count ? 'block' : 'none';
+        if(count==0) alert('無符合結果');
+    }
+    
+    function renderTags(str) {
+        const div = document.getElementById('tags-container'); div.innerHTML = '';
+        if(str) str.split(';').forEach(tag => {
+            let s = document.createElement('span'); s.className = 'tag blue';
+            if(tag.includes('Aggressive')) s.className = 'tag red';
+            if(tag.includes('Quality')) s.className = 'tag green';
+            s.innerText = tag.trim(); div.appendChild(s);
+        });
+    }
+</script>
+
+</body>
+</html>

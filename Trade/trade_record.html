@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParisTrader 交易日記 | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace'],
+                    },
+                    colors: {
+                        'profit-green': '#10B981',
+                        'loss-red': '#EF4444',
+                        'glass-border': 'rgba(255, 255, 255, 0.08)',
+                        'glass-bg': 'rgba(15, 17, 26, 0.8)', 
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- 核心背景樣式 --- */
+        body {
+            background-color: #020617; /* 深色底 */
+            min-height: 100vh;
+            color: #e2e8f0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 1. 動態光球層 */
+        .ambient-light {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: -2;
+            pointer-events: none;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: blob 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blob-1 { top: 10%; left: 10%; width: 500px; height: 500px; background: #4f46e5; animation-delay: 0s; } /* 藍紫 */
+        .blob-2 { top: 20%; right: 10%; width: 400px; height: 400px; background: #0ea5e9; animation-delay: 2s; } /* 亮藍 */
+        .blob-3 { bottom: 10%; left: 30%; width: 600px; height: 600px; background: #10b981; animation-delay: 4s; opacity: 0.3; } /* 綠 */
+
+        /* 2. 網格紋理層 */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* --- UI 元件樣式 --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px;
+        }
+        .live-green { background-color: #10B981; animation: pulse-green 2s infinite; }
+        .live-yellow { background-color: #EAB308; animation: pulse-yellow 2s infinite; }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+
+        /* 表格優化 */
+        .custom-table th { 
+            font-weight: 600; text-transform: uppercase; font-size: 0.75rem; 
+            letter-spacing: 0.05em; color: #9CA3AF; padding: 1.25rem 1rem; 
+            border-bottom: 1px solid var(--glass-border); 
+        }
+        .custom-table td { 
+            padding: 1.25rem 1rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.03); 
+            font-size: 0.9rem; 
+            vertical-align: top;
+        }
+        .custom-table tr:hover td { background: rgba(255,255,255,0.03); }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <header class="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between max-w-7xl mx-auto border-b border-glass-border pb-6 pt-8 px-4 md:px-6 relative z-10">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                ParisTrader 交易日記 <span class="text-gray-500 font-normal text-base ml-2">Personal Portfolio for learning</span>
+            </h1>
+            <p class="text-gray-400 mt-2 text-sm font-mono">DATE: 2025-12-12 // MARKET STATUS: OPEN</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono bg-white/5 text-gray-300 border border-white/10 backdrop-blur-md">
+                <span class="w-2 h-2 rounded-full bg-profit-green mr-2 animate-pulse"></span> RISK LEVEL: MODERATE
+            </span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto space-y-12 px-4 md:px-6 relative z-10">
+
+        <section id="hero-section" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
+                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Exposure (總持倉)</h2>
+                <div class="flex items-baseline mt-4">
+                    <span class="text-3xl lg:text-4xl font-bold font-mono tracking-tight">30%</span>
+                    <span class="text-sm font-mono text-gray-400 ml-2">Invested</span>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-xs text-gray-500">Leaving 70% Cash Reserves</span>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
+                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Cash Level (現金)</h2>
+                <div class="flex items-baseline mt-4">
+                    <span class="text-3xl lg:text-4xl font-bold font-mono tracking-tight text-blue-400">70%</span>
+                </div>
+                <div class="mt-6">
+                    <div class="h-2 bg-gray-700/30 rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-500 rounded-full" style="width: 70%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
+                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Recent Performance</h2>
+                <div class="flex items-center mt-2 justify-between">
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-bold font-mono text-profit-green">PROFITABLE</span>
+                        <span class="text-xs text-gray-500">Last Trade: ^HSI Long</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-profit-green/20 flex items-center justify-center text-profit-green">
+                        <i class="ri-arrow-right-up-line text-xl"></i>
+                    </div>
+                </div>
+                 <p class="text-xs text-gray-500 mt-2">Active Strategy: Sector Sympathy & Macro</p>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="text-lg font-bold mb-4 flex items-center text-white">
+                <i class="ri-pulse-line mr-2 text-blue-400"></i>Active Positions (3)
+            </h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-purple-500">
+                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                             <div class="w-10 h-10 rounded bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold">R</div>
+                             <div>
+                                <h4 class="font-bold">RKLB</h4>
+                                <div class="text-xs text-gray-400">Rocket Lab</div>
+                             </div>
+                        </div>
+                        <div class="text-right">
+                             <div class="text-sm font-bold font-mono text-profit-green">OPEN</div>
+                             <div class="text-xs text-gray-400">Dec 09</div>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
+                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$53.40</div>
+                            <div><div class="text-gray-500 text-xs">Size</div>10%</div>
+                            <div><div class="text-gray-500 text-xs">TP 1 / 2</div>$66.8 / $80</div>
+                            <div><div class="text-gray-500 text-xs text-profit-green">SL (Profit)</div>$56.86</div>
+                         </div>
+                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
+                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
+                            <p class="text-sm text-gray-300 leading-relaxed">
+                                SpaceX 2026 IPO 同情效應 (Sympathy Play)。期權 Call 異動顯著，押注龍頭效應。
+                            </p>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-gray-300">
+                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                             <div class="w-10 h-10 rounded bg-gray-500/20 text-gray-300 flex items-center justify-center font-bold">Ag</div>
+                             <div>
+                                <h4 class="font-bold">SILVER</h4>
+                                <div class="text-xs text-gray-400">XAG/USD</div>
+                             </div>
+                        </div>
+                        <div class="text-right">
+                             <div class="text-sm font-bold font-mono text-profit-green">TP1 HIT</div>
+                             <div class="text-xs text-profit-green flex items-center justify-end"><span class="live-dot live-green"></span>Dec 09</div>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
+                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$58.77</div>
+                            <div><div class="text-gray-500 text-xs">Size</div>5%</div>
+                            <div><div class="text-gray-500 text-xs">TP 1 (Done)</div>$63.93</div>
+                            <div><div class="text-gray-500 text-xs text-blue-400">SL</div>Free (BE)</div>
+                         </div>
+                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
+                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
+                            <p class="text-sm text-gray-300 leading-relaxed">
+                                日圖突破三頂結構。強度優於黃金，受美國資產限制政策驅動。
+                            </p>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-blue-500">
+                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                             <div class="w-10 h-10 rounded bg-blue-500/20 text-blue-300 flex items-center justify-center font-bold">G</div>
+                             <div>
+                                <h4 class="font-bold">GOOG</h4>
+                                <div class="text-xs text-gray-400">Alphabet Inc.</div>
+                             </div>
+                        </div>
+                        <div class="text-right">
+                             <div class="text-sm font-bold font-mono text-profit-green">TP1 HIT</div>
+                             <div class="text-xs text-gray-400">Nov 19</div>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
+                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$298.00</div>
+                            <div><div class="text-gray-500 text-xs">Size</div>15%</div>
+                            <div><div class="text-gray-500 text-xs">TP 1 (Done)</div>$320.00</div>
+                            <div><div class="text-gray-500 text-xs text-gray-400">Target 2</div>$380.00</div>
+                         </div>
+                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
+                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
+                            <p class="text-sm text-gray-300 leading-relaxed">
+                                Gemini 3 AI 優勢強大，吸納行業利潤，確立新龍頭地位。
+                            </p>
+                         </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h3 class="text-lg font-bold mb-4 flex items-center text-white">
+                <i class="ri-table-line mr-2 text-purple-400"></i>Closed Positions (Dec 2025)
+            </h3>
+            
+            <div class="glass-panel rounded-3xl overflow-hidden overflow-x-auto">
+                <table class="w-full text-left border-collapse custom-table whitespace-nowrap md:whitespace-normal">
+                    <thead class="bg-white/5">
+                        <tr>
+                            <th width="15%">Date</th>
+                            <th width="10%">Ticker</th>
+                            <th width="10%">Side</th>
+                            <th width="15%" class="text-right">Realized PnL</th>
+                            <th width="50%">Reason / Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-mono text-sm">
+                        <tr>
+                            <td class="text-gray-400">2025-12-11</td>
+                            <td class="font-bold text-white">^HSI</td>
+                            <td><span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">LONG</span></td>
+                            <td class="text-right text-profit-green font-bold">+211 pts</td>
+                            <td class="font-sans text-gray-300">
+                                <span class="text-xs border border-gray-600 px-1 rounded mr-1">5% Size</span>
+                                Overnight 降息利好，短線操作。Entry 25689 -> Exit 25900。
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto mt-20 py-8 text-center border-t border-glass-border">
+        <p class="text-gray-500 text-sm font-mono">© 2025 Paris Trader Portfolio. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Factor DNA: Pro Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        /* --- 基礎樣式 --- */
+        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { margin: 0; color: #1a1a1a; letter-spacing: 1px; }
+        .subtitle { color: #666; margin-top: 5px; font-size: 0.95em; }
+
+        /* --- Tab 導航 --- */
+        .tabs { display: flex; justify-content: center; margin-bottom: 30px; gap: 10px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 20px; border: none; background: #e9ecef; border-radius: 25px; cursor: pointer; font-weight: bold; color: #555; transition: 0.3s; margin-bottom: 5px; }
+        .tab-btn.active { background: #007bff; color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+        .tab-btn:hover:not(.active) { background: #dbe2e8; }
+
+        /* --- Tab 內容區塊 --- */
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 輸入控制項 --- */
+        .control-panel { text-align: center; margin-bottom: 25px; position: relative; }
+        input[type="text"], input[type="number"] { padding: 12px; border: 2px solid #e1e4e8; border-radius: 10px; text-align: center; outline: none; transition: 0.3s; text-transform: uppercase; font-weight: bold; }
+        input:focus { border-color: #007bff; }
+        .action-btn { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-left: 10px; }
+        
+        /* 篩選器樣式 */
+        .filter-section { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .filter-btn { background: white; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.85em; color: #555; transition: 0.2s; }
+        .filter-btn:hover { background: #007bff; color: white; border-color: #007bff; }
+        #filter-results-container { display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 10px; position: relative; }
+        #filter-results-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; max-height: 150px; overflow-y: auto; }
+        .stock-btn { background: #fff; border: 1px solid #007bff; color: #007bff; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9em; }
+        .stock-btn:hover { background: #007bff; color: white; }
+        .close-filter { position: absolute; top: 5px; right: 10px; cursor: pointer; color: #aaa; font-weight: bold; font-size: 1.2em; }
+
+        /* --- 投資組合表格 --- */
+        .portfolio-table { width: 100%; max-width: 600px; margin: 0 auto 20px auto; border-collapse: collapse; }
+        .portfolio-table th { text-align: left; padding: 10px; color: #666; font-size: 0.9em; }
+        .portfolio-table td { padding: 5px; }
+        .portfolio-input { width: 90%; }
+        .weight-input { width: 80px; }
+        .remove-row { color: #dc3545; cursor: pointer; font-weight: bold; font-size: 1.2em; }
+
+        /* --- 核心內容區 (左右佈局) --- */
+        .content-grid { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-top: 20px; min-height: 500px; }
+        .chart-section { flex: 1 1 400px; position: relative; min-width: 300px; }
+        
+        /* 圖表容器 */
+        .canvas-container { position: relative; width: 100%; height: 400px; min-height: 400px; } 
+        
+        /* Beta 趨勢圖容器 */
+        .trend-container { margin-top: 25px; padding: 20px; border: 1px solid #eee; background: #fafafa; border-radius: 12px; height: auto; width: 100%; display: none; box-sizing: border-box; }
+        .trend-explainer { font-size: 0.85em; color: #666; margin-bottom: 10px; line-height: 1.4; background: white; padding: 10px; border-radius: 8px; border: 1px dashed #ddd; }
+        
+        /* 智能分析面板 */
+        .insight-section { flex: 1 1 300px; background: #fff; padding: 25px; border-radius: 15px; border: 1px solid #e1e4e8; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: none; }
+        .insight-title { font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: #007bff; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        .insight-list { list-style: none; padding: 0; margin: 0; }
+        .insight-list li { margin-bottom: 15px; font-size: 0.95em; line-height: 1.6; padding-left: 24px; position: relative; color: #444; }
+        .insight-list li::before { content: "💡"; position: absolute; left: 0; top: 2px; font-size: 1.1em; }
+        .insight-highlight { font-weight: bold; color: #2c3e50; }
+
+        #tags-container { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 600; background: #e3f2fd; color: #1565c0; }
+        .tag.blue { background: #e3f2fd; color: #1565c0; }
+        .tag.red { background: #ffebee; color: #c62828; }
+        .tag.green { background: #e8f5e9; color: #2e7d32; }
+
+        /* --- 關於頁面樣式 --- */
+        .about-section { background: #f8f9fa; padding: 30px; border-radius: 15px; border: 1px solid #e9ecef; }
+        .about-block { margin-bottom: 25px; }
+        .about-block h3 { color: #2c3e50; border-bottom: 2px solid #007bff; padding-bottom: 8px; display: inline-block; margin-top: 0; }
+        .about-text { color: #555; line-height: 1.8; font-size: 0.95em; }
+        .author-card { background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .contact-link { display: inline-block; margin-right: 15px; margin-top: 10px; text-decoration: none; color: white; background-color: #0088cc; padding: 8px 15px; border-radius: 20px; font-weight: bold; transition: 0.2s; font-size: 0.9em; }
+        .contact-link:hover { background-color: #0077b5; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,136,204,0.3); }
+        .ref-link { color: #007bff; text-decoration: none; font-weight: bold; }
+
+        /* --- 合規免責聲明 --- */
+        .compliance-section { margin-top: 50px; padding: 25px; background-color: #f8f9fa; border-top: 3px solid #e9ecef; border-radius: 8px; font-size: 0.8em; color: #666; line-height: 1.6; text-align: justify; }
+        .compliance-section h4 { margin-top: 0; color: #333; font-size: 1.1em; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 10px; }
+        .compliance-block { margin-bottom: 15px; }
+        .compliance-title { font-weight: bold; color: #444; display: block; margin-bottom: 3px; }
+        .data-date-display { float: right; color: #007bff; font-weight: bold; }
+
+        @media (max-width: 768px) { .content-grid { flex-direction: column; } .portfolio-table { width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Stock Factor DNA</h1>
+        <div class="subtitle">美股因子特性分析 (Beta / Size / Value / Mom / Quality)</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('single')">🔍 個股分析</button>
+        <button class="tab-btn" onclick="switchTab('peer')">⚖️ 同業比較</button>
+        <button class="tab-btn" onclick="switchTab('portfolio')">💼 投資組合診斷</button>
+        <button class="tab-btn" onclick="switchTab('about')">ℹ️ 關於與參考</button>
+    </div>
+
+    <div id="tab-single" class="tab-content active">
+        <div class="control-panel">
+            <input type="text" id="tickerInput" placeholder="輸入代碼 (e.g. AAPL)" onkeyup="if(event.key==='Enter') updateSingleChart()">
+            <div class="filter-section">
+                <button onclick="filterStocks('High Quality')" class="filter-btn">💎 High Quality</button>
+                <button onclick="filterStocks('High Growth')" class="filter-btn">🚀 High Growth</button>
+                <button onclick="filterStocks('Deep Value')" class="filter-btn">💰 Deep Value</button>
+                <button onclick="filterStocks('Small Cap')" class="filter-btn">🐣 Small Cap</button>
+                <button onclick="filterStocks('Defensive')" class="filter-btn">🛡️ Defensive</button>
+            </div>
+            <div id="filter-results-container">
+                <span class="close-filter" onclick="document.getElementById('filter-results-container').style.display='none'">×</span>
+                <div style="font-size:0.9em; color:#666; margin-bottom:10px;">請選擇股票：</div>
+                <div id="filter-results-buttons"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-peer" class="tab-content">
+        <div class="control-panel">
+            <input type="text" id="peerA" placeholder="股票 A" style="width: 120px;">
+            <span style="font-weight:bold; margin:0 10px; color:#999;">VS</span>
+            <input type="text" id="peerB" placeholder="股票 B" style="width: 120px;">
+            <button class="action-btn" onclick="updatePeerChart()">開始比較</button>
+        </div>
+    </div>
+
+    <div id="tab-portfolio" class="tab-content">
+        <div class="control-panel">
+            <table class="portfolio-table" id="portfolioTable">
+                <thead><tr><th>股票代碼</th><th>權重 %</th><th></th></tr></thead>
+                <tbody>
+                    <tr><td><input type="text" class="portfolio-input" value="AAPL"></td><td><input type="number" class="weight-input" value="50"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td></tr>
+                    <tr><td><input type="text" class="portfolio-input" value="KO"></td><td><input type="number" class="weight-input" value="50"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td></tr>
+                </tbody>
+            </table>
+            <button onclick="addPortfolioRow()" style="background:#007bff; color:white; border:none; padding:5px 15px; border-radius:15px; cursor:pointer;">+ 新增股票</button>
+            <br><br>
+            <button class="action-btn" onclick="updatePortfolioChart()">計算投資組合 DNA</button>
+        </div>
+    </div>
+
+    <div id="tab-about" class="tab-content">
+        <div class="about-section">
+            <div class="about-block">
+                <h3>📚 模型理論與數據來源</h3>
+                <div class="about-text">
+                    <p>本工具的核心模型基於諾貝爾經濟學獎得主 <strong>Eugene Fama</strong> 與 <strong>Kenneth French</strong> 教授提出的多因子模型 (Fama-French Multi-Factor Model)。該模型認為股票的回報並非隨機，而是由市場風險 (Beta)、規模 (Size)、價值 (Value)、盈利能力 (Quality/RMW) 等結構性因子所驅動。</p>
+                    <p>所有因子原始數據均直接引用自：<br>
+                    <strong>Kenneth R. French Data Library</strong><br>
+                    <em>Tuck School of Business at Dartmouth College</em><br>
+                    <a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" class="ref-link">🌐 Visit Data Library</a></p>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h3>👨‍💻 關於作者</h3>
+                <div class="author-card about-text">
+                    <p><strong>Developed by ParisTrader</strong></p>
+                    <p>致力於將機構級的量化分析工具普及化，協助投資者以科學視角透視市場風險與機會。</p>
+                    <div style="margin-top: 15px;">
+                        <a href="https://t.me/algoparistrader" target="_blank" class="contact-link">📢 Telegram Channel</a>
+                        <a href="https://t.me/ParisTrader" target="_blank" class="contact-link">💬 PM Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-grid" id="main-display-area">
+        <div class="chart-section">
+            <div class="canvas-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+            
+            <div id="trend-wrapper" class="trend-container">
+                <div style="font-weight:bold; color:#333; margin-bottom:5px;">📉 歷史波動風險走勢 (Beta Trend)</div>
+                <div class="trend-explainer">
+                    <strong>這張圖怎麼看？</strong><br>
+                    此圖顯示過去 2 年股票相對於大盤的風險變化。<br>
+                    <span style="color:#dc3545; font-weight:bold;">● 紅線</span>：股票實際波動 Beta 值。<br>
+                    <span style="color:#666; font-weight:bold;">● 虛線 (1.0)</span>：大盤基準線。<br>
+                    若紅線持續在虛線上方，代表風險比大盤高；反之則較安全。
+                </div>
+                <div style="height: 150px; width:100%;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            <div id="tags-container"></div>
+        </div>
+
+        <div class="insight-section" id="insight-panel">
+            <div class="insight-title">
+                📊 投資屬性深度解析: <span id="insight-title-text">--</span>
+            </div>
+            <ul class="insight-list" id="insight-content"></ul>
+        </div>
+    </div>
+
+    <div class="compliance-section">
+        <h4>
+            重要法律聲明及免責條款 (Important Legal Notice & Disclaimer)
+            <span class="data-date-display" id="data-date">Data Date: Loading...</span>
+        </h4>
+
+        <div class="compliance-block">
+            <span class="compliance-title">1. 一般聲明 (General)</span>
+            本網站/應用程式所提供的資訊、分析工具及圖表（下稱「本資料」）僅供一般參考及教育用途。本資料不構成，亦無意作為，也不應被詮釋為任何證券、金融產品或工具的要約、招攬、建議、意見或任何保證。本網站並無意針對任何特定司法管轄區的居民分發或使用本資料，如該等分發或使用會違反當地的法律或規例。
+        </div>
+
+        <div class="compliance-block">
+            <span class="compliance-title">2. 無投資建議 (No Investment Advice)</span>
+            本資料並非投資意見，亦不應被視為專業投資建議。本工具產生的分析結果是基於歷史數據的量化模型運算，並未考慮閣下個人的財務狀況、投資目標、風險承受能力或特定需求（Suitability）。閣下在作出任何投資決定前，應自行評估風險，並建議諮詢獨立專業財務顧問的意見。
+        </div>
+
+        <div class="compliance-block">
+            <span class="compliance-title">3. 數據及模型限制 (Data & Model Limitations)</span>
+            本分析採用 Kenneth French Data Library 提供的學術因子數據。使用者應注意：
+            (i) <strong>數據滯後風險：</strong> 因子數據通常有 1 至 1.5 個月的更新滯後，故分析結果主要反映股票的中長期結構性特徵，而非即時市場狀態。
+            (ii) <strong>模型限制：</strong> 因子分析基於歷史回歸模型，過往表現不代表將來表現 (Past performance is not indicative of future results)。
+            (iii) <strong>準確性：</strong> 作者已盡力確保資訊準確，但不會對資訊的準確性、完整性或及時性作出任何明示或暗示的保證。
+        </div>
+
+        <div class="compliance-block">
+            <span class="compliance-title">4. 風險披露 (Risk Disclosure)</span>
+            投資涉及風險。證券價格可升可跌，甚至變成毫無價值。在若干情況下，投資者可能會損失全部投資本金。
+        </div>
+    </div>
+</div>
+
+<script>
+    let stockData = {};
+    let myChart = null;    // 雷達圖
+    let trendChart = null; // 折線圖
+    
+    let lastState = { tab: 'single', singleTicker: '', peerA: '', peerB: '', hasPortfolioRun: false };
+
+    window.onload = function() {
+        Papa.parse("stock_factor_data.csv", {
+            download: true, header: true,
+            complete: function(results) {
+                results.data.forEach(row => { if(row.Ticker) stockData[row.Ticker] = row; });
+                if(Object.keys(stockData).length > 0) {
+                    let first = Object.keys(stockData)[0];
+                    document.getElementById('tickerInput').value = first;
+                    updateSingleChart();
+                }
+            }
+        });
+    };
+
+    function switchTab(tabId) {
+        lastState.tab = tabId;
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        event.target.classList.add('active');
+
+        // 如果切換到"關於"頁面，隱藏主要顯示區 (圖表)
+        if (tabId === 'about') {
+            document.getElementById('main-display-area').style.display = 'none';
+        } else {
+            document.getElementById('main-display-area').style.display = 'flex';
+            
+            // 清理圖表
+            if(myChart) myChart.destroy();
+            if(trendChart) trendChart.destroy();
+            
+            document.getElementById('insight-panel').style.display = 'none';
+            document.getElementById('tags-container').innerHTML = '';
+            document.getElementById('trend-wrapper').style.display = 'none'; 
+
+            // 恢復狀態
+            if (tabId === 'single' && lastState.singleTicker) updateSingleChart(true);
+            else if (tabId === 'peer' && lastState.peerA && lastState.peerB) updatePeerChart(true);
+            else if (tabId === 'portfolio' && lastState.hasPortfolioRun) updatePortfolioChart();
+        }
+    }
+
+    // --- 個股分析 (含趨勢圖) ---
+    function updateSingleChart(isRestore = false) {
+        let ticker = isRestore ? lastState.singleTicker : document.getElementById('tickerInput').value.toUpperCase().trim();
+        if(!isRestore) lastState.singleTicker = ticker;
+
+        let data = stockData[ticker];
+        if(!validateStock(ticker, data)) return;
+
+        showInsightPanel(ticker, data.Last_Date);
+        renderTags(data.Baskets);
+        generateInsights(data, 'single');
+        
+        let scores = getScores(data);
+        renderRadar([{ label: ticker, data: scores, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.2)' }]);
+        
+        if (data.Beta_Trend) {
+            document.getElementById('trend-wrapper').style.display = 'block';
+            renderTrendChart(data.Beta_Trend);
+        } else {
+            document.getElementById('trend-wrapper').style.display = 'none';
+        }
+
+        document.getElementById('filter-results-container').style.display = 'none';
+    }
+
+    // --- 同業比較 ---
+    function updatePeerChart(isRestore = false) {
+        let tA = isRestore ? lastState.peerA : document.getElementById('peerA').value.toUpperCase().trim();
+        let tB = isRestore ? lastState.peerB : document.getElementById('peerB').value.toUpperCase().trim();
+        if(!isRestore) { lastState.peerA = tA; lastState.peerB = tB; }
+
+        let dataA = stockData[tA]; let dataB = stockData[tB];
+        if(!validateStock(tA, dataA) || !validateStock(tB, dataB)) return;
+
+        showInsightPanel(`${tA} vs ${tB}`, dataA.Last_Date);
+        document.getElementById('tags-container').innerHTML = ''; 
+        document.getElementById('trend-wrapper').style.display = 'none';
+
+        let ul = document.getElementById('insight-content');
+        ul.innerHTML = `<li><strong>比較模式建議：</strong> 觀察兩條線的「面積差異」。面積越大代表因子特徵越極端。</li>`;
+        ul.innerHTML += `<li><strong>${tA}:</strong> 波動度 ${dataA.Score_Beta}/10，價值屬性 ${dataA.Score_Value}/10。</li>`;
+        ul.innerHTML += `<li><strong>${tB}:</strong> 波動度 ${dataB.Score_Beta}/10，價值屬性 ${dataB.Score_Value}/10。</li>`;
+
+        renderRadar([
+            { label: tA, data: getScores(dataA), borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)' },
+            { label: tB, data: getScores(dataB), borderColor: '#fd7e14', backgroundColor: 'rgba(253,126,20,0.1)' }
+        ]);
+    }
+
+    // --- 投資組合 ---
+    function addPortfolioRow() {
+        let table = document.getElementById('portfolioTable').getElementsByTagName('tbody')[0];
+        if(table.rows.length >= 10) return;
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<td><input type="text" class="portfolio-input"></td><td><input type="number" class="weight-input" value="0"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td>`;
+    }
+    function removeRow(span) { span.parentElement.parentElement.remove(); }
+
+    function updatePortfolioChart() {
+        let rows = document.querySelectorAll('#portfolioTable tbody tr');
+        let portfolioScores = [0,0,0,0,0]; 
+        let totalWeight = 0;
+        
+        for(let row of rows) {
+            let ticker = row.querySelector('.portfolio-input').value.toUpperCase().trim();
+            let weight = parseFloat(row.querySelector('.weight-input').value);
+            if(!ticker || !stockData[ticker]) continue;
+            totalWeight += weight;
+            let s = getScores(stockData[ticker]);
+            for(let i=0; i<5; i++) portfolioScores[i] += s[i] * (weight/100);
+        }
+
+        if(Math.abs(totalWeight - 100) > 0.5) { alert(`總權重需為 100%`); return; }
+
+        lastState.hasPortfolioRun = true;
+        showInsightPanel("My Portfolio", "Weighted Average");
+        document.getElementById('tags-container').innerHTML = '';
+        document.getElementById('trend-wrapper').style.display = 'none';
+
+        let pfData = { Score_Beta: portfolioScores[0], Score_Mom: portfolioScores[1], Score_Quality: portfolioScores[2], Score_Size: portfolioScores[3], Score_Value: portfolioScores[4] };
+        generateInsights(pfData, 'portfolio');
+
+        renderRadar([{ label: 'Portfolio DNA', data: portfolioScores, borderColor: '#6f42c1', backgroundColor: 'rgba(111, 66, 193, 0.2)' }]);
+    }
+
+    // --- 圖表繪製 ---
+    function renderRadar(datasets) {
+        if (myChart) myChart.destroy();
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        myChart = new Chart(ctx, {
+            type: 'radar',
+            data: { labels: ['Market Beta (波動)', 'Momentum (動能)', 'Quality (品質)', 'Size (小盤)', 'Value (價值)'], datasets: datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { r: { suggestedMin: 0, suggestedMax: 10, angleLines: { color: '#eee' }, grid: { color: '#eee' } } }
+            }
+        });
+    }
+
+    const horizontalLinePlugin = {
+        id: 'horizontalLine',
+        beforeDraw: (chart) => {
+            if (chart.config.type !== 'line') return;
+            const ctx = chart.ctx;
+            const yAxis = chart.scales.y;
+            const yValue = yAxis.getPixelForValue(1.0);
+            
+            ctx.save(); ctx.strokeStyle = '#666'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]); 
+            ctx.beginPath(); ctx.moveTo(chart.scales.x.left, yValue); ctx.lineTo(chart.scales.x.right, yValue);
+            ctx.stroke(); ctx.restore();
+        }
+    };
+
+    function renderTrendChart(trendStr) {
+        if (trendChart) trendChart.destroy();
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        let dataPoints = trendStr.split(',').map(Number);
+        let labels = Array.from({length: dataPoints.length}, (_, i) => i - dataPoints.length + 1);
+
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Beta Trend',
+                    data: dataPoints,
+                    borderColor: '#dc3545',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { intersect: false } },
+                scales: { 
+                    x: { display: false }, 
+                    y: { grid: { display: false }, suggestedMin: 0.5, suggestedMax: 1.5 } 
+                }
+            },
+            plugins: [horizontalLinePlugin]
+        });
+    }
+
+    // --- 輔助函式 ---
+    function getScores(data) { return [parseFloat(data.Score_Beta), parseFloat(data.Score_Mom), parseFloat(data.Score_Quality), parseFloat(data.Score_Size), parseFloat(data.Score_Value)]; }
+    function validateStock(t, d) { if(!d) return false; return true; }
+    function showInsightPanel(t, d) { document.getElementById('insight-panel').style.display = 'block'; document.getElementById('insight-title-text').innerText = t; document.getElementById('data-date').innerText = `Ref: ${d}`; }
+    
+    // --- 優化版智能分析 (包含中間值評價) ---
+    function generateInsights(data, mode) {
+        const ul = document.getElementById('insight-content'); ul.innerHTML = '';
+        const addLi = (title, text) => { 
+            let li = document.createElement('li'); 
+            li.innerHTML = `<span class="insight-highlight">${title}</span> ${text}`; 
+            ul.appendChild(li); 
+        };
+
+        let beta = parseFloat(data.Score_Beta);
+        let val = parseFloat(data.Score_Value);
+        let size = parseFloat(data.Score_Size);
+        let qual = parseFloat(data.Score_Quality);
+        let mom = parseFloat(data.Score_Mom);
+        let hasComment = false;
+
+        if (mode === 'portfolio') {
+            if (beta > 7) { addLi("高風險警示:", "您的投資組合波動劇烈。建議在市場震盪時減少槓桿，或加入公用事業、必需消費品股票來平衡。"); hasComment=true; }
+            else if (beta < 4) { addLi("保守防禦型:", "組合波動很低，雖然安全，但在大牛市中可能會跑輸大盤。適合退休規劃或低風險承受者。"); hasComment=true; }
+            else { addLi("平衡型配置:", "目前的風險水平適中，適合長期持有。"); hasComment=true; }
+
+            if (val < 3 && qual < 4) { addLi("風格過度集中:", "您持有大量「高估值 + 低獲利」的成長股。這類股票對利率非常敏感，請密切關注聯準會政策。"); hasComment=true; }
+        } else {
+            // Beta
+            if (beta > 8.0) { addLi("極高波動 (Beta > 1.5):", "這是一支「心跳股」。大盤跌 1%，它可能跌 2% 以上。不建議重倉，且務必設定嚴格的止損點。"); hasComment=true; }
+            else if (beta < 3.0) { addLi("避風港屬性:", "這支股票走勢與大盤關聯低，甚至在大盤下跌時能抗跌。適合在市場恐慌時買入保值。"); hasComment=true; }
+            else if (beta >= 4.0 && beta <= 6.0) { addLi("跟隨大盤:", "此股票的波動風險與大盤指數相近，屬於標準的市場風險暴露。"); hasComment=true; }
+
+            // Value vs Growth
+            if (val > 7.0) { addLi("深度價值 (Deep Value):", "股價相對於公司資產非常便宜。市場可能過度悲觀，但也可能是「價值陷阱」。"); hasComment=true; }
+            else if (val < 2.5) { addLi("高成長夢想 (High Growth):", "市場給予極高估值，看好未來爆發力。這類股票需要公司持續交出超預期的財報。"); hasComment=true; }
+            else if (val >= 2.5 && val <= 5.0) { addLi("合理成長 (GARP):", "估值雖不便宜，但相對於其成長性來說尚屬合理。這是許多優質科技權值股的特徵。"); hasComment=true; }
+
+            // Quality
+            if (qual > 7.0) { addLi("高品質護城河:", "公司獲利能力強、財務穩健 (High ROE)。這類股票通常是長期投資的核心配置首選。"); hasComment=true; }
+            else if (qual < 3.0) { addLi("投機屬性警告:", "公司獲利不穩甚至虧損。股價上漲主要靠消息面或市場情緒驅動。"); hasComment=true; }
+
+            // Momentum
+            if (mom > 8.5) { addLi("強勢噴出中:", "近期走勢極強。順勢交易者可以續抱，但要注意「乖離率」是否過大。"); hasComment=true; }
+            else if (mom < 1.5) { addLi("接飛刀警示:", "股價正處於自由落體或長期弱勢。在看到打底訊號前，不建議進場抄底。"); hasComment=true; }
+            
+            // Size
+            if (size < 3.0) { addLi("巨型權值股:", "市值極大，流動性極佳，通常是機構法人的核心持倉。"); hasComment=true; }
+
+            // Fallback
+            if (!hasComment) {
+                addLi("均衡發展型:", "此股票在各項因子上表現中規中矩，沒有極端的風險或風格傾向。這通常代表它是一支成熟、穩定的公司，適合做為投資組合的基石。");
+            }
+        }
+    }
+    
+    function filterStocks(c) {
+        let div = document.getElementById('filter-results-buttons'); div.innerHTML = '';
+        let count = 0;
+        for(let t in stockData) {
+            if(stockData[t].Baskets && stockData[t].Baskets.includes(c)) {
+                let btn = document.createElement('button'); btn.className = 'stock-btn'; btn.innerText = t;
+                btn.onclick = function() { document.getElementById('tickerInput').value = t; updateSingleChart(); };
+                div.appendChild(btn); count++;
+            }
+        }
+        document.getElementById('filter-results-container').style.display = count ? 'block' : 'none';
+        if(count==0) alert('無符合結果');
+    }
+    
+    function renderTags(basketsStr) {
+        const container = document.getElementById('tags-container'); container.innerHTML = '';
+        if (basketsStr) basketsStr.split(';').forEach(tag => {
+            let span = document.createElement('span'); span.className = 'tag blue';
+            tag = tag.trim();
+            if(tag.includes('Aggressive') || tag.includes('Speculative') || tag.includes('Knife')) span.className = 'tag red';
+            if(tag.includes('Quality') || tag.includes('Defensive')) span.className = 'tag green';
+            span.innerText = tag; container.appendChild(span);
+        });
+    }
+</script>
+
+</body>
+</html>

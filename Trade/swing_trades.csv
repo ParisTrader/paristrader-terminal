@@ -1,0 +1,6 @@
+Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,HKDNotional,Status,PnLUSD,PnLHKD,Notes
+RKLB,LONG,2025/12/9,53.4,56.22,700,37380,290816.4,OPEN,1974,15397.2,SpaceX sympathy play. Options flow bullish.
+GOOGL,LONG,2025/11/19,298,307.2,150,44700,347766,OPEN,1380,10764,Gemini 3 AI dominance. Fundamental value gap.
+SI=F,LONG,2025/12/5,53.36,57.73,500,26680,207570.4,OPEN,2185,17043,Breakout at resistance with new US policy.
+NQ=F,SHORT,2025/12/17,25358,24958,1,-49916,-389344.8,OPEN,8000,62400,day chart tp break to tp2.(March future)
+USDJPY,LONG,2025/12/18,155.714,155.714,1,0,0,OPEN,0,0,Betting on Friday event on raising interest rate
