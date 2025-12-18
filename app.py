@@ -1,0 +1,509 @@
+import streamlit as st
+from streamlit_option_menu import option_menu
+import streamlit.components.v1 as components
+import os
+import sys
+import glob
+
+# 加入 Trade 資料夾路徑
+sys.path.append('Trade')
+try:
+    from Trade import trade_app
+except ImportError:
+    pass
+
+# ==========================================
+# 1. 頁面基礎設置
+# ==========================================
+st.set_page_config(
+    page_title="ParisTrader Professional Research",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ==========================================
+# 2. 自定義 CSS (背景與介面優化)
+# ==========================================
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap');
+
+    /* [關鍵] 強制將 Streamlit 主容器背景設為透明 */
+    .stApp {
+        background: transparent !important;
+    }
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        color: #e2e8f0;
+    }
+
+    /* Header 透明化 */
+    header {
+        background: transparent !important;
+    }
+    #MainMenu {visibility: visible;}
+    footer {visibility: hidden;}
+
+    /* --- 背景層 --- */
+    .fixed-bg {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+        z-index: -1; 
+        background-color: #020617;
+        background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
+        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    }
+
+    .fixed-blobs {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+        z-index: -1;
+        background: 
+            radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 90% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 30% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+        filter: blur(60px); pointer-events: none;
+    }
+
+    /* --- 側邊欄樣式 --- */
+    section[data-testid="stSidebar"] {
+        background-color: #111827; 
+        border-right: 1px solid #374151;
+        z-index: 99999 !important;
+    }
+
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3, 
+    section[data-testid="stSidebar"] p, 
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div {
+        color: #F3F4F6 !important;
+    }
+
+    /* --- Dashboard 卡片 --- */
+    .metric-card {
+        background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+        padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+    }
+    .metric-card h4 { color: #94a3b8; font-size: 0.9em; text-transform: uppercase; margin: 0; }
+    .metric-card h2 { color: #f8fafc; margin: 5px 0; font-size: 1.8em; }
+
+    .profile-card {
+        background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+        padding: 25px; text-align: center;
+    }
+
+    .custom-footer {
+        margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center; color: #94a3b8; font-size: 0.8rem;
+    }
+    .custom-footer a { color: #60a5fa; text-decoration: none; margin: 0 10px; }
+    .custom-footer a:hover { text-decoration: underline; }
+
+    .legal-text {
+        font-size: 0.95rem; line-height: 1.7; color: #e2e8f0; text-align: justify;
+        background: rgba(255, 255, 255, 0.03); padding: 30px;
+        border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .legal-text h3 { color: #f8fafc !important; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px; }
+    .legal-text h4 { color: #e2e8f0 !important; margin-top: 20px; font-weight: bold; }
+    .legal-text strong { color: #f8fafc !important; }
+</style>
+
+<div class="fixed-bg"></div>
+<div class="fixed-blobs"></div>
+""", unsafe_allow_html=True)
+
+
+# ==========================================
+# 3. Helper Functions
+# ==========================================
+def load_html_file(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    else:
+        return f"<div style='padding:20px; color:red;'>⚠️ File not found: {file_path}</div>"
+
+
+def load_stock_dna_with_injection():
+    html_path = os.path.join("FamaFrench", "index.html")
+    csv_path = os.path.join("FamaFrench", "stock_factor_data.csv")
+
+    if not os.path.exists(html_path):
+        return f"<div style='color:red'>找不到 HTML: {html_path}</div>"
+
+    with open(html_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+
+    if os.path.exists(csv_path):
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            csv_data = f.read()
+        injection_js = f"""
+        var csvData = `{csv_data}`;
+        Papa.parse(csvData, {{
+            download: false, 
+        """
+        target_str = 'Papa.parse("stock_factor_data.csv", {'
+        if target_str in html_content:
+            html_content = html_content.replace(target_str, injection_js)
+            html_content = html_content.replace('download: true,', '')
+    return html_content
+
+
+def get_latest_file_content(folder_path):
+    if not os.path.exists(folder_path):
+        return None, f"Directory not found: {folder_path}"
+
+    search_pattern = os.path.join(folder_path, "*.html")
+    list_of_files = glob.glob(search_pattern)
+
+    if not list_of_files:
+        return None, "No HTML files found."
+
+    latest_file = max(list_of_files, key=os.path.getctime)
+
+    try:
+        with open(latest_file, 'r', encoding='utf-8') as f:
+            return f.read(), os.path.basename(latest_file)
+    except Exception as e:
+        return None, str(e)
+
+
+# ==========================================
+# 4. Main App Interface (Mixed Navigation)
+# ==========================================
+
+# --- Sidebar ---
+with st.sidebar:
+    st.markdown("""
+    <div style='padding: 20px 0px; text-align: center; border-bottom: 1px solid #374151; margin-bottom: 20px;'>
+        <h2 style='color: #F3F4F6; margin:0; letter-spacing: 1px; font-weight: 700;'>ParisTrader</h2>
+        <p style='color: #9CA3AF; font-size: 0.85em; margin-top:5px;'>Algo & Quant Research</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 主導航菜單 (混合模式：部分是直接連結，部分是群組)
+    selected_nav = option_menu(
+        menu_title="Navigation",
+        options=[
+            "Home",
+            "Market Intelligence",  # Group
+            "Stock",  # Group
+            "Option",  # [新增] Option
+            "Volume Profile",  # Direct
+            "My Trade",  # Direct
+            "MT5 EA",  # Direct
+            "Legal"  # Direct
+        ],
+        icons=[
+            "house",
+            "globe",
+            "search",
+            "layers",  # [新增] Option icon
+            "bar-chart-steps",
+            "briefcase",
+            "robot",
+            "file-text"
+        ],
+        menu_icon="compass",
+        default_index=0,
+        styles={
+            "container": {"padding": "0!important", "background-color": "transparent"},
+            "icon": {"color": "#9CA3AF", "font-size": "15px"},
+            "nav-link": {
+                "font-size": "15px", "text-align": "left", "margin": "5px",
+                "color": "#D1D5DB", "--hover-color": "#1F2937",
+            },
+            "nav-link-selected": {"background-color": "#2563EB", "color": "#FFFFFF", "font-weight": "600"},
+        }
+    )
+
+    # 路由變數
+    target_page = None
+
+    # --- 邏輯處理 ---
+    if selected_nav == "Home":
+        target_page = "Home"
+
+    elif selected_nav == "Market Intelligence":
+        st.caption("MARKET MODULES")
+        target_page = option_menu(
+            menu_title=None,
+            options=["Market Dashboard", "Market Risk"],
+            icons=["speedometer2", "activity"],
+            styles={
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
+                "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+                "nav-link-selected": {"background-color": "#4B5563"},
+            }
+        )
+
+    elif selected_nav == "Stock":
+        st.caption("STOCK RESEARCH")
+        target_page = option_menu(
+            menu_title=None,
+            options=["Earnings", "Stock DNA", "Thematic Basket"],
+            icons=["cash-coin", "radar", "basket"],
+            styles={
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
+                "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+                "nav-link-selected": {"background-color": "#4B5563"},
+            }
+        )
+
+    # [新增] Option 路由邏輯
+    elif selected_nav == "Option":
+        target_page = "Option"
+
+    # 獨立項目：直接將導航名稱設為目標頁面
+    elif selected_nav == "Volume Profile":
+        target_page = "Volume Profile"
+
+    elif selected_nav == "My Trade":
+        target_page = "My Trade"
+
+    elif selected_nav == "MT5 EA":
+        target_page = "MT5 EA"
+
+    elif selected_nav == "Legal":
+        target_page = "Legal & Compliance"
+
+    st.markdown("---")
+    st.link_button("✈️ Join Telegram Channel", "https://t.me/algoparistrader", use_container_width=True)
+
+# --- Content Routing ---
+
+# [PAGE] HOME
+if target_page == "Home":
+    col_main, col_profile = st.columns([0.7, 0.3], gap="large")
+
+    with col_main:
+        st.markdown("""
+        <h1 style='color:white;'>這裡是您的量化交易指揮中心</h1>
+        <h3 style='color:#94a3b8;'>這是一款能幫助你戰勝市場的機構級 APP。</h3>
+        <p style='font-size: 1.1em; color: #64748b;'>
+        僅限尊貴谷友實時解鎖所有強大功能。請從左側導航欄選擇工具開始分析。
+        </p>
+        """, unsafe_allow_html=True)
+
+        st.markdown("---")
+
+        st.subheader("📊 Market Overview")
+        m1, m2, m3 = st.columns(3)
+        with m1:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Risk Appetite</h4>
+                <h2 style="color:#10B981 !important;">Risk-On</h2>
+                <span style="color:#10B981; font-weight:bold; font-size:0.9em;">▲ Momentum not very strong</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with m2:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Sector Rotation</h4>
+                <h2 style="color:#3b82f6 !important;">Health care & Insurance & Materials</h2>
+                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Flow Inflow</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with m3:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Volatility (VIX)</h4>
+                <h2 style="color:#94a3b8 !important;">16.6</h2>
+                <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+    with col_profile:
+        img_path = "static/profile.jpg"
+        if not os.path.exists(img_path):
+            img_src = "https://ui-avatars.com/api/?name=Paris+Trader&background=0D8ABC&color=fff&size=150"
+        else:
+            img_src = img_path
+
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        if os.path.exists(img_path):
+            st.image(img_path, width=120)
+        else:
+            st.image(img_src, width=120)
+
+        st.markdown("""
+            <h3 style="margin-top:10px; color:#F3F4F6;">Paris Trader</h3>
+            <p style="color: #9CA3AF; font-size: 0.9em;">Quantitative Analyst | Trader</p>
+            <hr style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="text-align: left; font-size: 0.9em; line-height: 1.6; color: #e2e8f0;">
+                專注於量化因子挖掘與演算法交易。擅長將複雜的金融模型轉化為可執行的交易策略。提供TradingView指標及回測。
+                <br><br>
+                <b>主力策略：</b><br>
+                • Multi-Factor Long/Short<br>
+                • Equity Future HSI/NQ Scapling by Fate Engine<br>
+                • XAU M1 EA Scapling<br>
+            </p>
+            <a href="https://t.me/ParisTrader" target="_blank" style="text-decoration: none;">
+                <button style="background-color:#2563EB; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; width:100%; margin-top:10px; font-weight:bold;">
+                    Contact Me
+                </button>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+
+# [PAGE] Market Dashboard
+elif target_page == "Market Dashboard":
+    st.title("Market Dashboard")
+    path = os.path.join("MarketDashboard", "main_auto", "output")
+    html_content, filename = get_latest_file_content(path)
+
+    if html_content:
+        components.html(html_content, height=2500, scrolling=False)
+    else:
+        st.warning("⚠️ No dashboard files found.")
+        st.error(f"Error: {filename}")
+
+# [PAGE] Market Risk
+elif target_page == "Market Risk":
+    st.title("⚠️ Market Implied Risk")
+    path = "ImpliedParameters"
+    specific_file = os.path.join(path, "implied_params.html")
+
+    if os.path.exists(specific_file):
+        with open(specific_file, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+            # CSS 修復：取消垂直置中
+            fix_style = """
+            <style>
+                body {
+                    display: block !important;
+                    height: auto !important;
+                    min-height: 100vh;
+                    padding-top: 50px;
+                    background-color: #020617 !important;
+                }
+                .card { margin: 0 auto !important; }
+            </style>
+            """
+            html_content = html_content.replace("<head>", "<head>" + fix_style)
+            components.html(html_content, height=1200, scrolling=False)
+    else:
+        html_content, filename = get_latest_file_content(path)
+        if html_content:
+            components.html(html_content, height=1200, scrolling=False)
+        else:
+            st.warning("⚠️ No risk reports found.")
+            st.info("Please ensure `ImpliedParameters/implied_params.html` exists.")
+
+# [PAGE] Earnings
+elif target_page == "Earnings":
+    st.title("📅 Earnings Calendar Analysis")
+    path = "Earnings"
+    html_content, filename = get_latest_file_content(path)
+
+    if html_content:
+        components.html(html_content, height=2500, scrolling=False)
+    else:
+        st.warning("⚠️ No earnings reports found.")
+        st.info("請確認根目錄下有 `Earnings` 資料夾，並且裡面有 .html 檔案。")
+
+# [PAGE] Stock DNA
+elif target_page == "Stock DNA":
+    st.title("🧬 Stock Factor DNA")
+    html_content = load_stock_dna_with_injection()
+    if html_content and "找不到 HTML" not in html_content:
+        components.html(html_content, height=1200, scrolling=True)
+    else:
+        st.error("找不到 FamaFrench/index.html")
+
+# [PAGE] Thematic Basket
+elif target_page == "Thematic Basket":
+    st.title("🧺 Thematic Basket Analysis")
+    path = "ThemeticBasket"
+    html_content, filename = get_latest_file_content(path)
+
+    if html_content:
+        st.caption(f"📅 Strategy Report: {filename}")
+        components.html(html_content, height=6000, scrolling=False)
+    else:
+        st.warning("⚠️ No basket reports found.")
+        st.info(f"Checking path: {os.path.abspath(path)}")
+
+# [PAGE] Option (New!)
+elif target_page == "Option":
+    st.title("🎲 Option Analytics")
+    st.markdown("""
+    <div style='text-align: center; padding: 50px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1); margin-top: 20px;'>
+        <h2 style='color: #94A3B8; margin-bottom: 10px;'>🚧 Module Under Construction</h2>
+        <p style='color: #64748B;'>Advanced Option Chain & Volatility Surface analysis tools are currently in development.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# [PAGE] Volume Profile
+elif target_page == "Volume Profile":
+    st.title("📊 Volume Profile Analysis")
+    html_path = os.path.join("VP", "volume_profile_dashboard.html")
+    html_content = load_html_file(html_path)
+    if html_content and "File not found" not in html_content:
+        components.html(html_content, height=1000, scrolling=True)
+    else:
+        st.warning("⚠️ 尚未部署 Volume Profile 模組")
+
+# [PAGE] My Trade
+elif target_page == "My Trade":
+    if 'trade_app' in locals():
+        trade_app.render_trade_page()
+    else:
+        st.error("Trade module not loaded.")
+
+# [PAGE] MT5 EA
+elif target_page == "MT5 EA":
+    st.title("🤖 MT5 Expert Advisor")
+    path = "MT5EA"
+    html_content, filename = get_latest_file_content(path)
+
+    if html_content:
+        components.html(html_content, height=2500, scrolling=False)
+    else:
+        st.warning("⚠️ No marketing content found.")
+        st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
+
+# [PAGE] LEGAL
+elif target_page == "Legal & Compliance":
+    st.title("📜 Legal & Compliance")
+
+    tab1, tab2, tab3 = st.tabs(["Disclaimer", "Privacy Policy", "Terms of Use"])
+
+    with tab1:
+        html = load_html_file(os.path.join("Legal", "disclaimer.html"))
+        st.html(html)
+    with tab2:
+        html = load_html_file(os.path.join("Legal", "privacy.html"))
+        st.html(html)
+    with tab3:
+        html = load_html_file(os.path.join("Legal", "terms.html"))
+        st.html(html)
+
+# ==========================================
+# 5. Global Footer
+# ==========================================
+st.markdown("""
+<div class="custom-footer">
+    <p>
+        © 2026 Paris Trader. All rights reserved.<br>
+        <span style="font-size: 0.75rem; color: #6B7280;">
+        Not financial advice · For informational and educational purposes only · I am not a licensed financial advisor in Hong Kong or any jurisdiction · Investments carry risk of total loss · Paris Trader accepts no liability.
+        </span>
+    </p>
+    <p>
+        <a href="https://t.me/algoparistrader" target="_blank">@ParisTrader on TG</a>
+    </p>
+</div>
+""", unsafe_allow_html=True)

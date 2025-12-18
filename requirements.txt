@@ -1,0 +1,12 @@
+streamlit
+streamlit-option-menu
+pandas
+numpy
+yfinance 
+plotly
+requests
+os
+urllib3
+contextlib
+json
+requests
