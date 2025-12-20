@@ -43,9 +43,9 @@ st.markdown("""
     header {
         background: transparent !important;
     }
-    #MainMenu {visibility: visible;}
+    MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-
+    header {visibility: hidden;}
     /* --- 背景層 --- */
     .fixed-bg {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
