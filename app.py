@@ -39,13 +39,34 @@ st.markdown("""
         color: #e2e8f0;
     }
 
-    /* Header 透明化 */
+/* --- [修正] 隱藏 Streamlit 官方元素 --- */
+    
+    /* 1. 隱藏上方 Header (三條線選單旁的色條) */
     header {
         background: transparent !important;
+        visibility: hidden !important;
     }
-    MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    
+    /* 2. 隱藏右下角 "Hosted with Streamlit" 及底部 Footer */
+    footer {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    
+    /* 3. 隱藏右上角漢堡選單 (三條線) - 讓它看起來像原生 App */
+    /* 如果您想保留選單給自己用，這行可以不加，但為了專業感建議隱藏 */
+    #MainMenu {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    
+    /* 4. 針對 Streamlit Cloud 的 Viewer Badge (有時候 footer 抓不到) */
+    .stApp > header {
+        display: none !important;
+    }
+    div[data-testid="stDecoration"] {
+        display: none !important;
+    }
     /* --- 背景層 --- */
     .fixed-bg {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
