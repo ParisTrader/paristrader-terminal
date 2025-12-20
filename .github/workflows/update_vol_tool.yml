@@ -1,0 +1,46 @@
+name: Daily Volatility Tool Update
+
+# 1. Trigger: Run every day at 00:00 UTC (8:00 AM Hong Kong Time)
+#    and allow manual button click for testing.
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+# Grant permission to write to the repository
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # A. Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # B. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # C. Install libraries
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas yfinance
+
+      # D. Run your script
+      - name: Run Vol Target Script
+        run: python VolTarget/new_vol_target.py
+
+      # E. Commit and Push the new HTML file
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "ParisTrader Bot"
+          git config --global user.email "bot@paristrader.com"
+          git add VolTarget/vol_tool.html
+          git commit -m "Auto-update Volatility Tool data" || echo "No changes to commit"
+          git push
