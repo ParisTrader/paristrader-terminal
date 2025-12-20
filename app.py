@@ -4,6 +4,7 @@ import streamlit.components.v1 as components
 import os
 import sys
 import glob
+import time
 
 # 加入 Trade 資料夾路徑
 sys.path.append('Trade')
@@ -11,6 +12,77 @@ try:
     from Trade import trade_app
 except ImportError:
     pass
+
+
+# ==========================================
+# 🔐 安全登入系統 (Security Gate)
+# ==========================================
+def login_system():
+    """
+    簡單的登入驗證：檢查 Email 是否在白名單內 + 驗證通用密碼
+    """
+    # 如果已經登入成功，直接返回 True
+    if "authentication_status" in st.session_state and st.session_state["authentication_status"]:
+        return True
+
+    # 登入介面
+    st.markdown("""
+    <style>
+        .stApp { background: #0B0E14; }
+        .login-box { 
+            background: rgba(30, 41, 59, 0.5); 
+            padding: 40px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            max-width: 500px;
+            margin: 100px auto;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown(
+            "<div style='text-align: center; margin-top: 50px;'><h2>🔒 ParisTrader Pro</h2><p style='color:#94A3B8'>Member Access Only</p></div>",
+            unsafe_allow_html=True)
+
+        with st.form("login_form"):
+            email_input = st.text_input("Email Address")
+            password_input = st.text_input("Access Password", type="password")
+            submit_button = st.form_submit_button("Login", type="primary", use_container_width=True)
+
+        if submit_button:
+            # 1. 從 Secrets 獲取白名單和密碼
+            try:
+                valid_emails = st.secrets["allowed_users"]["emails"]
+                correct_password = st.secrets["access_password"]
+            except FileNotFoundError:
+                st.error("⚠️ 系統錯誤：未設定 Secrets (請聯繫管理員)")
+                return False
+
+            # 2. 驗證邏輯
+            if email_input in valid_emails and password_input == correct_password:
+                st.session_state["authentication_status"] = True
+                st.session_state["user_email"] = email_input
+                st.success("Login Successful! Redirecting...")
+                time.sleep(1)
+                st.rerun()  # 重新整理進入主頁
+            else:
+                st.session_state["authentication_status"] = False
+                st.error("❌ Access Denied: Email not in whitelist or wrong password.")
+
+    return False
+
+
+# --- 主程式邏輯 ---
+# 如果沒有通過登入驗證，就停止執行後面的程式碼
+if not login_system():
+    st.stop()  # ⛔ 這裡會擋住所有人，除非登入成功
+
+# ==========================================
+# 👇 您的原始程式碼從這裡開始 (原本的 Sidebar, Content 等)
+# ==========================================
 
 # ==========================================
 # 1. 頁面基礎設置
