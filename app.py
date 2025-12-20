@@ -197,7 +197,7 @@ with st.sidebar:
             "Home",
             "Market Intelligence",  # Group
             "Stock",  # Group
-            "Option",  # [新增] Option
+            "Option",  # Option
             "Volume Profile",  # Direct
             "My Trade",  # Direct
             "MT5 EA",  # Direct
@@ -207,7 +207,7 @@ with st.sidebar:
             "house",
             "globe",
             "search",
-            "layers",  # [新增] Option icon
+            "layers",  # Option icon
             "bar-chart-steps",
             "briefcase",
             "robot",
@@ -251,8 +251,8 @@ with st.sidebar:
         st.caption("STOCK RESEARCH")
         target_page = option_menu(
             menu_title=None,
-            options=["Earnings", "Stock DNA", "Thematic Basket"],
-            icons=["cash-coin", "radar", "basket"],
+            options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target"], # Added Volatility Target
+            icons=["cash-coin", "radar", "basket", "bullseye"], # Added icon for VolTarget
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -261,7 +261,7 @@ with st.sidebar:
             }
         )
 
-    # [新增] Option 路由邏輯
+    # Option 路由邏輯
     elif selected_nav == "Option":
         target_page = "Option"
 
@@ -436,7 +436,18 @@ elif target_page == "Thematic Basket":
         st.warning("⚠️ No basket reports found.")
         st.info(f"Checking path: {os.path.abspath(path)}")
 
-# [PAGE] Option (New!)
+# [PAGE] Volatility Target (New Added)
+elif target_page == "Volatility Target":
+    st.title("📉 Volatility Target Strategy")
+    html_path = os.path.join("VolTarget", "vol_tool.html")
+    html_content = load_html_file(html_path)
+    if html_content and "File not found" not in html_content:
+        components.html(html_content, height=1500, scrolling=True)
+    else:
+        st.warning("⚠️ Volatility Tool not found.")
+        st.info(f"Please ensure {html_path} exists.")
+
+# [PAGE] Option
 elif target_page == "Option":
     st.title("🎲 Option Analytics")
     st.markdown("""
