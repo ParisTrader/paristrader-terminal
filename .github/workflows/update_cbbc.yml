@@ -2,11 +2,9 @@ name: Update HSI CBBC Ladder
 
 on:
   schedule:
-    # 交易日定時更新 (UTC 時間)
-    # 02:00 UTC = 10:00 HKT (開盤後)
-    # 05:00 UTC = 13:00 HKT (午休)
-    # 09:00 UTC = 17:00 HKT (收盤後)
-    - cron: '0 2,5,9 * * 1-5'
+    # 香港時間 (HKT) 週一至週五 早上 07:00
+    # = UTC 時間 週日至週四 晚上 23:00 (前一天)
+    - cron: '0 23 * * 0-4'
   workflow_dispatch:
 
 jobs:
@@ -33,7 +31,7 @@ jobs:
     # 4. 執行 CBBC 腳本
     - name: Run CBBC Script
       run: |
-        # 腳本現在會直接在 MarketDashboard 資料夾下生成 HSI_CBBC_Ladder.html
+        # 腳本會生成 MarketDashboard/HSI_CBBC_Ladder.html
         python MarketDashboard/CBBC.py
 
     # 5. 推送到 Public Repo
@@ -50,7 +48,7 @@ jobs:
         # 建立資料夾 (如果不存在)
         mkdir -p public_repo/MarketDashboard
         
-        # 複製檔案 (來源是 MarketDashboard/HSI_CBBC_Ladder.html)
+        # 複製檔案
         cp MarketDashboard/HSI_CBBC_Ladder.html public_repo/MarketDashboard/
         
         # 推送
