@@ -519,7 +519,7 @@ elif target_page == "Stock DNA":
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
-    path = "ThemeticBasket"
+    path = "ThematicBasket"
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
@@ -610,4 +610,5 @@ st.markdown("""
         <a href="https://t.me/algoparistrader" target="_blank">@ParisTrader on TG</a>
     </p>
 </div>
+
 """, unsafe_allow_html=True)
