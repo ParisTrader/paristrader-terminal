@@ -19,6 +19,7 @@
         gap: 20px;
     }
 
+    /* --- General Card Style --- */
     .resource-card {
         background: rgba(30, 41, 59, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -35,8 +36,21 @@
     .resource-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        border-color: rgba(96, 165, 250, 0.5);
+        border-color: rgba(96, 165, 250, 0.5); /* Blue hover for tools */
         background: rgba(30, 41, 59, 0.9);
+    }
+
+    /* --- Broker Card Style (Gold Highlight) --- */
+    .broker-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(234, 179, 8, 0.3); /* Subtle Gold Border */
+    }
+
+    .broker-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(234, 179, 8, 0.15); /* Gold Shadow */
+        border-color: rgba(234, 179, 8, 0.8); /* Strong Gold on Hover */
+        background: rgba(40, 40, 50, 0.9);
     }
 
     .card-header {
@@ -69,9 +83,41 @@
         font-weight: bold;
         font-size: 1.2rem;
     }
+    
+    .broker-arrow {
+        align-self: flex-end;
+        color: #fbbf24; /* Gold Arrow */
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    /* --- Section Header --- */
+    .section-header {
+        margin: 40px 0 20px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .badge-promo {
+        background: rgba(234, 179, 8, 0.2);
+        color: #fbbf24;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(234, 179, 8, 0.3);
+    }
 </style>
 </head>
 <body>
+
+    <div class="section-header">
+        <span>🛠️ Daily Trading Tools</span>
+    </div>
 
     <div class="grid-container">
         
@@ -128,6 +174,38 @@
                 <p>Visualizing market performance across sectors and industries.</p>
             </div>
             <span class="arrow">&nearr;</span>
+        </a>
+
+    </div>
+
+
+    <div class="section-header">
+        <span>💎 嚴選合作券商 (Partner Brokers)</span>
+        <span class="badge-promo">全港獨家獎勵</span>
+    </div>
+
+    <div class="grid-container">
+        
+        <a href="https://vigco.co/la-com/LyingFlat" target="_blank" class="resource-card broker-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">🚀</span>
+                    <h3>Vantage Markets</h3>
+                </div>
+                <p>全球領先 CFD 券商，透過此連結開戶享額外獨家獎勵。</p>
+            </div>
+            <span class="broker-arrow">Open Account &nearr;</span>
+        </a>
+
+        <a href="https://icmarkets.com/?camp=77018" target="_blank" class="resource-card broker-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">🌍</span>
+                    <h3>IC Markets</h3>
+                </div>
+                <p>極低點差與頂級流動性，Paris Trader 專屬開戶優惠。</p>
+            </div>
+            <span class="broker-arrow">Open Account &nearr;</span>
         </a>
 
     </div>
