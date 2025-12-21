@@ -574,7 +574,7 @@ elif target_page == "MT5 EA":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        components.html(html_content, height=2500, scrolling=False)
+        components.html(html_content, height=3000, scrolling=False)
     else:
         st.warning("⚠️ No marketing content found.")
         st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
@@ -612,3 +612,4 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
+
