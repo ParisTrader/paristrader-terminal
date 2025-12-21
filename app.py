@@ -646,7 +646,7 @@ elif target_page == "Intraday Volatility":
 
     # 根據您上一輪的描述，檔案名稱為 "Intraday_Volatility.html"
     # 這裡假設該檔案位於根目錄，如果是在 MarketDashboard 資料夾下，請改為 os.path.join("MarketDashboard", "Intraday_Volatility.html")
-    html_path = "Intraday_Volatility.html"
+    html_path = os.path.join("MarketDashboard", "Intraday_Volatility.html")
 
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
@@ -655,7 +655,7 @@ elif target_page == "Intraday Volatility":
     else:
         st.warning("⚠️ 找不到 Intraday Volatility 報告")
         st.info(f"請確認檔案 `{html_path}` 是否存在。")
-        
+
 # [PAGE] My Trade
 elif target_page == "My Trade":
     if 'trade_app' in locals():
