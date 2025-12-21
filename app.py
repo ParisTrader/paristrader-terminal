@@ -117,26 +117,28 @@ st.markdown("""
 
     /* === 電腦版 (螢幕寬度 > 768px) === */
     @media (min-width: 768.1px) {
-        /* 1. 不要隱藏整個 Header，改為背景透明 (這樣才能保留左上角的箭頭按鈕) */
+        /* 1. 隱藏 Header (因為我們不允許關閉側邊欄，所以不需要 Header 上的開啟按鈕) */
         header {
-            visibility: visible !important;
-            background: transparent !important;
+            visibility: hidden !important;
         }
 
-        /* 2. 僅隱藏右上角的功能選單 (Deploy, 3個點點, Settings) */
+        /* 2. [關鍵] 隱藏側邊欄內部的「收折按鈕 (X 或 <)」 */
+        [data-testid="stSidebarCollapseButton"] {
+            display: none !important;
+        }
+        
+        /* 3. 額外保險：隱藏側邊欄頂部的所有按鈕 (防止 Streamlit 更新改 ID) */
+        section[data-testid="stSidebar"] button {
+            display: none !important;
+        }
+
+        /* 4. 隱藏右上角選單 (Deploy, Settings 等) */
         [data-testid="stToolbar"], [data-testid="stHeaderActionElements"] {
             visibility: hidden !important;
             display: none !important;
         }
-        
-        /* 3. 明確指定 "側邊欄收折控制鈕 (>)" 必須顯示，並設為白色以免看不見 */
-        [data-testid="stSidebarCollapsedControl"] {
-            visibility: visible !important;
-            display: block !important;
-            color: #ffffff !important;
-        }
 
-        /* 4. 隱藏原生的漢堡選單 (舊版相容) */
+        /* 5. 隱藏原生的漢堡選單 */
         #MainMenu {
             visibility: hidden !important;
             display: none !important;
