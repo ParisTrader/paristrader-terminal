@@ -1,327 +1,570 @@
+
 <!DOCTYPE html>
-<html lang="zh-Hant" class="dark">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParisTrader 交易日記 | Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<meta charset="utf-8">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap');
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Roboto Mono', 'monospace'],
-                    },
-                    colors: {
-                        'profit-green': '#10B981',
-                        'loss-red': '#EF4444',
-                        'glass-border': 'rgba(255, 255, 255, 0.08)',
-                        'glass-bg': 'rgba(15, 17, 26, 0.8)', 
-                    },
-                    animation: {
-                        'blob': 'blob 10s infinite',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    body {
+        font-family: 'Inter', sans-serif;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 20px;
+        background-color: transparent;
+    }
 
-    <style>
-        /* --- 核心背景樣式 --- */
-        body {
-            background-color: #020617; /* 深色底 */
-            min-height: 100vh;
-            color: #e2e8f0;
-            position: relative;
-            overflow-x: hidden;
-        }
+    /* --- Glass Panel --- */
+    .glass-panel {
+        background: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease;
+    }
+    .glass-panel:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
 
-        /* 1. 動態光球層 */
-        .ambient-light {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-            z-index: -2;
-            pointer-events: none;
-        }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: blob 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .blob-1 { top: 10%; left: 10%; width: 500px; height: 500px; background: #4f46e5; animation-delay: 0s; } /* 藍紫 */
-        .blob-2 { top: 20%; right: 10%; width: 400px; height: 400px; background: #0ea5e9; animation-delay: 2s; } /* 亮藍 */
-        .blob-3 { bottom: 10%; left: 30%; width: 600px; height: 600px; background: #10b981; animation-delay: 4s; opacity: 0.3; } /* 綠 */
+    /* --- Header & Controls --- */
+    .header-row {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .currency-toggle {
+        background: rgba(0,0,0,0.3); border-radius: 8px; padding: 4px; display: flex; gap: 5px;
+    }
+    .curr-btn {
+        background: transparent; border: none; color: #94a3b8; 
+        padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .curr-btn.active {
+        background: #3b82f6; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
-        /* 2. 網格紋理層 */
-        .bg-grid {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background-size: 50px 50px;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-            pointer-events: none;
-        }
+    /* --- Grids --- */
+    .dashboard-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;
+    }
+    .trade-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px;
+    }
+    .data-row {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+        margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
-        /* --- UI 元件樣式 --- */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        }
+    /* --- Typography --- */
+    .font-mono { font-family: 'Roboto Mono', monospace; }
+    .text-gray { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .text-val { color: #f8fafc; font-weight: 600; font-size: 0.95rem; }
 
-        .live-dot {
-            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px;
-        }
-        .live-green { background-color: #10B981; animation: pulse-green 2s infinite; }
-        .live-yellow { background-color: #EAB308; animation: pulse-yellow 2s infinite; }
+    .text-profit { color: #34d399; font-weight: bold; }
+    .text-loss { color: #f87171; font-weight: bold; }
 
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
-        }
+    .border-profit { border-left: 4px solid #10B981; }
+    .border-loss { border-left: 4px solid #EF4444; }
 
-        /* 表格優化 */
-        .custom-table th { 
-            font-weight: 600; text-transform: uppercase; font-size: 0.75rem; 
-            letter-spacing: 0.05em; color: #9CA3AF; padding: 1.25rem 1rem; 
-            border-bottom: 1px solid var(--glass-border); 
-        }
-        .custom-table td { 
-            padding: 1.25rem 1rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.03); 
-            font-size: 0.9rem; 
-            vertical-align: top;
-        }
-        .custom-table tr:hover td { background: rgba(255,255,255,0.03); }
-    </style>
+    /* --- Badges --- */
+    .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 8px; text-transform: uppercase; }
+    .badge-long { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-short { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-status { background: rgba(255, 255, 255, 0.1); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+    /* --- Progress --- */
+    .progress-track { background-color: rgba(255,255,255,0.1); border-radius: 10px; height: 6px; width: 100%; margin-top: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 10px; }
+
+    /* --- Tabs --- */
+    .tab-container { margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .tab-btn { background: none; border: none; color: #94a3b8; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; }
+    .tab-btn:hover { color: white; }
+    .tab-btn.active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+    .tab-content { display: none; animation: fadeIn 0.5s; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .note-box { margin-top: 15px; background: rgba(0, 0, 0, 0.3); padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; color: #cbd5e1; border-left: 2px solid #3b82f6; }
+</style>
 </head>
 <body>
 
-    <div class="ambient-light">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+    <div class="header-row">
+        <h2 style="margin:0;">💼 Trade Journal & Portfolio</h2>
+        <div class="currency-toggle">
+            <button id="btn-hkd" class="curr-btn active" onclick="setCurrency('HKD')">HKD</button>
+            <button id="btn-usd" class="curr-btn" onclick="setCurrency('USD')">USD</button>
+        </div>
     </div>
-    <div class="bg-grid"></div>
 
-    <header class="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between max-w-7xl mx-auto border-b border-glass-border pb-6 pt-8 px-4 md:px-6 relative z-10">
-        <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                ParisTrader 交易日記 <span class="text-gray-500 font-normal text-base ml-2">Personal Portfolio for learning</span>
-            </h1>
-            <p class="text-gray-400 mt-2 text-sm font-mono">DATE: 2025-12-12 // MARKET STATUS: OPEN</p>
+    <div class="dashboard-grid">
+        <div class="glass-panel" style="margin-bottom:0;">
+            <div class="text-gray dynamic-label" data-label="Floating Swing PnL">Floating Swing PnL (HKD)</div>
+            <div style="margin-top: 5px; display:flex; align-items:baseline;">
+                <span class="font-mono dynamic-val signed" 
+                      style="font-size: 2rem; font-weight:700; color:#10B981;"
+                      data-hkd="110,339" 
+                      data-usd="14,146">
+                    +HK$110,339
+                </span>
+            </div>
+            <div style="font-size: 0.8rem; color:#64748b;">Open Swing Positions</div>
         </div>
-        <div class="mt-4 md:mt-0">
-             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono bg-white/5 text-gray-300 border border-white/10 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-profit-green mr-2 animate-pulse"></span> RISK LEVEL: MODERATE
-            </span>
+
+        <div class="glass-panel" style="margin-bottom:0;">
+            <div class="text-gray dynamic-label" data-label="Total Exposure">Total Exposure (HKD)</div>
+            <div style="margin-top: 5px; display:flex; align-items:baseline;">
+                <span class="font-mono" style="font-size: 2rem; font-weight:700; color:white;">45.7%</span>
+                <span style="margin-left:10px; color:#94a3b8; font-size:0.9rem;">Invested</span>
+            </div>
+            <div style="font-size: 0.8rem; color:#64748b;">
+                <span class="dynamic-val" data-hkd="456,808" data-usd="58,844">HK$456,808</span> / 
+                <span class="dynamic-val" data-hkd="1,000,000" data-usd="128,205">HK$1,000,000</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" style="width: 45.680800000000005%; background-color: #3b82f6;"></div>
+            </div>
         </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto space-y-12 px-4 md:px-6 relative z-10">
+        <div class="glass-panel" style="margin-bottom:0;">
+            <div class="text-gray dynamic-label" data-label="Cash Reserves">Cash Reserves (HKD)</div>
+            <div style="margin-top: 5px; display:flex; align-items:baseline;">
+                <span class="font-mono" style="font-size: 2rem; font-weight:700; color:#10B981;">54.3%</span>
+                <span style="margin-left:10px; color:#94a3b8; font-size:0.9rem;">Available</span>
+            </div>
+            <div style="font-size: 0.8rem; color:#64748b;">
+                <span class="dynamic-val" data-hkd="543,192" data-usd="69,361">HK$543,192</span> Ready
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" style="width: 54.319199999999995%; background-color: #10B981;"></div>
+            </div>
+        </div>
 
-        <section id="hero-section" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
-                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Exposure (總持倉)</h2>
-                <div class="flex items-baseline mt-4">
-                    <span class="text-3xl lg:text-4xl font-bold font-mono tracking-tight">30%</span>
-                    <span class="text-sm font-mono text-gray-400 ml-2">Invested</span>
+        <div class="glass-panel" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between;">
+             <div>
+                <div class="text-gray">Status</div>
+                <div style="font-size:1.5rem; font-weight:700; color:#e2e8f0; margin-top:5px;">ACTIVE</div>
+             </div>
+             <div style="font-size:2rem;">⚡</div>
+        </div>
+    </div>
+    
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="openTab('Swing-Trades')">🌊 Swing Trades</button>
+        <button class="tab-btn" onclick="openTab('Day-Trades')">⚡ Day Trades</button>
+    </div>
+    <div id="Swing-Trades" class="tab-content active"><div class="trade-grid">
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        R
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            RKLB
+                            <span class="badge badge-long">LONG</span>
+                            <span class="badge badge-status">OPEN</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/12/9</div>
+                    </div>
                 </div>
-                <div class="mt-4 flex items-center">
-                    <span class="text-xs text-gray-500">Leaving 70% Cash Reserves</span>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="109,145" 
+                         data-usd="13,993">
+                         +HK$109,145
+                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+37.53%</div>
                 </div>
             </div>
 
-            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
-                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Cash Level (現金)</h2>
-                <div class="flex items-baseline mt-4">
-                    <span class="text-3xl lg:text-4xl font-bold font-mono tracking-tight text-blue-400">70%</span>
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$53.40</div>
                 </div>
-                <div class="mt-6">
-                    <div class="h-2 bg-gray-700/30 rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-500 rounded-full" style="width: 70%;"></div>
-                    </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">700</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="290,816" data-usd="37,380">HK$290,816</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
                 </div>
             </div>
 
-            <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between">
-                <h2 class="text-gray-400 text-xs font-medium uppercase tracking-wider">Recent Performance</h2>
-                <div class="flex items-center mt-2 justify-between">
-                    <div class="flex flex-col">
-                        <span class="text-2xl font-bold font-mono text-profit-green">PROFITABLE</span>
-                        <span class="text-xs text-gray-500">Last Trade: ^HSI Long</span>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-profit-green/20 flex items-center justify-center text-profit-green">
-                        <i class="ri-arrow-right-up-line text-xl"></i>
-                    </div>
-                </div>
-                 <p class="text-xs text-gray-500 mt-2">Active Strategy: Sector Sympathy & Macro</p>
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                SpaceX sympathy play. Options flow bullish.
             </div>
-        </section>
-
-        <section>
-            <h3 class="text-lg font-bold mb-4 flex items-center text-white">
-                <i class="ri-pulse-line mr-2 text-blue-400"></i>Active Positions (3)
-            </h3>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-purple-500">
-                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                             <div class="w-10 h-10 rounded bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold">R</div>
-                             <div>
-                                <h4 class="font-bold">RKLB</h4>
-                                <div class="text-xs text-gray-400">Rocket Lab</div>
-                             </div>
-                        </div>
-                        <div class="text-right">
-                             <div class="text-sm font-bold font-mono text-profit-green">OPEN</div>
-                             <div class="text-xs text-gray-400">Dec 09</div>
-                        </div>
+        </div>
+        
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        G
                     </div>
-                    <div class="p-5">
-                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
-                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$53.40</div>
-                            <div><div class="text-gray-500 text-xs">Size</div>10%</div>
-                            <div><div class="text-gray-500 text-xs">TP 1 / 2</div>$66.8 / $80</div>
-                            <div><div class="text-gray-500 text-xs text-profit-green">SL (Profit)</div>$56.86</div>
-                         </div>
-                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
-                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
-                            <p class="text-sm text-gray-300 leading-relaxed">
-                                SpaceX 2026 IPO 同情效應 (Sympathy Play)。期權 Call 異動顯著，押注龍頭效應。
-                            </p>
-                         </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            GOOGL
+                            <span class="badge badge-long">LONG</span>
+                            <span class="badge badge-status">OPEN</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/11/19</div>
                     </div>
                 </div>
-
-                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-gray-300">
-                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                             <div class="w-10 h-10 rounded bg-gray-500/20 text-gray-300 flex items-center justify-center font-bold">Ag</div>
-                             <div>
-                                <h4 class="font-bold">SILVER</h4>
-                                <div class="text-xs text-gray-400">XAG/USD</div>
-                             </div>
-                        </div>
-                        <div class="text-right">
-                             <div class="text-sm font-bold font-mono text-profit-green">TP1 HIT</div>
-                             <div class="text-xs text-profit-green flex items-center justify-end"><span class="live-dot live-green"></span>Dec 09</div>
-                        </div>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="11,431" 
+                         data-usd="1,466">
+                         +HK$11,431
                     </div>
-                    <div class="p-5">
-                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
-                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$58.77</div>
-                            <div><div class="text-gray-500 text-xs">Size</div>5%</div>
-                            <div><div class="text-gray-500 text-xs">TP 1 (Done)</div>$63.93</div>
-                            <div><div class="text-gray-500 text-xs text-blue-400">SL</div>Free (BE)</div>
-                         </div>
-                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
-                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
-                            <p class="text-sm text-gray-300 leading-relaxed">
-                                日圖突破三頂結構。強度優於黃金，受美國資產限制政策驅動。
-                            </p>
-                         </div>
-                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+3.29%</div>
                 </div>
-
-                <div class="glass-panel rounded-3xl overflow-hidden hover:bg-white/5 transition-colors border-l-4 border-l-blue-500">
-                    <div class="p-5 border-b border-glass-border flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                             <div class="w-10 h-10 rounded bg-blue-500/20 text-blue-300 flex items-center justify-center font-bold">G</div>
-                             <div>
-                                <h4 class="font-bold">GOOG</h4>
-                                <div class="text-xs text-gray-400">Alphabet Inc.</div>
-                             </div>
-                        </div>
-                        <div class="text-right">
-                             <div class="text-sm font-bold font-mono text-profit-green">TP1 HIT</div>
-                             <div class="text-xs text-gray-400">Nov 19</div>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                         <div class="grid grid-cols-2 gap-y-3 gap-x-2 font-mono text-sm text-gray-300 mb-4">
-                            <div><div class="text-gray-500 text-xs">Avg Cost</div>$298.00</div>
-                            <div><div class="text-gray-500 text-xs">Size</div>15%</div>
-                            <div><div class="text-gray-500 text-xs">TP 1 (Done)</div>$320.00</div>
-                            <div><div class="text-gray-500 text-xs text-gray-400">Target 2</div>$380.00</div>
-                         </div>
-                         <div class="bg-black/20 p-3 rounded-xl border border-white/5">
-                            <span class="text-xs text-blue-400 font-bold mb-1 block">LOGIC</span>
-                            <p class="text-sm text-gray-300 leading-relaxed">
-                                Gemini 3 AI 優勢強大，吸納行業利潤，確立新龍頭地位。
-                            </p>
-                         </div>
-                    </div>
-                </div>
-
             </div>
-        </section>
 
-        <section>
-            <h3 class="text-lg font-bold mb-4 flex items-center text-white">
-                <i class="ri-table-line mr-2 text-purple-400"></i>Closed Positions (Dec 2025)
-            </h3>
-            
-            <div class="glass-panel rounded-3xl overflow-hidden overflow-x-auto">
-                <table class="w-full text-left border-collapse custom-table whitespace-nowrap md:whitespace-normal">
-                    <thead class="bg-white/5">
-                        <tr>
-                            <th width="15%">Date</th>
-                            <th width="10%">Ticker</th>
-                            <th width="10%">Side</th>
-                            <th width="15%" class="text-right">Realized PnL</th>
-                            <th width="50%">Reason / Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody class="font-mono text-sm">
-                        <tr>
-                            <td class="text-gray-400">2025-12-11</td>
-                            <td class="font-bold text-white">^HSI</td>
-                            <td><span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">LONG</span></td>
-                            <td class="text-right text-profit-green font-bold">+211 pts</td>
-                            <td class="font-sans text-gray-300">
-                                <span class="text-xs border border-gray-600 px-1 rounded mr-1">5% Size</span>
-                                Overnight 降息利好，短線操作。Entry 25689 -> Exit 25900。
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$298.00</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">150</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="347,766" data-usd="44,700">HK$347,766</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
             </div>
-        </section>
 
-    </main>
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                Gemini 3 AI dominance. Fundamental value gap.
+            </div>
+        </div>
+        
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        S
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            SI=F
+                            <span class="badge badge-long">LONG</span>
+                            <span class="badge badge-status">OPEN</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/12/5</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="10,947" 
+                         data-usd="1,404">
+                         +HK$10,947
+                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+5.27%</div>
+                </div>
+            </div>
 
-    <footer class="max-w-7xl mx-auto mt-20 py-8 text-center border-t border-glass-border">
-        <p class="text-gray-500 text-sm font-mono">© 2025 Paris Trader Portfolio. All rights reserved.</p>
-    </footer>
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$53.36</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">100</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="207,570" data-usd="26,680">HK$207,570</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
+            </div>
 
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                Breakout at resistance with new US policy.
+            </div>
+        </div>
+        
+        <div class="glass-panel border-loss">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        N
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            NQ=F
+                            <span class="badge badge-short">SHORT</span>
+                            <span class="badge badge-status">OPEN</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/12/17</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="text-loss font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="-37,284" 
+                         data-usd="-4,780">
+                         +HK$-37,284
+                    </div>
+                    <div class="text-loss font-mono" style="font-size:0.8rem; opacity:0.8;">+9.58%</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$25,358.00</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">1</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="-389,345" data-usd="-49,916">HK$-389,345</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                day chart tp break to tp2.(March future)
+            </div>
+        </div>
+        
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        U
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            USDJPY
+                            <span class="badge badge-long">LONG</span>
+                            <span class="badge badge-status">OPEN</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/12/18</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="16,099" 
+                         data-usd="2,064">
+                         +HK$16,099
+                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+0.00%</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$155.71</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">1</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="0" data-usd="0">HK$0</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                Betting on Friday event on raising interest rate.dovish hike
+            </div>
+        </div>
+        </div></div><div id="Day-Trades" class="tab-content"><div class="trade-grid">
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        N
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            NVDA
+                            <span class="badge badge-short">SHORT</span>
+                            <span class="badge badge-status">CLOSED</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/11/26</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="6,599" 
+                         data-usd="846">
+                         +HK$6,599
+                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+1.57%</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$179.28</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">300</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="419,515" data-usd="53,784">HK$419,515</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                day chart engufling tp in fate
+            </div>
+        </div>
+        
+        <div class="glass-panel border-profit">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="display:flex; align-items:center;">
+                    <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; margin-right:15px; color:#fff;">
+                        T
+                    </div>
+                    <div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff;">
+                            TSLA
+                            <span class="badge badge-long">LONG</span>
+                            <span class="badge badge-status">CLOSED</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">2025/12/12</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="text-profit font-mono dynamic-val signed" 
+                         style="font-size:1.3rem;"
+                         data-hkd="12,870" 
+                         data-usd="1,650">
+                         +HK$12,870
+                    </div>
+                    <div class="text-profit font-mono" style="font-size:0.8rem; opacity:0.8;">+2.45%</div>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <div>
+                    <div class="text-gray">Price</div>
+                    <div class="text-val">$449.00</div>
+                </div>
+                <div>
+                    <div class="text-gray">Qty</div>
+                    <div class="text-val">150</div>
+                </div>
+                <div>
+                    <div class="text-gray dynamic-label" data-label="Value">Value (HKD)</div>
+                    <div class="text-val dynamic-val" data-hkd="525,330" data-usd="67,350">HK$525,330</div>
+                </div>
+                <div>
+                    <div class="text-gray">Action</div>
+                    <div style="color:#60a5fa; cursor:pointer; font-size:0.8rem;">Edit &rarr;</div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <span style="color:#60a5fa; font-weight:bold; font-size:0.75rem; text-transform:uppercase; margin-right:5px;">Alpha:</span>
+                day chart engufling tp in fate
+            </div>
+        </div>
+        </div></div>
+<script>
+    // Tab Switching
+    function openTab(tabName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("tab-content");
+        for (i = 0; i < x.length; i++) { x[i].style.display = "none"; x[i].classList.remove("active"); }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < x.length; i++) { tablinks[i].classList.remove("active"); }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+
+        var buttons = document.getElementsByClassName('tab-btn');
+        for (var i = 0; i < buttons.length; i++) {
+            if(buttons[i].textContent.includes(tabName.split('-')[0])) { buttons[i].classList.add("active"); }
+        }
+    }
+
+    // Currency Switching
+    function setCurrency(curr) {
+        // 1. Update Buttons
+        document.getElementById('btn-hkd').classList.toggle('active', curr === 'HKD');
+        document.getElementById('btn-usd').classList.toggle('active', curr === 'USD');
+
+        // 2. Update All Dynamic Values
+        const elements = document.querySelectorAll('.dynamic-val');
+        elements.forEach(el => {
+            const val = curr === 'HKD' ? el.getAttribute('data-hkd') : el.getAttribute('data-usd');
+            const prefix = curr === 'HKD' ? 'HK$' : '$';
+
+            // Handle Signs (+/-) if they exist in the logic
+            let sign = '';
+            if (el.classList.contains('signed')) {
+                const numVal = parseFloat(val.replace(/,/g, ''));
+                if (numVal > 0) sign = '+';
+            }
+
+            el.textContent = sign + prefix + val;
+        });
+
+        // 3. Update Labels (optional, e.g., "Total Exposure (HKD)" -> "Total Exposure (USD)")
+        const labels = document.querySelectorAll('.dynamic-label');
+        labels.forEach(el => {
+            el.textContent = el.getAttribute('data-label') + ' (' + curr + ')';
+        });
+    }
+
+    // Initialize
+    openTab('Swing-Trades');
+    setCurrency('HKD'); // Default
+</script>
 </body>
 </html>
