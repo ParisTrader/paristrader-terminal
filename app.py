@@ -363,10 +363,10 @@ with st.sidebar:
         st.caption("MARKET MODULES")
         target_page = option_menu(
             menu_title=None,
-            # 👇 Added "Industry Sector Heatmap" as a separate item
+            # 👇 Added "SPX vs VIX Scatter"
             options=["Market Dashboard", "Market Risk", "Market Breadth", "Industry Sector Heatmap"],
-            # 👇 Added "grid-3x3" icon for the heatmap
-            icons=["speedometer2", "activity", "bar-chart-line", "grid-3x3"],
+            # 👇 Added "crosshair" icon
+            icons=["speedometer2", "activity", "bar-chart-line", "grid-3x3", "crosshair"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -521,11 +521,11 @@ elif target_page == "Market Risk":
             </style>
             """
             html_content = html_content.replace("<head>", "<head>" + fix_style)
-            components.html(html_content, height=1200, scrolling=False)
+            components.html(html_content, height=2500, scrolling=False)
     else:
         html_content, filename = get_latest_file_content(path)
         if html_content:
-            components.html(html_content, height=1200, scrolling=False)
+            components.html(html_content, height=2500, scrolling=False)
         else:
             st.warning("⚠️ No risk reports found.")
             st.info("Please ensure `ImpliedParameters/implied_params.html` exists.")
@@ -562,7 +562,7 @@ elif target_page == "Industry Sector Heatmap":
     else:
         st.warning("⚠️ Sector Heatmap not found.")
         st.info("Please run `MarketDashboard/ETF_sector_heatmap.py`.")
-        
+
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
