@@ -77,12 +77,8 @@ def login_system():
 
 # --- 主程式邏輯 ---
 # 如果沒有通過登入驗證，就停止執行後面的程式碼
-#if not login_system():
+# if not login_system():
 #    st.stop()  # ⛔ 這裡會擋住所有人，除非登入成功
-
-# ==========================================
-# 👇 您的原始程式碼從這裡開始 (原本的 Sidebar, Content 等)
-# ==========================================
 
 # ==========================================
 # 1. 頁面基礎設置
@@ -126,7 +122,7 @@ st.markdown("""
         [data-testid="stSidebarCollapseButton"] {
             display: none !important;
         }
-        
+
         /* 3. 額外保險：隱藏側邊欄頂部的所有按鈕 (防止 Streamlit 更新改 ID) */
         section[data-testid="stSidebar"] button {
             display: none !important;
@@ -268,6 +264,17 @@ st.markdown("""
 # ==========================================
 # 3. Helper Functions
 # ==========================================
+
+def load_weekly_analysis():
+    """讀取每週推演文章"""
+    file_path = os.path.join("WeeklyContent", "latest_analysis.md")
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    else:
+        return "⚠️ 本週推演文章尚未上傳 (File not found: WeeklyContent/latest_analysis.md)"
+
+
 def load_html_file(file_path):
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -341,7 +348,7 @@ with st.sidebar:
             "Market Intelligence",  # Group
             "Stock",  # Group
             "Option",  # Option
-            "Future",       # Future
+            "Future",  # Future
             "My Trade",  # Direct
             "MT5 EA",  # Direct
             "Legal"  # Direct
@@ -380,10 +387,9 @@ with st.sidebar:
         st.caption("MARKET MODULES")
         target_page = option_menu(
             menu_title=None,
-            # 👇 Added "SPX vs VIX Scatter"
-            options=["Market Dashboard", "Market Risk", "Market Breadth", "Industry Sector Heatmap"],
-            # 👇 Added "crosshair" icon
-            icons=["speedometer2", "activity", "bar-chart-line", "grid-3x3", "crosshair"],
+            # [修改] Industry Sector Heatmap 移出
+            options=["Market Risk", "Market Breadth"],
+            icons=["activity", "bar-chart-line"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -396,8 +402,9 @@ with st.sidebar:
         st.caption("STOCK RESEARCH")
         target_page = option_menu(
             menu_title=None,
-            options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target"], # Added Volatility Target
-            icons=["cash-coin", "radar", "basket", "bullseye"], # Added icon for VolTarget
+            # [修改] 加入 Industry Sector Heatmap
+            options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target", "Industry Sector Heatmap"],
+            icons=["cash-coin", "radar", "basket", "bullseye", "grid-3x3"],  # Added icon
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -414,9 +421,7 @@ with st.sidebar:
         st.caption("FUTURES & TRENDS")
         target_page = option_menu(
             menu_title=None,
-            # 加入 "HSI CBBC Ladder"
             options=["Volume Profile", "Intraday Volatility", "HSI CBBC Ladder"],
-            # 加入對應圖標 (例如 'distribute-vertical' 或 'layers-half')
             icons=["bar-chart-steps", "lightning-charge", "distribute-vertical"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
@@ -481,6 +486,21 @@ if target_page == "Home":
                 <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
             </div>
             """, unsafe_allow_html=True)
+
+        # ------------------------------------------------
+        # 👇 Weekly Deduction Section
+        # ------------------------------------------------
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.subheader("🧠 Weekly Deduction (本週推演)")
+
+        # 建立一個容器
+        with st.container():
+            # 讀取文章內容 (確保 load_weekly_analysis 函數已定義在上方)
+            analysis_content = load_weekly_analysis()
+
+            # 使用 Expander 包裹內容，預設展開 (expanded=True)
+            with st.expander("📖 點擊展開/收合完整推演", expanded=True):
+                st.markdown(analysis_content)
 
     with col_profile:
         img_path = "static/profile.jpg"
@@ -695,7 +715,6 @@ elif target_page == "HSI CBBC Ladder":
         st.info(f"請確認檔案 `{html_path}` 是否存在。")
 
 # ... (接續 My Trade 區塊)
-
 
 # [PAGE] My Trade
 elif target_page == "My Trade":
