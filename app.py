@@ -363,9 +363,10 @@ with st.sidebar:
         st.caption("MARKET MODULES")
         target_page = option_menu(
             menu_title=None,
-            # 👇 Added "Market Breadth" here
-            options=["Market Dashboard", "Market Risk", "Market Breadth"],
-            icons=["speedometer2", "activity", "bar-chart-line"],  # Added an icon
+            # 👇 Added "Industry Sector Heatmap" as a separate item
+            options=["Market Dashboard", "Market Risk", "Market Breadth", "Industry Sector Heatmap"],
+            # 👇 Added "grid-3x3" icon for the heatmap
+            icons=["speedometer2", "activity", "bar-chart-line", "grid-3x3"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -545,7 +546,23 @@ elif target_page == "Market Breadth":
         st.warning("⚠️ Market Breadth report not found.")
         st.info(f"Please run `MarketDashboard/generate_market_breadth.py` to generate the report.")
 
+# [PAGE] Industry Sector Heatmap (New Independent Page)
+elif target_page == "Industry Sector Heatmap":
+    st.title("🔥 Industry Sector Heatmap")
+    st.caption("Daily Return Heatmap (Last 20 Days)")
 
+    # Path to the Heatmap HTML
+    path = os.path.join("MarketDashboard", "sector_etf_heatmap.html")
+
+    if os.path.exists(path):
+        with open(path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+            # Heatmaps are wide, give it plenty of height and scrolling
+            components.html(html_content, height=1200, scrolling=True)
+    else:
+        st.warning("⚠️ Sector Heatmap not found.")
+        st.info("Please run `MarketDashboard/ETF_sector_heatmap.py`.")
+        
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
