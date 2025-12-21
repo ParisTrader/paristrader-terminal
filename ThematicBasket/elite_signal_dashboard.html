@@ -1,0 +1,1218 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; color: #1a1a1a; line-height: 1.6; }
+
+        /* 浮動視窗 (Tooltip) 樣式 */
+        .ticker-cell { position: relative; cursor: help; color: #007bff; font-weight: bold; }
+        .tooltip-text {
+            visibility: hidden; width: 280px; background-color: #333; color: #fff;
+            text-align: left; border-radius: 8px; padding: 12px; position: absolute;
+            z-index: 999; bottom: 125%; left: 50%; margin-left: -140px; opacity: 0;
+            transition: opacity 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 0.85em; font-weight: normal;
+        }
+        .ticker-cell:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* 教育板塊樣式 */
+        .edu-section { background: #fff; border: 2px solid #007bff; border-radius: 12px; padding: 25px; margin-bottom: 35px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .edu-title { font-size: 1.4em; font-weight: bold; color: #007bff; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .edu-part { margin-bottom: 20px; }
+        .edu-part h3 { color: #333; font-size: 1.1em; margin-bottom: 8px; }
+        .edu-part p { color: #555; font-size: 0.95em; margin: 5px 0; }
+
+        /* 數據卡片樣式 */
+        .basket-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 35px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 5px solid #007bff; }
+        .theme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .theme-title { font-size: 1.3em; font-weight: bold; text-transform: uppercase; }
+        .consensus-badge { font-size: 0.85em; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+        .basket-perf { font-size: 1.1em; font-weight: bold; padding: 5px 12px; border-radius: 6px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #888; font-size: 0.75em; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 0.9em; }
+
+        .pos { color: #28a745; font-weight: bold; }
+        .neg { color: #dc3545; font-weight: bold; }
+        .oversold { background: #d4edda; color: #155724; font-weight: bold; border-radius: 4px; padding: 2px 6px; }
+        .overbought { background: #f8d7da; color: #721c24; font-weight: bold; border-radius: 4px; padding: 2px 6px; }
+        .rel-strength { border-left: 5px solid #28a745; background-color: #f0fff4; }
+        .bullish { background: #d4edda; color: #155724; }
+        .bearish { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Elite Thematic Signal Dashboard</h1>
+    <p style="color: #666;">數據更新時間: 2025-12-21 14:07:28</p>
+
+    <details class="edu-section" open>
+        <summary style="font-size: 1.2em; font-weight: bold; cursor: pointer; color: #007bff;">🎓 新手必讀：如何解讀此分析頁面？ (點擊展開/收起)</summary>
+        <div class="edu-content">
+
+            <div class="edu-part">
+                <div class="edu-title">第一階段：什麼是 Thematic Basket？為什麼要用？</div>
+                <h3>什麼是主題籃子 (Basket)？</h3>
+                <p>這是一種將相關股票分組的策略（例如：所有開發火箭技術的公司）。與其只押注一家公司，我們觀察整個「主題」。</p>
+                <h3>為什麼要用 Basket？</h3>
+                <p><strong>1. 分散風險：</strong> 避免單一公司因負面消息（例如 CEO 換人）導致大幅虧損。</p>
+                <p><strong>2. 追蹤大資金：</strong> 機構投資者（如大銀行）通常是整組買入。跟隨籃子走勢，就是跟隨聰明錢 (Smart Money)。</p>
+            </div>
+
+            <div class="edu-part">
+                <div class="edu-title">第二階段：實際操作指南 (Swing Trading)</div>
+                <p><strong>1. 市值 (Market Cap)：</strong> 代表公司規模。大型股 ($10B+) 較穩定；中小型股潛力大但波動強。</p>
+                <p><strong>2. 尋找「真領袖」 (Relative Strength)：</strong> 當籃子平均下跌 (RED)，但某股票上升 (GREEN)，該股票即為領袖，會標示為<strong>淺綠色背景</strong>。</p>
+                <p><strong>3. RSI 抄底訊號：</strong> RSI < 35 (綠框) 為超賣反彈機會；RSI > 65 (紅框) 為過熱回調風險。</p>
+                <p><strong>4. 浮動理由：</strong> 滑鼠移到 Ticker 上，即可查看該股票入選籃子的專業理由。</p>
+            </div>
+
+        </div>
+    </details>
+
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">AI Energy & Grid <span class="consensus-badge" style="background:#eee;">⚖️ 走勢分歧</span></div>
+                <div class="basket-perf pos">籃子今日平均: +1.41%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    CEG
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Largest U.S. nuclear fleet with long-term contracts to hyperscalers, providing baseload power for AI data centers.</span>
+                </td>
+                <td>Constellation Energy</td>
+                <td style="color: #666;">$111.03B</td>
+                <td>$355.40</td>
+                <td>2.04x</td>
+                <td class="neg">-1.56%</td>
+                <td class="pos">+0.97%</td>
+                <td><span class="">48.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    VST
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Growing generation and retail portfolio with increasing exposure to data-center co-location and AI-driven power demand.</span>
+                </td>
+                <td>Vistra Corp</td>
+                <td style="color: #666;">$55.24B</td>
+                <td>$163.03</td>
+                <td>1.56x</td>
+                <td class="neg">-1.89%</td>
+                <td class="neg">-4.16%</td>
+                <td><span class="">41.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    GEV
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Key supplier of grid equipment and emerging small modular reactor solutions, leveraged to large-scale power and grid upgrades.</span>
+                </td>
+                <td>GE Vernova</td>
+                <td style="color: #666;">$179.20B</td>
+                <td>$658.28</td>
+                <td>1.22x</td>
+                <td class="pos">+2.95%</td>
+                <td class="neg">-2.00%</td>
+                <td><span class="">61.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    EOSE
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Zinc-based long-duration storage is a high-risk, high-reward way to play renewable and data-center balancing needs.</span>
+                </td>
+                <td>Eos Energy</td>
+                <td style="color: #666;">$4.24B</td>
+                <td>$13.07</td>
+                <td>0.66x</td>
+                <td class="pos">+6.17%</td>
+                <td class="neg">-11.93%</td>
+                <td><span class="">47.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    OKLO
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Microreactor developer aligned with demand for distributed, reliable power near AI and HPC facilities, but still pre-revenue.</span>
+                </td>
+                <td>Oklo Inc</td>
+                <td style="color: #666;">$13.00B</td>
+                <td>$83.23</td>
+                <td>0.89x</td>
+                <td class="pos">+7.09%</td>
+                <td class="neg">-4.79%</td>
+                <td><span class="">47.2</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    PWR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Engineering and construction leader in high-voltage transmission, substations and grid hardening, directly tied to data-center-driven grid investment.</span>
+                </td>
+                <td>Quanta Services</td>
+                <td style="color: #666;">$63.62B</td>
+                <td>$426.66</td>
+                <td>1.52x</td>
+                <td class="pos">+1.27%</td>
+                <td class="neg">-2.61%</td>
+                <td><span class="">37.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    NEE
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Large renewable and transmission developer that offers lower-volatility exposure to rising global electricity demand from AI.</span>
+                </td>
+                <td>NextEra Energy</td>
+                <td style="color: #666;">$165.65B</td>
+                <td>$79.54</td>
+                <td>3.04x</td>
+                <td class="neg">-1.62%</td>
+                <td class="neg">-2.58%</td>
+                <td><span class="oversold">27.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AES
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Actively invests in storage and high-voltage projects, positioning it as a beneficiary of the AI and data-center power build-out.</span>
+                </td>
+                <td>AES Corp</td>
+                <td style="color: #666;">$9.63B</td>
+                <td>$13.53</td>
+                <td>1.49x</td>
+                <td class="neg">-1.10%</td>
+                <td class="neg">-2.17%</td>
+                <td><span class="">38.3</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">AI Value Reset <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +1.91%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    ORCL
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>AI infra narrative supported the rerating, but latest results show cloud growth slowing and capex delays, making it a key name for AI capex deceleration.</span>
+                </td>
+                <td>Oracle</td>
+                <td style="color: #666;">$551.55B</td>
+                <td>$191.97</td>
+                <td>2.54x</td>
+                <td class="pos">+6.63%</td>
+                <td class="pos">+1.05%</td>
+                <td><span class="">44.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AVGO
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>AI chip segment is strong but offset by weaker legacy and memory businesses; market questions the durability of peak AI margins, making it a high-beta de-rating candidate.</span>
+                </td>
+                <td>Broadcom</td>
+                <td style="color: #666;">$1.61T</td>
+                <td>$340.36</td>
+                <td>4.99x</td>
+                <td class="pos">+3.18%</td>
+                <td class="neg">-5.44%</td>
+                <td><span class="oversold">33.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ADBE
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Generative AI tools threaten Creative Cloud pricing power and user growth, turning Adobe into a classic incumbent at risk of AI disruption.</span>
+                </td>
+                <td>Adobe</td>
+                <td style="color: #666;">$150.96B</td>
+                <td>$355.86</td>
+                <td>2.07x</td>
+                <td class="pos">+0.01%</td>
+                <td class="neg">-0.16%</td>
+                <td><span class="overbought">74.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    INTC
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Demand is shifting toward GPUs and custom AI silicon while foundry investments compress margins, making Intel a relative loser in the AI infrastructure build-out.</span>
+                </td>
+                <td>Intel</td>
+                <td style="color: #666;">$175.63B</td>
+                <td>$36.82</td>
+                <td>2.03x</td>
+                <td class="pos">+1.49%</td>
+                <td class="neg">-2.62%</td>
+                <td><span class="">39.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    DOCU
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>LLMs and AI agents can automate drafting and contract workflows, undermining DocuSignâs seat-based model and long-term pricing power.</span>
+                </td>
+                <td>DocuSign</td>
+                <td style="color: #666;">$14.02B</td>
+                <td>$69.98</td>
+                <td>2.98x</td>
+                <td class="pos">+0.84%</td>
+                <td class="neg">-1.59%</td>
+                <td><span class="">54.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    WDAY
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>AI copilots and automation can reduce the need for human seats in HR and finance tools, exposing Workdayâs growth and high multiple to downside risk.</span>
+                </td>
+                <td>Workday</td>
+                <td style="color: #666;">$58.37B</td>
+                <td>$218.63</td>
+                <td>1.71x</td>
+                <td class="pos">+0.25%</td>
+                <td class="neg">-2.61%</td>
+                <td><span class="">60.5</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    CRM
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Einstein and AI add-ons have limited revenue impact versus expectations; if enterprise IT spend slows, Salesforceâs premium SaaS valuation is vulnerable.</span>
+                </td>
+                <td>Salesforce</td>
+                <td style="color: #666;">$247.43B</td>
+                <td>$259.91</td>
+                <td>2.52x</td>
+                <td class="pos">+0.80%</td>
+                <td class="neg">-0.72%</td>
+                <td><span class="overbought">78.2</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    SNOW
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Positioned as AI data infrastructure, but usage-based revenue is very sensitive to delayed AI workloads, making its rich multiple at risk in a slowdown.</span>
+                </td>
+                <td>Snowflake</td>
+                <td style="color: #666;">$76.13B</td>
+                <td>$222.46</td>
+                <td>1.14x</td>
+                <td class="pos">+0.52%</td>
+                <td class="pos">+2.08%</td>
+                <td><span class="oversold">32.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MDB
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Faces pressure from open-source and cloud-native databases; the AI story supports high multiples that can unwind quickly if growth normalizes.</span>
+                </td>
+                <td>MongoDB</td>
+                <td style="color: #666;">$35.05B</td>
+                <td>$430.64</td>
+                <td>0.69x</td>
+                <td class="pos">+1.28%</td>
+                <td class="pos">+2.78%</td>
+                <td><span class="overbought">79.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    PLTR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Retail investors treat Palantir as a combined defense, AI and big-data story; price is highly sensitive to headlines and narrative shifts.</span>
+                </td>
+                <td>Palantir</td>
+                <td style="color: #666;">$460.91B</td>
+                <td>$193.38</td>
+                <td>1.61x</td>
+                <td class="pos">+4.14%</td>
+                <td class="pos">+5.34%</td>
+                <td><span class="overbought">72.8</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Autonomous Driving <span class="consensus-badge" style="background:#eee;">⚖️ 走勢分歧</span></div>
+                <div class="basket-perf pos">籃子今日平均: +1.26%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    TSLA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Vertical integration of hardware, software and data positions Tesla as a leading end-to-end full self-driving and Robotaxi platform candidate.</span>
+                </td>
+                <td>Tesla</td>
+                <td style="color: #666;">$1.60T</td>
+                <td>$481.20</td>
+                <td>1.25x</td>
+                <td class="neg">-0.45%</td>
+                <td class="pos">+4.85%</td>
+                <td><span class="overbought">67.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MBLY
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Computer-vision and ADAS supplier to many global OEMs, providing a leveraged way to play gradual adoption of higher-level driver assistance.</span>
+                </td>
+                <td>Mobileye</td>
+                <td style="color: #666;">$8.29B</td>
+                <td>$10.19</td>
+                <td>1.83x</td>
+                <td class="pos">+1.39%</td>
+                <td class="neg">-7.95%</td>
+                <td><span class="oversold">30.5</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AUR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Focused on Level 4 autonomous trucking, targeting long-haul freight where labor shortages and economics strongly favor autonomy.</span>
+                </td>
+                <td>Aurora Innovation</td>
+                <td style="color: #666;">$8.05B</td>
+                <td>$4.16</td>
+                <td>1.98x</td>
+                <td class="neg">-0.48%</td>
+                <td class="neg">-5.24%</td>
+                <td><span class="">54.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    CRNC
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Voice assistant and in-car AI software vendor capturing the shift toward intelligent, AI-driven cockpit experiences.</span>
+                </td>
+                <td>Cerence</td>
+                <td style="color: #666;">$504.21M</td>
+                <td>$11.22</td>
+                <td>0.98x</td>
+                <td class="pos">+4.57%</td>
+                <td class="neg">-2.48%</td>
+                <td><span class="">54.8</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Crypto Companies <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +5.02%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    COIN
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Leading regulated U.S. crypto exchange and custodian, central to institutional and retail access to digital assets.</span>
+                </td>
+                <td>Coinbase Global</td>
+                <td style="color: #666;">$66.10B</td>
+                <td>$245.12</td>
+                <td>1.08x</td>
+                <td class="pos">+2.47%</td>
+                <td class="neg">-8.35%</td>
+                <td><span class="">40.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MSTR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Acts as a levered listed proxy for Bitcoin via its balance sheet strategy, amplifying BTC upside and downside.</span>
+                </td>
+                <td>MicroStrategy</td>
+                <td style="color: #666;">$47.36B</td>
+                <td>$164.82</td>
+                <td>1.05x</td>
+                <td class="pos">+4.16%</td>
+                <td class="neg">-6.59%</td>
+                <td><span class="">46.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MARA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>North American miner pivoting toward HPC and AI hosting, providing exposure to both mining economics and compute infrastructure.</span>
+                </td>
+                <td>MARA Holdings</td>
+                <td style="color: #666;">$3.85B</td>
+                <td>$10.18</td>
+                <td>1.23x</td>
+                <td class="pos">+5.06%</td>
+                <td class="neg">-11.63%</td>
+                <td><span class="">37.2</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    RIOT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Large-scale miner that complements MARA in a pair trade, giving broader coverage of listed Bitcoin mining risk.</span>
+                </td>
+                <td>Riot Platforms</td>
+                <td style="color: #666;">$5.39B</td>
+                <td>$14.50</td>
+                <td>1.00x</td>
+                <td class="pos">+8.37%</td>
+                <td class="neg">-5.23%</td>
+                <td><span class="">42.5</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Datacenter Suppliers <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +2.71%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    VRT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Leader in high-density racks and liquid cooling, directly leveraged to thermal challenges of AI GPU servers.</span>
+                </td>
+                <td>Vertiv Holdings</td>
+                <td style="color: #666;">$61.11B</td>
+                <td>$159.82</td>
+                <td>1.29x</td>
+                <td class="pos">+3.52%</td>
+                <td class="neg">-0.90%</td>
+                <td><span class="">36.3</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ANET
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Top supplier of high-speed switches and data-center networking, essential for scaling AI clusters across thousands of GPUs.</span>
+                </td>
+                <td>Arista Networks</td>
+                <td style="color: #666;">$165.12B</td>
+                <td>$131.12</td>
+                <td>1.53x</td>
+                <td class="pos">+5.22%</td>
+                <td class="pos">+5.10%</td>
+                <td><span class="">54.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ETN
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Provides transformers, switchgear and power distribution gear that connect the grid to racks in power-hungry data centers.</span>
+                </td>
+                <td>Eaton Corp</td>
+                <td style="color: #666;">$123.72B</td>
+                <td>$317.80</td>
+                <td>2.41x</td>
+                <td class="pos">+0.59%</td>
+                <td class="neg">-4.27%</td>
+                <td><span class="">35.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    JCI
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Building automation and HVAC systems play a key role in cooling and managing next-generation high-density data centers.</span>
+                </td>
+                <td>Johnson Controls</td>
+                <td style="color: #666;">$78.22B</td>
+                <td>$119.53</td>
+                <td>3.40x</td>
+                <td class="pos">+1.52%</td>
+                <td class="pos">+4.16%</td>
+                <td><span class="">62.5</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">EV Hangover <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +3.29%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    RIVN
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>High cash burn, heavy capex and scaling risk make Rivian very sensitive to higher rates and weaker EV demand.</span>
+                </td>
+                <td>Rivian</td>
+                <td style="color: #666;">$27.52B</td>
+                <td>$22.45</td>
+                <td>1.93x</td>
+                <td class="pos">+10.70%</td>
+                <td class="pos">+21.88%</td>
+                <td><span class="overbought">74.3</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    LCID
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Luxury-only positioning and limited scale hurt economics, making the stock a favored short when EV sentiment deteriorates.</span>
+                </td>
+                <td>Lucid Group</td>
+                <td style="color: #666;">$3.83B</td>
+                <td>$11.82</td>
+                <td>0.85x</td>
+                <td class="pos">+3.23%</td>
+                <td class="neg">-5.74%</td>
+                <td><span class="">44.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ALB
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Lithium oversupply and lower prices have compressed margins and earnings, linking Albemarle to the downside of the EV raw materials cycle.</span>
+                </td>
+                <td>Albemarle</td>
+                <td style="color: #666;">$17.17B</td>
+                <td>$145.88</td>
+                <td>1.83x</td>
+                <td class="pos">+3.84%</td>
+                <td class="pos">+9.90%</td>
+                <td><span class="overbought">71.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    LAC
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Pre-revenue, capital-intensive projects make it highly exposed to delayed EV capex and funding risk.</span>
+                </td>
+                <td>Lithium Americas</td>
+                <td style="color: #666;">$1.44B</td>
+                <td>$4.75</td>
+                <td>1.41x</td>
+                <td class="pos">+5.09%</td>
+                <td class="neg">-7.23%</td>
+                <td><span class="">35.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    STLA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>More measured EV/hybrid roadmap and strong legacy cash flows provide downside protection versus aggressive pure-play EV makers.</span>
+                </td>
+                <td>Stellantis</td>
+                <td style="color: #666;">$33.34B</td>
+                <td>$11.54</td>
+                <td>0.78x</td>
+                <td class="neg">-0.94%</td>
+                <td class="neg">-2.04%</td>
+                <td><span class="">64.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    TM
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Hybrid-first strategy has proven resilient in a high-rate, infrastructure-constrained environment, offering a rational transition path rather than pure EV risk.</span>
+                </td>
+                <td>Toyota</td>
+                <td style="color: #666;">$285.93B</td>
+                <td>$219.38</td>
+                <td>1.67x</td>
+                <td class="pos">+1.53%</td>
+                <td class="pos">+5.41%</td>
+                <td><span class="overbought">78.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    TSLA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>High-margin EV business funds long-dated AI, Robotaxi and humanoid robot options, while maintaining one of the deepest global retail investor followings.</span>
+                </td>
+                <td>Tesla</td>
+                <td style="color: #666;">$1.60T</td>
+                <td>$481.20</td>
+                <td>1.25x</td>
+                <td class="neg">-0.45%</td>
+                <td class="pos">+4.85%</td>
+                <td><span class="overbought">67.9</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Google Supplier <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +2.86%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    AVGO
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Co-designer of Google's custom TPU chips.</span>
+                </td>
+                <td>Broadcom</td>
+                <td style="color: #666;">$1.61T</td>
+                <td>$340.36</td>
+                <td>4.99x</td>
+                <td class="pos">+3.18%</td>
+                <td class="neg">-5.44%</td>
+                <td><span class="oversold">33.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ANET
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Key supplier for high-speed data center networking.</span>
+                </td>
+                <td>Arista Networks</td>
+                <td style="color: #666;">$165.12B</td>
+                <td>$131.12</td>
+                <td>1.53x</td>
+                <td class="pos">+5.22%</td>
+                <td class="pos">+5.10%</td>
+                <td><span class="">54.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MRVL
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Supplier of optical interconnects and custom silicon.</span>
+                </td>
+                <td>Marvell Technology</td>
+                <td style="color: #666;">$72.49B</td>
+                <td>$84.09</td>
+                <td>1.08x</td>
+                <td class="neg">-0.45%</td>
+                <td class="neg">-0.40%</td>
+                <td><span class="">41.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    VRT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Critical power and cooling infrastructure for high-density racks.</span>
+                </td>
+                <td>Vertiv</td>
+                <td style="color: #666;">$61.11B</td>
+                <td>$159.82</td>
+                <td>1.29x</td>
+                <td class="pos">+3.52%</td>
+                <td class="neg">-0.90%</td>
+                <td><span class="">36.3</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Neocloud Providers <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +9.33%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    IREN
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Transitioning from crypto mining to purpose-built, high-density AI data centers, offering alternative cloud capacity for AI workloads.</span>
+                </td>
+                <td>IREN Limited</td>
+                <td style="color: #666;">$13.11B</td>
+                <td>$39.92</td>
+                <td>0.76x</td>
+                <td class="pos">+11.51%</td>
+                <td class="neg">-0.52%</td>
+                <td><span class="">38.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    CORZ
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Repurposes mining infrastructure into large-scale AI and HPC hosting, giving direct exposure to outsourced compute demand.</span>
+                </td>
+                <td>Core Scientific</td>
+                <td style="color: #666;">$4.84B</td>
+                <td>$15.60</td>
+                <td>1.47x</td>
+                <td class="pos">+7.14%</td>
+                <td class="neg">-5.63%</td>
+                <td><span class="">44.5</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Open AI <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +4.06%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    MSFT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Core partner and Azure cloud provider.</span>
+                </td>
+                <td>Microsoft</td>
+                <td style="color: #666;">$3.61T</td>
+                <td>$485.92</td>
+                <td>2.83x</td>
+                <td class="pos">+0.40%</td>
+                <td class="pos">+1.54%</td>
+                <td><span class="">49.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    NVDA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Primary GPU supplier for training clusters.</span>
+                </td>
+                <td>NVIDIA</td>
+                <td style="color: #666;">$4.41T</td>
+                <td>$180.99</td>
+                <td>1.60x</td>
+                <td class="pos">+3.93%</td>
+                <td class="pos">+3.41%</td>
+                <td><span class="">51.3</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ORCL
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Provides overflow cloud infrastructure capacity.</span>
+                </td>
+                <td>Oracle</td>
+                <td style="color: #666;">$551.55B</td>
+                <td>$191.97</td>
+                <td>2.54x</td>
+                <td class="pos">+6.63%</td>
+                <td class="pos">+1.05%</td>
+                <td><span class="">44.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AVGO
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Partner for custom in-house AI inference chips.</span>
+                </td>
+                <td>Broadcom</td>
+                <td style="color: #666;">$1.61T</td>
+                <td>$340.36</td>
+                <td>4.99x</td>
+                <td class="pos">+3.18%</td>
+                <td class="neg">-5.44%</td>
+                <td><span class="oversold">33.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AMD
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Diversified supplier of AI accelerators (MI300).</span>
+                </td>
+                <td>Advanced Micro Devices</td>
+                <td style="color: #666;">$347.47B</td>
+                <td>$213.43</td>
+                <td>1.34x</td>
+                <td class="pos">+6.15%</td>
+                <td class="pos">+1.26%</td>
+                <td><span class="">44.4</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Retail Favorites & Flows <span class="consensus-badge" style="background:#eee;">⚖️ 走勢分歧</span></div>
+                <div class="basket-perf pos">籃子今日平均: +0.88%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    HOOD
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Core venue for U.S. retail trading, options flow and meme activity, making it a useful proxy for retail risk appetite.</span>
+                </td>
+                <td>Robinhood</td>
+                <td style="color: #666;">$109.12B</td>
+                <td>$121.35</td>
+                <td>0.92x</td>
+                <td class="pos">+3.58%</td>
+                <td class="pos">+1.55%</td>
+                <td><span class="">48.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    ARM
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Owns key CPU IP for mobile and emerging AI workloads; valuation depends heavily on the âAI on Armâ narrative, driving high volatility.</span>
+                </td>
+                <td>Arm Holdings</td>
+                <td style="color: #666;">$120.99B</td>
+                <td>$114.03</td>
+                <td>1.95x</td>
+                <td class="pos">+0.46%</td>
+                <td class="neg">-12.88%</td>
+                <td><span class="oversold">23.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    TSLA
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Iconic global retail favorite whose trading intensity often tracks overall speculative sentiment and liquidity conditions.</span>
+                </td>
+                <td>Tesla</td>
+                <td style="color: #666;">$1.60T</td>
+                <td>$481.20</td>
+                <td>1.25x</td>
+                <td class="neg">-0.45%</td>
+                <td class="pos">+4.85%</td>
+                <td><span class="overbought">67.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    SOFI
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>High-growth fintech and neo-bank name frequently used by retail investors to express bullish views on digital finance.</span>
+                </td>
+                <td>SoFi Technologies</td>
+                <td style="color: #666;">$34.33B</td>
+                <td>$27.24</td>
+                <td>0.64x</td>
+                <td class="pos">+3.61%</td>
+                <td class="neg">-0.15%</td>
+                <td><span class="">41.2</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    GME
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Symbolic meme stock used to monitor extremes in retail speculation and social-media-driven trading regimes.</span>
+                </td>
+                <td>GameStop</td>
+                <td style="color: #666;">$10.08B</td>
+                <td>$22.51</td>
+                <td>1.19x</td>
+                <td class="neg">-0.22%</td>
+                <td class="pos">+6.03%</td>
+                <td><span class="">47.5</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AMC
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Another core meme stock whose price action reflects the strength or weakness of meme-style risk-taking.</span>
+                </td>
+                <td>AMC Entertainment</td>
+                <td style="color: #666;">$897.65M</td>
+                <td>$1.75</td>
+                <td>1.96x</td>
+                <td class="neg">-1.69%</td>
+                <td class="neg">-17.45%</td>
+                <td><span class="oversold">12.5</span></td>
+            </tr></tbody></table></div>
+        <div class="basket-card">
+            <div class="theme-header">
+                <div class="theme-title">Space <span class="consensus-badge bullish">🚀 強力看漲</span></div>
+                <div class="basket-perf pos">籃子今日平均: +7.53%</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>公司名稱</th>
+                        <th>市值</th>
+                        <th>現價</th>
+                        <th>成交量比 (RVOL)</th>
+                        <th>今日 %</th>
+                        <th>5日累計 %</th>
+                        <th>RSI (14)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr class="">
+                <td class="ticker-cell">
+                    ASTS
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Direct-to-handset satellite model with major carrier partners; successful test satellites create upside if execution and financing risks are managed.</span>
+                </td>
+                <td>AST SpaceMobile</td>
+                <td style="color: #666;">$27.86B</td>
+                <td>$75.84</td>
+                <td>1.73x</td>
+                <td class="pos">+15.03%</td>
+                <td class="neg">-1.12%</td>
+                <td><span class="overbought">66.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    RKLB
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Most credible commercial small-launch provider after SpaceX, with a growing manifest and Neutron in development, leveraged to rising launch demand.</span>
+                </td>
+                <td>Rocket Lab</td>
+                <td style="color: #666;">$37.67B</td>
+                <td>$70.52</td>
+                <td>2.43x</td>
+                <td class="pos">+17.69%</td>
+                <td class="pos">+14.69%</td>
+                <td><span class="overbought">80.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    LHX
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Defense and space systems prime with recurring government contracts, providing cash-flow stability to balance higher-beta pure-play space names.</span>
+                </td>
+                <td>L3Harris</td>
+                <td style="color: #666;">$53.78B</td>
+                <td>$287.45</td>
+                <td>1.28x</td>
+                <td class="pos">+1.67%</td>
+                <td class="pos">+0.17%</td>
+                <td><span class="">64.2</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    IRDM
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Established satellite communications operator with an active constellation and stable service revenue, offering lower-volatility space exposure.</span>
+                </td>
+                <td>Iridium Communications</td>
+                <td style="color: #666;">$1.81B</td>
+                <td>$17.04</td>
+                <td>9.21x</td>
+                <td class="pos">+2.90%</td>
+                <td class="neg">-8.29%</td>
+                <td><span class="">57.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    LMT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Major defense prime with significant space segment exposure via missiles, satellites and launch partnerships, providing a stable cash-flow anchor in the theme.</span>
+                </td>
+                <td>Lockheed Martin</td>
+                <td style="color: #666;">$110.69B</td>
+                <td>$474.13</td>
+                <td>2.03x</td>
+                <td class="pos">+0.85%</td>
+                <td class="neg">-1.27%</td>
+                <td><span class="overbought">77.5</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    NOC
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Key contractor for national-security space and missile-defense programs, giving exposure to government space budgets with strong balance sheet and backlog.</span>
+                </td>
+                <td>Northrop Grumman</td>
+                <td style="color: #666;">$81.39B</td>
+                <td>$568.46</td>
+                <td>1.80x</td>
+                <td class="pos">+1.60%</td>
+                <td class="neg">-0.23%</td>
+                <td><span class="overbought">66.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    AIR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Aerospace services and MRO provider that benefits indirectly from increased flight activity, logistics and defense demand linked to space and aerospace cycles.</span>
+                </td>
+                <td>AAR Corp</td>
+                <td style="color: #666;">$3.27B</td>
+                <td>$82.71</td>
+                <td>5.26x</td>
+                <td class="pos">+1.01%</td>
+                <td class="neg">-1.16%</td>
+                <td><span class="">53.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    KTOS
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Specialized defense and space contractor focused on drones and satellite communications, offering higher growth but more execution risk than large primes.</span>
+                </td>
+                <td>Kratos Defense & Security</td>
+                <td style="color: #666;">$12.73B</td>
+                <td>$75.39</td>
+                <td>1.70x</td>
+                <td class="pos">+5.59%</td>
+                <td class="neg">-0.75%</td>
+                <td><span class="">54.0</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    VSAT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>High-debt satellite broadband operator facing intense competition and execution risk on new constellations, making it a candidate short against stronger operators.</span>
+                </td>
+                <td>Viasat</td>
+                <td style="color: #666;">$4.57B</td>
+                <td>$33.81</td>
+                <td>2.72x</td>
+                <td class="pos">+4.42%</td>
+                <td class="neg">-5.64%</td>
+                <td><span class="">53.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    GSAT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Narrow product set and dependence on a limited number of large customers make its equity highly speculative versus more diversified satcom peers.</span>
+                </td>
+                <td>Globalstar</td>
+                <td style="color: #666;">$7.90B</td>
+                <td>$62.25</td>
+                <td>1.26x</td>
+                <td class="pos">+6.16%</td>
+                <td class="neg">-14.74%</td>
+                <td><span class="">52.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    SPCE
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Tourism-only model with minimal revenue and high cash burn; a classic concept stock to short versus profitable aerospace and defense names.</span>
+                </td>
+                <td>Virgin Galactic</td>
+                <td style="color: #666;">$221.20M</td>
+                <td>$3.50</td>
+                <td>1.99x</td>
+                <td class="pos">+6.71%</td>
+                <td class="pos">+8.02%</td>
+                <td><span class="">45.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    MNTS
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>In-space transport concept with severe funding, regulatory and execution risks, suitable as a high-beta short leg within the space basket.</span>
+                </td>
+                <td>Momentus</td>
+                <td style="color: #666;">$15.38M</td>
+                <td>$8.73</td>
+                <td>1.55x</td>
+                <td class="pos">+12.07%</td>
+                <td class="neg">-41.80%</td>
+                <td><span class="">45.1</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    DXYZ
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Broad tech exposure vehicle sometimes traded as a speculative proxy for innovation themes; not a pure space play and can be shorted as a froth indicator.</span>
+                </td>
+                <td>Destiny Tech 100</td>
+                <td style="color: #666;">$450.59M</td>
+                <td>$31.23</td>
+                <td>1.37x</td>
+                <td class="pos">+2.63%</td>
+                <td class="neg">-17.73%</td>
+                <td><span class="overbought">66.7</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    USAR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Identified as a critical domestic supplier of antimony, a strategic mineral essential for munitions, night-vision, and infrared sensors in defense/space applications.</span>
+                </td>
+                <td>U.S. Antimony</td>
+                <td style="color: #666;">$1.93B</td>
+                <td>$13.84</td>
+                <td>2.37x</td>
+                <td class="pos">+2.40%</td>
+                <td class="neg">-18.78%</td>
+                <td><span class="">54.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    BWXT
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Added its role as the prime contractor for NASA/DARPAs nuclear thermal propulsion (DRACO) project, which is key for future deep space transit.</span>
+                </td>
+                <td>BWX Technologies</td>
+                <td style="color: #666;">$16.13B</td>
+                <td>$176.43</td>
+                <td>1.38x</td>
+                <td class="pos">+3.33%</td>
+                <td class="pos">+0.80%</td>
+                <td><span class="">51.9</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    PLTR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Clarified its specific role in Space as a provider of Data-as-a-Service (Warp Core) to the U.S. Space Force for satellite command and control.</span>
+                </td>
+                <td>Palantir</td>
+                <td style="color: #666;">$460.91B</td>
+                <td>$193.38</td>
+                <td>1.61x</td>
+                <td class="pos">+4.14%</td>
+                <td class="pos">+5.34%</td>
+                <td><span class="overbought">72.8</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    LUNR
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Lunar services and lander business with binary contract outcomes and limited diversification, appropriate as a speculative short against core holdings.</span>
+                </td>
+                <td>Intuitive Machines</td>
+                <td style="color: #666;">$1.78B</td>
+                <td>$14.94</td>
+                <td>7.30x</td>
+                <td class="pos">+37.70%</td>
+                <td class="pos">+24.81%</td>
+                <td><span class="overbought">76.4</span></td>
+            </tr>
+            <tr class="">
+                <td class="ticker-cell">
+                    PL
+                    <span class="tooltip-text"><strong>選股理由：</strong><br>Earth-observation data platform with slower-than-hyped revenue ramp and profitability uncertainty, useful as a short versus more established space operators.</span>
+                </td>
+                <td>Planet Labs</td>
+                <td style="color: #666;">$6.02B</td>
+                <td>$19.18</td>
+                <td>2.08x</td>
+                <td class="pos">+9.66%</td>
+                <td class="pos">+5.15%</td>
+                <td><span class="overbought">82.3</span></td>
+            </tr></tbody></table></div></body></html>
