@@ -410,13 +410,14 @@ with st.sidebar:
     elif selected_nav == "Option":
         target_page = "Option"
 
-        # 👇 [修改] Future 區塊邏輯 (包含 Volume Profile 和 Intraday Volatility)
     elif selected_nav == "Future":
         st.caption("FUTURES & TRENDS")
         target_page = option_menu(
             menu_title=None,
-            options=["Volume Profile", "Intraday Volatility"],
-            icons=["bar-chart-steps", "lightning-charge"],  # 為 Volatility 加上圖標
+            # 加入 "HSI CBBC Ladder"
+            options=["Volume Profile", "Intraday Volatility", "HSI CBBC Ladder"],
+            # 加入對應圖標 (例如 'distribute-vertical' 或 'layers-half')
+            icons=["bar-chart-steps", "lightning-charge", "distribute-vertical"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -445,10 +446,10 @@ if target_page == "Home":
 
     with col_main:
         st.markdown("""
-        <h1 style='color:white;'>這裡是您的量化交易指揮中心</h1>
-        <h3 style='color:#94a3b8;'>這是一款能幫助你戰勝市場的機構級 APP。</h3>
+        <h1 style='color:white;'>這裡是您的量化交易資源倉</h1>
+        <h3 style='color:#94a3b8;'>有助你戰勝市場的投行級APP。</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
-        僅限尊貴谷友實時解鎖所有強大功能。請從左側導航欄選擇工具開始分析。
+        僅限尊貴谷友實時解鎖所有強大功能。請從左側導航欄選擇工具開始分析(每個都有Sub Modules)。
         </p>
         """, unsafe_allow_html=True)
 
@@ -468,15 +469,15 @@ if target_page == "Home":
             st.markdown("""
             <div class="metric-card">
                 <h4>Sector Rotation</h4>
-                <h2 style="color:#3b82f6 !important;">Health care & Insurance & Materials</h2>
-                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Flow Inflow</span>
+                <h2 style="color:#3b82f6 !important;">Health care & Space</h2>
+                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Inflow</span>
             </div>
             """, unsafe_allow_html=True)
         with m3:
             st.markdown("""
             <div class="metric-card">
                 <h4>Volatility (VIX)</h4>
-                <h2 style="color:#94a3b8 !important;">16.6</h2>
+                <h2 style="color:#94a3b8 !important;">14.91</h2>
                 <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
             </div>
             """, unsafe_allow_html=True)
@@ -672,6 +673,29 @@ elif target_page == "Intraday Volatility":
     else:
         st.warning("⚠️ 找不到 Intraday Volatility 報告")
         st.info(f"請確認檔案 `{html_path}` 是否存在。")
+
+# ... (Intraday Volatility 區塊之後)
+
+# [PAGE] Future -> HSI CBBC Ladder (新增)
+elif target_page == "HSI CBBC Ladder":
+    st.title("🐻 HSI CBBC Heavy Zone (牛熊重貨區)")
+
+    # 檔案路徑：假設自動化腳本將其存放在 MarketDashboard 資料夾下，並命名為 HSI_CBBC_Ladder.html
+    # 注意：我們會在自動化腳本中強制輸出這個固定的檔名，方便讀取
+    html_path = os.path.join("MarketDashboard", "HSI_CBBC_Ladder.html")
+
+    # 嘗試讀取檔案
+    html_content = load_html_file(html_path)
+
+    if html_content and "File not found" not in html_content:
+        # 使用 components.html 渲染，高度設大一點以容納表格
+        components.html(html_content, height=1200, scrolling=True)
+    else:
+        st.warning("⚠️ 尚未生成牛熊證分佈報告")
+        st.info(f"請確認檔案 `{html_path}` 是否存在。")
+
+# ... (接續 My Trade 區塊)
+
 
 # [PAGE] My Trade
 elif target_page == "My Trade":
