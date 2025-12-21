@@ -12,6 +12,9 @@ Space,GSAT,Globalstar,Narrow product set and dependence on a limited number of l
 Space,SPCE,Virgin Galactic,Tourism-only model with minimal revenue and high cash burn; a classic concept stock to short versus profitable aerospace and defense names.,Short,High-beta
 Space,MNTS,Momentus,"In-space transport concept with severe funding, regulatory and execution risks, suitable as a high-beta short leg within the space basket.",Short,High-beta
 Space,DXYZ,Destiny Tech 100,Broad tech exposure vehicle sometimes traded as a speculative proxy for innovation themes; not a pure space play and can be shorted as a froth indicator.,Short,High-beta
+Space,USAR,U.S. Antimony,"Identified as a critical domestic supplier of antimony, a strategic mineral essential for munitions, night-vision, and infrared sensors in defense/space applications.",Long,High-beta
+Space,BWXT,BWX Technologies,"Added its role as the prime contractor for NASA/DARPA’s nuclear thermal propulsion (DRACO) project, which is key for future deep space transit.",Long,Core
+Space,PLTR,Palantir,Clarified its specific role in Space as a provider of Data-as-a-Service (Warp Core) to the U.S. Space Force for satellite command and control.,Long,High-beta
 Space,LUNR,Intuitive Machines,"Lunar services and lander business with binary contract outcomes and limited diversification, appropriate as a speculative short against core holdings.",Short,High-beta
 Space,PL,Planet Labs,"Earth-observation data platform with slower-than-hyped revenue ramp and profitability uncertainty, useful as a short versus more established space operators.",Short,Core
 AI Value Reset,ORCL,Oracle,"AI infra narrative supported the rerating, but latest results show cloud growth slowing and capex delays, making it a key name for AI capex deceleration.",Short,Core
@@ -59,3 +62,12 @@ Autonomous Driving,AUR,Aurora Innovation,"Focused on Level 4 autonomous trucking
 Autonomous Driving,CRNC,Cerence,"Voice assistant and in-car AI software vendor capturing the shift toward intelligent, AI-driven cockpit experiences.",Long,High-beta
 Neocloud Providers,IREN,IREN Limited,"Transitioning from crypto mining to purpose-built, high-density AI data centers, offering alternative cloud capacity for AI workloads.",Long,Core
 Neocloud Providers,CORZ,Core Scientific,"Repurposes mining infrastructure into large-scale AI and HPC hosting, giving direct exposure to outsourced compute demand.",Long,Core
+Open AI,MSFT,Microsoft,Core partner and Azure cloud provider.,Long,Core
+Open AI,NVDA,NVIDIA,Primary GPU supplier for training clusters.,Long,Core
+Open AI,ORCL,Oracle,Provides overflow cloud infrastructure capacity.,Long,Core
+Open AI,AVGO,Broadcom,Partner for custom in-house AI inference chips.,Long,Core
+Open AI,AMD,Advanced Micro Devices,Diversified supplier of AI accelerators (MI300).,Long,Core
+Google Supplier,AVGO,Broadcom,Co-designer of Google's custom TPU chips.,Long,Core
+Google Supplier,ANET,Arista Networks,Key supplier for high-speed data center networking.,Long,Core
+Google Supplier,MRVL,Marvell Technology,Supplier of optical interconnects and custom silicon.,Long,Core
+Google Supplier,VRT,Vertiv,Critical power and cooling infrastructure for high-density racks.,Long,Core
