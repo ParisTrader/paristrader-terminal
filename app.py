@@ -324,7 +324,7 @@ with st.sidebar:
             "Market Intelligence",  # Group
             "Stock",  # Group
             "Option",  # Option
-            "Volume Profile",  # Direct
+            "Future",       # Future
             "My Trade",  # Direct
             "MT5 EA",  # Direct
             "Legal"  # Direct
@@ -333,8 +333,8 @@ with st.sidebar:
             "house",
             "globe",
             "search",
-            "layers",  # Option icon
-            "bar-chart-steps",
+            "layers",
+            "graph-up-arrow",
             "briefcase",
             "robot",
             "file-text"
@@ -393,9 +393,20 @@ with st.sidebar:
     elif selected_nav == "Option":
         target_page = "Option"
 
-    # 獨立項目：直接將導航名稱設為目標頁面
-    elif selected_nav == "Volume Profile":
-        target_page = "Volume Profile"
+        # 👇 [修改] Future 區塊邏輯 (包含 Volume Profile 和 Intraday Volatility)
+    elif selected_nav == "Future":
+        st.caption("FUTURES & TRENDS")
+        target_page = option_menu(
+            menu_title=None,
+            options=["Volume Profile", "Intraday Volatility"],
+            icons=["bar-chart-steps", "lightning-charge"],  # 為 Volatility 加上圖標
+            styles={
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
+                "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+                "nav-link-selected": {"background-color": "#4B5563"},
+            }
+        )
 
     elif selected_nav == "My Trade":
         target_page = "My Trade"
@@ -407,7 +418,7 @@ with st.sidebar:
         target_page = "Legal & Compliance"
 
     st.markdown("---")
-    st.link_button("✈️ Join Telegram Channel", "https://t.me/algoparistrader", use_container_width=True)
+    st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
 
 # --- Content Routing ---
 
@@ -521,11 +532,11 @@ elif target_page == "Market Risk":
             </style>
             """
             html_content = html_content.replace("<head>", "<head>" + fix_style)
-            components.html(html_content, height=2500, scrolling=False)
+            components.html(html_content, height=2200, scrolling=False)
     else:
         html_content, filename = get_latest_file_content(path)
         if html_content:
-            components.html(html_content, height=2500, scrolling=False)
+            components.html(html_content, height=2200, scrolling=False)
         else:
             st.warning("⚠️ No risk reports found.")
             st.info("Please ensure `ImpliedParameters/implied_params.html` exists.")
@@ -621,13 +632,30 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
+    # 假設舊有的路徑是在 VP 資料夾下，如果路徑不同請自行調整
     html_path = os.path.join("VP", "volume_profile_dashboard.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1000, scrolling=True)
     else:
-        st.warning("⚠️ 尚未部署 Volume Profile 模組")
+        st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP/volume_profile_dashboard.html)")
 
+# [PAGE] Future -> Intraday Volatility (新增)
+elif target_page == "Intraday Volatility":
+    st.title("⚡ Intraday Volatility Analysis")
+
+    # 根據您上一輪的描述，檔案名稱為 "Intraday_Volatility.html"
+    # 這裡假設該檔案位於根目錄，如果是在 MarketDashboard 資料夾下，請改為 os.path.join("MarketDashboard", "Intraday_Volatility.html")
+    html_path = "Intraday_Volatility.html"
+
+    html_content = load_html_file(html_path)
+    if html_content and "File not found" not in html_content:
+        # 設定足夠的高度以顯示兩個圖表
+        components.html(html_content, height=1200, scrolling=True)
+    else:
+        st.warning("⚠️ 找不到 Intraday Volatility 報告")
+        st.info(f"請確認檔案 `{html_path}` 是否存在。")
+        
 # [PAGE] My Trade
 elif target_page == "My Trade":
     if 'trade_app' in locals():
