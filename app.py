@@ -351,7 +351,8 @@ with st.sidebar:
             "Future",  # Future
             "My Trade",  # Direct
             "MT5 EA",  # Direct
-            "Legal"  # Direct
+            "Legal",  # Direct
+            "Resources"  # New Section
         ],
         icons=[
             "house",
@@ -361,7 +362,8 @@ with st.sidebar:
             "graph-up-arrow",
             "briefcase",
             "robot",
-            "file-text"
+            "file-text",
+            "collection"  # Icon for Resources
         ],
         menu_icon="compass",
         default_index=0,
@@ -439,6 +441,9 @@ with st.sidebar:
 
     elif selected_nav == "Legal":
         target_page = "Legal & Compliance"
+
+    elif selected_nav == "Resources":
+        target_page = "Resources"
 
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
@@ -718,11 +723,17 @@ elif target_page == "HSI CBBC Ladder":
 
 # [PAGE] My Trade
 elif target_page == "My Trade":
-    if 'trade_app' in locals():
-        trade_app.render_trade_page()
-    else:
-        st.error("Trade module not loaded.")
+    # 👇 [修改] 這裡要改成讀取 trade_record.html
+    html_path = os.path.join("Trade", "trade_record.html")
 
+    # 讀取並渲染
+    html_content = load_html_file(html_path)
+
+    if html_content and "File not found" not in html_content:
+        components.html(html_content, height=1200, scrolling=True)
+    else:
+        st.warning("⚠️ Trade Record HTML not found.")
+        st.info("請確認 GitHub Actions 是否已成功執行並生成 `Trade/trade_record.html`。")
 # [PAGE] MT5 EA
 elif target_page == "MT5 EA":
     st.title("🤖 MT5 Expert Advisor")
@@ -750,6 +761,19 @@ elif target_page == "Legal & Compliance":
     with tab3:
         html = load_html_file(os.path.join("Legal", "terms.html"))
         st.html(html)
+
+# [PAGE] Resources (NEW)
+elif target_page == "Resources":
+    st.title("🔗 Trading Resources")
+
+    html_path = os.path.join("Resources", "external_links.html")
+    html_content = load_html_file(html_path)
+
+    if html_content and "File not found" not in html_content:
+        components.html(html_content, height=1000, scrolling=True)
+    else:
+        st.warning("⚠️ Resources file not found.")
+        st.info(f"Please ensure `{html_path}` exists.")
 
 # ==========================================
 # 5. Global Footer
