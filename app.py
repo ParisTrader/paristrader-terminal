@@ -95,7 +95,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. 自定義 CSS (背景與介面優化)
+# 2. 自定義 CSS (背景與介面優化 - 含手機版修復)
 # ==========================================
 st.markdown("""
 <style>
@@ -111,34 +111,67 @@ st.markdown("""
         color: #e2e8f0;
     }
 
-/* --- [修正] 隱藏 Streamlit 官方元素 --- */
-    
-    /* 1. 隱藏上方 Header (三條線選單旁的色條) */
-    header {
-        background: transparent !important;
-        visibility: hidden !important;
+    /* ----------------------------------------------------
+       📱 手機與電腦的差異化設定 (Media Queries)
+       ---------------------------------------------------- */
+
+    /* === 電腦版 (螢幕寬度 > 768px) === */
+    @media (min-width: 768.1px) {
+        /* 電腦版隱藏 Header，追求極簡 */
+        header {
+            visibility: hidden !important;
+        }
+        /* 電腦版隱藏原生的漢堡選單 */
+        #MainMenu {
+            visibility: hidden !important;
+            display: none !important;
+        }
     }
-    
-    /* 2. 隱藏右下角 "Hosted with Streamlit" 及底部 Footer */
+
+    /* === 手機版 (螢幕寬度 <= 768px) === */
+    @media (max-width: 768px) {
+        /* 1. 讓 Header 可見，這樣才能點擊左上角的箭頭打開 Sidebar */
+        header {
+            visibility: visible !important;
+            background: transparent !important;
+        }
+
+        /* 2. 讓左上角的選單按鈕更明顯一點 (半透明黑底)，以免看不見 */
+        header button[kind="header"] {
+            background-color: rgba(17, 24, 39, 0.6) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+        }
+
+        /* 3. [解決空間太少] 縮小手機版內容的邊距 (Padding) */
+        .block-container {
+            padding-top: 3rem !important;    /* 留一點空間給選單按鈕 */
+            padding-left: 1rem !important;   /* 減少左右留白 */
+            padding-right: 1rem !important;
+        }
+
+        /* 4. 手機版字體稍微調小，避免標題爆框 */
+        h1 { font-size: 1.8rem !important; }
+        h2 { font-size: 1.5rem !important; }
+        h3 { font-size: 1.2rem !important; }
+    }
+
+    /* ----------------------------------------------------
+       共用設定 (保持原樣)
+       ---------------------------------------------------- */
+
+    /* 隱藏右下角 Footer */
     footer {
         visibility: hidden !important;
         display: none !important;
     }
-    
-    /* 3. 隱藏右上角漢堡選單 (三條線) - 讓它看起來像原生 App */
-    /* 如果您想保留選單給自己用，這行可以不加，但為了專業感建議隱藏 */
-    #MainMenu {
-        visibility: hidden !important;
-        display: none !important;
-    }
-    
-    /* 4. 針對 Streamlit Cloud 的 Viewer Badge (有時候 footer 抓不到) */
-    .stApp > header {
-        display: none !important;
-    }
+
+    /* 隱藏彩虹線裝飾 */
     div[data-testid="stDecoration"] {
         display: none !important;
     }
+
     /* --- 背景層 --- */
     .fixed-bg {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
@@ -166,7 +199,7 @@ st.markdown("""
     section[data-testid="stSidebar"] {
         background-color: #111827; 
         border-right: 1px solid #374151;
-        z-index: 99999 !important;
+        z-index: 999999 !important; /* 加大層級，確保蓋過內容 */
     }
 
     section[data-testid="stSidebar"] h1,
@@ -610,6 +643,4 @@ st.markdown("""
         <a href="https://t.me/algoparistrader" target="_blank">@ParisTrader on TG</a>
     </p>
 </div>
-
 """, unsafe_allow_html=True)
-
