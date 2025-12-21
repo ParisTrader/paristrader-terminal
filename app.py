@@ -117,11 +117,26 @@ st.markdown("""
 
     /* === 電腦版 (螢幕寬度 > 768px) === */
     @media (min-width: 768.1px) {
-        /* 電腦版隱藏 Header，追求極簡 */
+        /* 1. 不要隱藏整個 Header，改為背景透明 (這樣才能保留左上角的箭頭按鈕) */
         header {
-            visibility: hidden !important;
+            visibility: visible !important;
+            background: transparent !important;
         }
-        /* 電腦版隱藏原生的漢堡選單 */
+
+        /* 2. 僅隱藏右上角的功能選單 (Deploy, 3個點點, Settings) */
+        [data-testid="stToolbar"], [data-testid="stHeaderActionElements"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+        
+        /* 3. 明確指定 "側邊欄收折控制鈕 (>)" 必須顯示，並設為白色以免看不見 */
+        [data-testid="stSidebarCollapsedControl"] {
+            visibility: visible !important;
+            display: block !important;
+            color: #ffffff !important;
+        }
+
+        /* 4. 隱藏原生的漢堡選單 (舊版相容) */
         #MainMenu {
             visibility: hidden !important;
             display: none !important;
