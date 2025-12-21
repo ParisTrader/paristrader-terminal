@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: transparent;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .resource-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 120px;
+    }
+
+    .resource-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-color: rgba(96, 165, 250, 0.5);
+        background: rgba(30, 41, 59, 0.9);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .icon {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #f8fafc;
+        font-weight: 600;
+    }
+
+    p {
+        margin: 10px 0 0 0;
+        font-size: 0.9rem;
+        color: #94a3b8;
+        line-height: 1.4;
+    }
+
+    .arrow {
+        align-self: flex-end;
+        color: #3b82f6;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+</style>
+</head>
+<body>
+
+    <div class="grid-container">
+        
+        <a href="https://www.investing.com/economic-calendar/" target="_blank" class="resource-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">📅</span>
+                    <h3>Economic Calendar</h3>
+                </div>
+                <p>Investing.com global economic data schedule and forecasts.</p>
+            </div>
+            <span class="arrow">&nearr;</span>
+        </a>
+
+        <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" class="resource-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">😨</span>
+                    <h3>Fear & Greed Index</h3>
+                </div>
+                <p>CNN's market sentiment indicator. Gauge market emotion.</p>
+            </div>
+            <span class="arrow">&nearr;</span>
+        </a>
+
+        <a href="https://www.cmegroup.com/cn-t/markets/interest-rates/cme-fedwatch-tool.html" target="_blank" class="resource-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">🏦</span>
+                    <h3>CME FedWatch Tool</h3>
+                </div>
+                <p>Monitor market expectations for potential Fed rate changes.</p>
+            </div>
+            <span class="arrow">&nearr;</span>
+        </a>
+
+        <a href="https://www.tradingview.com/" target="_blank" class="resource-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">📈</span>
+                    <h3>TradingView</h3>
+                </div>
+                <p>Advanced charting platform and social network for traders.</p>
+            </div>
+            <span class="arrow">&nearr;</span>
+        </a>
+
+        <a href="https://finviz.com/map.ashx" target="_blank" class="resource-card">
+            <div>
+                <div class="card-header">
+                    <span class="icon">🗺️</span>
+                    <h3>Finviz Heatmap</h3>
+                </div>
+                <p>Visualizing market performance across sectors and industries.</p>
+            </div>
+            <span class="arrow">&nearr;</span>
+        </a>
+
+    </div>
+
+</body>
+</html>
