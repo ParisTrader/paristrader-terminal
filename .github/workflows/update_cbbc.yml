@@ -1,0 +1,60 @@
+name: Update HSI CBBC Ladder
+
+on:
+  schedule:
+    # 交易日定時更新 (UTC 時間)
+    # 02:00 UTC = 10:00 HKT (開盤後)
+    # 05:00 UTC = 13:00 HKT (午休)
+    # 09:00 UTC = 17:00 HKT (收盤後)
+    - cron: '0 2,5,9 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. 下載 Private Code
+    - name: Checkout Private Code
+      uses: actions/checkout@v4
+
+    # 2. 設定 Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 3. 安裝依賴 (pandas, requests, yfinance)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas requests yfinance
+
+    # 4. 執行 CBBC 腳本
+    - name: Run CBBC Script
+      run: |
+        # 腳本現在會直接在 MarketDashboard 資料夾下生成 HSI_CBBC_Ladder.html
+        python MarketDashboard/CBBC.py
+
+    # 5. 推送到 Public Repo
+    - name: Push to Public Repo
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      run: |
+        git config --global user.name "ParisTrader Bot"
+        git config --global user.email "bot@paristrader.com"
+        
+        # Clone Public Repo
+        git clone https://x-access-token:${API_TOKEN_GITHUB}@github.com/ParisTrader/paristrader-terminal.git public_repo
+        
+        # 建立資料夾 (如果不存在)
+        mkdir -p public_repo/MarketDashboard
+        
+        # 複製檔案 (來源是 MarketDashboard/HSI_CBBC_Ladder.html)
+        cp MarketDashboard/HSI_CBBC_Ladder.html public_repo/MarketDashboard/
+        
+        # 推送
+        cd public_repo
+        git add MarketDashboard/HSI_CBBC_Ladder.html
+        git commit -m "Auto-update HSI CBBC Ladder [skip ci]" || echo "No changes to commit"
+        git push origin main
