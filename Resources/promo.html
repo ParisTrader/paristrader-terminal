@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParisTrader 年度感恩祭 | 足金馬到功成</title>
+    <style>
+        /* --- 基礎設定 --- */
+        :root {
+            --bg-color: #0B0E14; /* 深色背景 */
+            --card-bg: #1E293B;
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --gold-primary: #F59E0B; /* 金色 */
+            --gold-gradient: linear-gradient(135deg, #FDE68A 0%, #D97706 100%);
+            --accent-blue: #3B82F6;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- 頂部 Hero Section --- */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: radial-gradient(circle at center, rgba(30, 41, 59, 0.8) 0%, rgba(11, 14, 20, 1) 70%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 10px 0;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--gold-primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* --- 卡片樣式 --- */
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card.highlight {
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: linear-gradient(to bottom right, rgba(30, 41, 59, 1), rgba(20, 25, 35, 1));
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .highlight-text {
+            color: var(--gold-primary);
+            font-weight: bold;
+        }
+
+        /* --- 圖片樣式 --- */
+        .promo-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: block;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '✓';
+            color: var(--gold-primary);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* --- 按鈕 --- */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .btn-gold {
+            background: var(--gold-gradient);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #fff;
+        }
+
+        /* --- Q&A 區域 --- */
+        .qa-section {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .qa-item {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .answer {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* --- 頁腳 --- */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6B7280;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+        }
+
+        /* --- 手機版調整 --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <span class="brand">ParisTrader Quant Research</span>
+            <h1>足金馬到功成<br>年度感恩大行動</h1>
+            <p class="subtitle">
+                感謝戰友 2025 全年支持！配合金價新高，我們送出足金飾物與升級大禮，與您喜迎馬年。
+            </p>
+            <div class="date-badge">📅 活動日期：2025年12月22日 - 31日</div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="section-card">
+            <div class="card-title">
+                🌟 第一重：全員感恩禮 (人人有份)
+            </div>
+            
+            <img src="https://raw.githubusercontent.com/ParisTrader/paristrader-terminal/main/Resources/horse_pro1.jpg" alt="999足金馬年開運飾物" class="promo-img">
+            
+            <div class="card-content">
+                <p>為答謝現有會員的一路相伴，只需填寫表格，即可獲贈：</p>
+                <h3 class="highlight-text" style="font-size: 1.3rem;">🎁 999 足金馬年開運飾物 一件</h3>
+                <p>寓意：金玉滿堂，明年倉位金光閃閃！</p>
+            </div>
+            
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf4gY_B2KXpAcQ1T7wjQRt9CX4yAgAx9pJ6wULCRFGOYLZmag/viewform?pli=1" target="_blank" class="btn btn-gold">👉 立即填表領取</a>
+        </div>
+
+        <div class="section-card highlight">
+            <div style="position: absolute; top: 0; right: 0; background: #F59E0B; color: #000; font-size: 0.8rem; padding: 5px 10px; font-weight: bold; border-bottom-left-radius: 8px;">推薦</div>
+            
+            <div class="card-title">
+                🚀 第二重：升級續費．鎖定優惠
+            </div>
+
+            <img src="https://raw.githubusercontent.com/ParisTrader/paristrader-terminal/main/Resources/horse_pro2.jpg" alt="馬年風水擺設" class="promo-img">
+            
+            <div class="card-content">
+                <p>2026 年系統將全面升級（Swing Trade 工具 + EA 優化），年費即將調整。把握現在，鎖定未來！</p>
+                
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <ul>
+                        <li><strong style="color:white">資格：</strong>趁漲價前「續約下一年」或「月費轉年費」</li>
+                        <li><strong style="color:white">承諾：</strong>舊制會員享有 <span class="highlight-text">永遠沿用舊價</span> 之權益</li>
+                        <li><strong style="color:white">加碼禮：</strong>額外獲贈 <span class="highlight-text">精美馬年風水擺設</span> 一座 (如上圖)</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="https://t.me/Ho777ggg" target="_blank" class="btn btn-outline">🔥 聯絡 @Ho777ggg 續費鎖定</a>
+        </div>
+
+        <div class="section-card">
+            <div class="card-title">
+                🤝 第三重：推廣有賞
+            </div>
+            <div class="card-content">
+                <p>好策略要同好朋友分享！</p>
+                <ul>
+                    <li><strong>資格：</strong>成功推薦一位新朋友加入 ParisTrader</li>
+                    <li><strong>禮品：</strong>同享 <span class="highlight-text">馬年風水擺設</span> 一座</li>
+                </ul>
+            </div>
+            <a href="https://t.me/Ho777ggg" target="_blank" class="btn btn-outline" style="border-style: dashed;">💬 聯絡專員推薦朋友</a>
+        </div>
+
+        <div class="qa-section">
+            <h3 style="text-align: center; color: #fff; margin-top: 0;">❓ 常見問題 Q&A</h3>
+            
+            <div class="qa-item">
+                <div class="question">Q：我之前已經俾咗年費，會籍未到期，可唔可以參加「升級大禮」？</div>
+                <div class="answer">A：絕對可以！您可以選擇提早續費。新購買的年費會籍將會<strong>自動疊加</strong>在您現有的會期之後（例如：原定2026年3月到期 ➡️ 續費後延長至2027年3月）。</div>
+            </div>
+
+            <div class="qa-item">
+                <div class="question">Q：如何領取足金飾物？</div>
+                <div class="answer">A：請點擊上方的黃色按鈕填寫 Google Form，我們會核對您的會員資料後安排寄出。</div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ParisTrader. All rights reserved.</p>
+        <p>Investment involves risk. 本活動最終解釋權歸 ParisTrader 所有。</p>
+    </footer>
+
+</body>
+</html>
