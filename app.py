@@ -340,35 +340,19 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # 主導航菜單 (混合模式：部分是直接連結，部分是群組)
+    # 4. 建立導航選單 (純粹的內部導航，不讀寫 URL)
     selected_nav = option_menu(
         menu_title="Navigation",
         options=[
-            "Home",
-            "Market Intelligence",  # Group
-            "Stock",  # Group
-            "Option",  # Option
-            "Future",  # Future
-            "My Trade",  # Direct
-            "MT5 EA",  # Direct
-            "Legal",  # Direct
-            "Resources",  # New Section
-            "Promotion"  # [New] Promotion Section
+            "Home", "Market Intelligence", "Stock", "Option",
+            "Future", "My Trade", "MT5 EA", "Legal", "Resources", "Promotion"
         ],
         icons=[
-            "house",
-            "globe",
-            "search",
-            "layers",
-            "graph-up-arrow",
-            "briefcase",
-            "robot",
-            "file-text",
-            "collection",
-            "gift"  # [New] Gift icon for Promotion
+            "house", "globe", "search", "layers",
+            "graph-up-arrow", "briefcase", "robot", "file-text", "collection", "gift"
         ],
         menu_icon="compass",
-        default_index=0,
+        default_index=0,  # 永遠預設首頁
         styles={
             "container": {"padding": "0!important", "background-color": "transparent"},
             "icon": {"color": "#9CA3AF", "font-size": "15px"},
@@ -380,22 +364,18 @@ with st.sidebar:
         }
     )
 
-    # 路由變數
-    target_page = None
+    # 路由變數初始化
+    target_page = selected_nav
 
-    # --- 邏輯處理 ---
-    if selected_nav == "Home":
-        target_page = "Home"
-
-    elif selected_nav == "Market Intelligence":
+    # --- 次級選單邏輯 (Sub-menus) ---
+    if selected_nav == "Market Intelligence":
         st.caption("MARKET MODULES")
         target_page = option_menu(
             menu_title=None,
             options=["Market Risk", "Market Breadth"],
             icons=["activity", "bar-chart-line"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
-                              "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
@@ -406,18 +386,13 @@ with st.sidebar:
         target_page = option_menu(
             menu_title=None,
             options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target", "Industry Sector Heatmap"],
-            icons=["cash-coin", "radar", "basket", "bullseye", "grid-3x3"],  # Added icon
+            icons=["cash-coin", "radar", "basket", "bullseye", "grid-3x3"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
-                              "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
         )
-
-    # Option 路由邏輯
-    elif selected_nav == "Option":
-        target_page = "Option"
 
     elif selected_nav == "Future":
         st.caption("FUTURES & TRENDS")
@@ -426,27 +401,11 @@ with st.sidebar:
             options=["Volume Profile", "Intraday Volatility", "HSI CBBC Ladder"],
             icons=["bar-chart-steps", "lightning-charge", "distribute-vertical"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
-                              "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
         )
-
-    elif selected_nav == "My Trade":
-        target_page = "My Trade"
-
-    elif selected_nav == "MT5 EA":
-        target_page = "MT5 EA"
-
-    elif selected_nav == "Legal":
-        target_page = "Legal & Compliance"
-
-    elif selected_nav == "Resources":
-        target_page = "Resources"
-
-    elif selected_nav == "Promotion":
-        target_page = "Promotion"
 
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
@@ -501,12 +460,8 @@ if target_page == "Home":
         st.markdown("<br>", unsafe_allow_html=True)
         st.subheader("🧠 Weekly Deduction (本週推演)")
 
-        # 建立一個容器
         with st.container():
-            # 讀取文章內容 (確保 load_weekly_analysis 函數已定義在上方)
             analysis_content = load_weekly_analysis()
-
-            # 使用 Expander 包裹內容，預設展開 (expanded=True)
             with st.expander("📖 點擊展開/收合完整推演", expanded=True):
                 st.markdown(analysis_content)
 
@@ -550,7 +505,7 @@ elif target_page == "Market Dashboard":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        components.html(html_content, height=2500, scrolling=False)
+        components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No dashboard files found.")
         st.error(f"Error: {filename}")
@@ -578,23 +533,19 @@ elif target_page == "Market Risk":
             </style>
             """
             html_content = html_content.replace("<head>", "<head>" + fix_style)
-            components.html(html_content, height=2200, scrolling=False)
+            components.html(html_content, height=2200, scrolling=True)
     else:
         html_content, filename = get_latest_file_content(path)
         if html_content:
-            components.html(html_content, height=2200, scrolling=False)
+            components.html(html_content, height=2200, scrolling=True)
         else:
             st.warning("⚠️ No risk reports found.")
             st.info("Please ensure `ImpliedParameters/implied_params.html` exists.")
 
-# [PAGE] Market Breadth (New Added)
+# [PAGE] Market Breadth
 elif target_page == "Market Breadth":
     st.title("🌊 Market Breadth")
-
-    # Path to the file generated by the new script
     path = os.path.join("MarketDashboard", "market_breadth.html")
-
-    # Check if file exists and load it
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             html_content = f.read()
@@ -603,18 +554,14 @@ elif target_page == "Market Breadth":
         st.warning("⚠️ Market Breadth report not found.")
         st.info(f"Please run `MarketDashboard/generate_market_breadth.py` to generate the report.")
 
-# [PAGE] Industry Sector Heatmap (New Independent Page)
+# [PAGE] Industry Sector Heatmap
 elif target_page == "Industry Sector Heatmap":
     st.title("🔥 Industry Sector Heatmap")
     st.caption("Daily Return Heatmap (Last 20 Days)")
-
-    # Path to the Heatmap HTML
     path = os.path.join("MarketDashboard", "sector_etf_heatmap.html")
-
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             html_content = f.read()
-            # Heatmaps are wide, give it plenty of height and scrolling
             components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ Sector Heatmap not found.")
@@ -625,9 +572,8 @@ elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
-
     if html_content:
-        components.html(html_content, height=2500, scrolling=False)
+        components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
         st.info("請確認根目錄下有 `Earnings` 資料夾，並且裡面有 .html 檔案。")
@@ -646,15 +592,14 @@ elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
     path = "ThematicBasket"
     html_content, filename = get_latest_file_content(path)
-
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
-        components.html(html_content, height=6000, scrolling=False)
+        components.html(html_content, height=6000, scrolling=True)
     else:
         st.warning("⚠️ No basket reports found.")
         st.info(f"Checking path: {os.path.abspath(path)}")
 
-# [PAGE] Volatility Target (New Added)
+# [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
     html_path = os.path.join("VolTarget", "vol_tool.html")
@@ -678,7 +623,6 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
-    # 假設舊有的路徑是在 VP 資料夾下，如果路徑不同請自行調整
     html_path = os.path.join("VP", "volume_profile_dashboard.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
@@ -686,75 +630,53 @@ elif target_page == "Volume Profile":
     else:
         st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP/volume_profile_dashboard.html)")
 
-# [PAGE] Future -> Intraday Volatility (新增)
+# [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
     st.title("⚡ Intraday Volatility Analysis")
-
-    # 根據您上一輪的描述，檔案名稱為 "Intraday_Volatility.html"
-    # 這裡假設該檔案位於根目錄，如果是在 MarketDashboard 資料夾下，請改為 os.path.join("MarketDashboard", "Intraday_Volatility.html")
     html_path = os.path.join("MarketDashboard", "Intraday_Volatility.html")
-
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
-        # 設定足夠的高度以顯示兩個圖表
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ 找不到 Intraday Volatility 報告")
         st.info(f"請確認檔案 `{html_path}` 是否存在。")
 
-# ... (Intraday Volatility 區塊之後)
-
-# [PAGE] Future -> HSI CBBC Ladder (新增)
+# [PAGE] Future -> HSI CBBC Ladder
 elif target_page == "HSI CBBC Ladder":
     st.title("🐻 HSI CBBC Heavy Zone (牛熊重貨區)")
-
-    # 檔案路徑：假設自動化腳本將其存放在 MarketDashboard 資料夾下，並命名為 HSI_CBBC_Ladder.html
-    # 注意：我們會在自動化腳本中強制輸出這個固定的檔名，方便讀取
     html_path = os.path.join("MarketDashboard", "HSI_CBBC_Ladder.html")
-
-    # 嘗試讀取檔案
     html_content = load_html_file(html_path)
-
     if html_content and "File not found" not in html_content:
-        # 使用 components.html 渲染，高度設大一點以容納表格
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ 尚未生成牛熊證分佈報告")
         st.info(f"請確認檔案 `{html_path}` 是否存在。")
 
-# ... (接續 My Trade 區塊)
-
 # [PAGE] My Trade
 elif target_page == "My Trade":
-    # 👇 [修改] 這裡要改成讀取 trade_record.html
     html_path = os.path.join("Trade", "trade_record.html")
-
-    # 讀取並渲染
     html_content = load_html_file(html_path)
-
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ Trade Record HTML not found.")
         st.info("請確認 GitHub Actions 是否已成功執行並生成 `Trade/trade_record.html`。")
+
 # [PAGE] MT5 EA
 elif target_page == "MT5 EA":
     st.title("🤖 MT5 Expert Advisor")
     path = "MT5EA"
     html_content, filename = get_latest_file_content(path)
-
     if html_content:
-        components.html(html_content, height=3000, scrolling=False)
+        components.html(html_content, height=3000, scrolling=True)
     else:
         st.warning("⚠️ No marketing content found.")
         st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
 
 # [PAGE] LEGAL
-elif target_page == "Legal & Compliance":
+elif target_page == "Legal":
     st.title("📜 Legal & Compliance")
-
     tab1, tab2, tab3 = st.tabs(["Disclaimer", "Privacy Policy", "Terms of Use"])
-
     with tab1:
         html = load_html_file(os.path.join("Legal", "disclaimer.html"))
         st.html(html)
@@ -765,27 +687,24 @@ elif target_page == "Legal & Compliance":
         html = load_html_file(os.path.join("Legal", "terms.html"))
         st.html(html)
 
-# [PAGE] Resources (NEW)
+# [PAGE] Resources
 elif target_page == "Resources":
     st.title("🔗 Trading Resources")
-
     html_path = os.path.join("Resources", "external_links.html")
     html_content = load_html_file(html_path)
-
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ Resources file not found.")
         st.info(f"Please ensure `{html_path}` exists.")
 
-# [PAGE] Promotion (New)
+# [PAGE] Promotion (NEW)
 elif target_page == "Promotion":
-    # No st.title needed because the HTML has a big header
+    # No st.title needed as HTML handles it
     html_path = os.path.join("Promotion", "promo.html")
     html_content = load_html_file(html_path)
-
     if html_content and "File not found" not in html_content:
-        # Use a large height to accommodate the content (Cards + Q&A)
+        # Increase height for full promotional content and allow scrolling
         components.html(html_content, height=1600, scrolling=True)
     else:
         st.warning("⚠️ Promotion page not found.")
