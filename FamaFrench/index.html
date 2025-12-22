@@ -2,97 +2,111 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Factor DNA: Pro Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Stock Factor DNA: Retail Pro Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        /* --- 基礎樣式 --- */
-        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        
-        header { text-align: center; margin-bottom: 25px; }
-        h1 { margin: 0; color: #1a1a1a; letter-spacing: 1px; }
-        .subtitle { color: #666; margin-top: 5px; font-size: 0.95em; }
+        /* --- 基礎視覺優化 --- */
+        :root {
+            --primary-color: #007bff;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #7f8c8d;
+            --danger: #e74c3c;
+            --success: #27ae60;
+        }
 
-        /* --- Tab 導航 --- */
-        .tabs { display: flex; justify-content: center; margin-bottom: 30px; gap: 10px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 20px; border: none; background: #e9ecef; border-radius: 25px; cursor: pointer; font-weight: bold; color: #555; transition: 0.3s; margin-bottom: 5px; }
-        .tab-btn.active { background: #007bff; color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-main); line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { margin: 0; color: #1a1a1a; letter-spacing: 1px; font-size: 1.8rem; }
+        .subtitle { color: var(--text-sub); margin-top: 8px; font-size: 0.95em; }
+
+        /* --- Tab 導航 (手機友善) --- */
+        .tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 8px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 18px; border: none; background: #eef2f5; border-radius: 20px; cursor: pointer; font-weight: 600; color: #666; transition: 0.2s; font-size: 0.9rem; flex: 1 1 auto; max-width: 150px; }
+        .tab-btn.active { background: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(0,123,255,0.25); }
         .tab-btn:hover:not(.active) { background: #dbe2e8; }
 
-        /* --- Tab 內容區塊 --- */
-        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 輸入控制項 --- */
-        .control-panel { text-align: center; margin-bottom: 25px; position: relative; }
-        input[type="text"], input[type="number"] { padding: 12px; border: 2px solid #e1e4e8; border-radius: 10px; text-align: center; outline: none; transition: 0.3s; text-transform: uppercase; font-weight: bold; }
-        input:focus { border-color: #007bff; }
-        .action-btn { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-left: 10px; }
+        /* --- 控制面板與輸入 --- */
+        .control-panel { text-align: center; margin-bottom: 20px; background: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #edf2f7; }
         
-        /* 篩選器樣式 */
+        /* 加大手機版輸入框 */
+        input[type="text"], input[type="number"] { padding: 12px 15px; border: 2px solid #e1e4e8; border-radius: 12px; text-align: center; outline: none; font-weight: bold; font-size: 1rem; width: 100px; max-width: 100%; }
+        input[type="text"] { width: 140px; text-transform: uppercase; }
+        input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        
+        .action-btn { background: var(--success); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; margin-left: 5px; box-shadow: 0 4px 6px rgba(39,174,96,0.2); transition: 0.2s; }
+        .action-btn:active { transform: scale(0.96); }
+
+        /* --- 一鍵篩選 (Quick Screener) --- */
         .filter-section { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-        .filter-btn { background: white; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.85em; color: #555; transition: 0.2s; }
-        .filter-btn:hover { background: #007bff; color: white; border-color: #007bff; }
-        #filter-results-container { display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 10px; position: relative; }
+        .filter-btn { background: white; border: 1px solid #dcdfe6; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; color: #555; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .filter-btn:hover { border-color: var(--primary-color); color: var(--primary-color); background: #f0f7ff; }
+
+        #filter-results-container { display: none; margin-top: 15px; padding: 15px; background: white; border: 1px dashed #ced4da; border-radius: 10px; position: relative; }
         #filter-results-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; max-height: 150px; overflow-y: auto; }
-        .stock-btn { background: #fff; border: 1px solid #007bff; color: #007bff; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9em; }
-        .stock-btn:hover { background: #007bff; color: white; }
-        .close-filter { position: absolute; top: 5px; right: 10px; cursor: pointer; color: #aaa; font-weight: bold; font-size: 1.2em; }
+        .stock-btn { background: #f1f3f5; border: none; color: #333; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; }
+        .stock-btn:hover { background: var(--primary-color); color: white; }
 
-        /* --- 投資組合表格 --- */
-        .portfolio-table { width: 100%; max-width: 600px; margin: 0 auto 20px auto; border-collapse: collapse; }
-        .portfolio-table th { text-align: left; padding: 10px; color: #666; font-size: 0.9em; }
-        .portfolio-table td { padding: 5px; }
-        .portfolio-input { width: 90%; }
-        .weight-input { width: 80px; }
-        .remove-row { color: #dc3545; cursor: pointer; font-weight: bold; font-size: 1.2em; }
+        /* --- 投資組合表格與預設按鈕 --- */
+        .portfolio-table { width: 100%; max-width: 100%; margin: 0 auto 15px auto; border-collapse: separate; border-spacing: 0 8px; }
+        .portfolio-table td { padding: 0 5px; }
+        .portfolio-table input { width: 100%; box-sizing: border-box; }
+        .remove-row { color: var(--danger); cursor: pointer; font-size: 1.5rem; line-height: 1; margin-left: 5px; }
 
-        /* --- 核心內容區 (左右佈局) --- */
-        .content-grid { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-top: 20px; min-height: 500px; }
-        .chart-section { flex: 1 1 400px; position: relative; min-width: 300px; }
-        
-        /* 圖表容器 */
-        .canvas-container { position: relative; width: 100%; height: 400px; min-height: 400px; } 
-        
-        /* Beta 趨勢圖容器 */
-        .trend-container { margin-top: 25px; padding: 20px; border: 1px solid #eee; background: #fafafa; border-radius: 12px; height: auto; width: 100%; display: none; box-sizing: border-box; }
-        .trend-explainer { font-size: 0.85em; color: #666; margin-bottom: 10px; line-height: 1.4; background: white; padding: 10px; border-radius: 8px; border: 1px dashed #ddd; }
-        
-        /* 智能分析面板 */
-        .insight-section { flex: 1 1 300px; background: #fff; padding: 25px; border-radius: 15px; border: 1px solid #e1e4e8; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: none; }
-        .insight-title { font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: #007bff; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
-        .insight-list { list-style: none; padding: 0; margin: 0; }
-        .insight-list li { margin-bottom: 15px; font-size: 0.95em; line-height: 1.6; padding-left: 24px; position: relative; color: #444; }
-        .insight-list li::before { content: "💡"; position: absolute; left: 0; top: 2px; font-size: 1.1em; }
-        .insight-highlight { font-weight: bold; color: #2c3e50; }
+        .preset-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .preset-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 5px; opacity: 0.9; }
+        .preset-btn:hover { opacity: 1; transform: translateY(-1px); }
+        .preset-btn.buffett { background: #27ae60; } /* Green */
+        .preset-btn.ark { background: #e74c3c; } /* Red */
+        .preset-btn.paris { background: #8e44ad; } /* Purple */
 
-        #tags-container { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 600; background: #e3f2fd; color: #1565c0; }
-        .tag.blue { background: #e3f2fd; color: #1565c0; }
+        /* --- 圖表與分析區 --- */
+        .content-grid { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 10px; }
+        .chart-section { flex: 1 1 100%; min-width: 0; } /* 防止 Chartjs 在 Flexbox 中溢出 */
+        
+        .canvas-container { position: relative; width: 100%; height: 380px; margin: 0 auto; } 
+
+        /* Trend Chart 優化 */
+        .trend-container { margin-top: 25px; background: #fff; border-radius: 16px; border: 1px solid #eee; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: none; }
+        .trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .trend-title { font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; }
+        .trend-badge { font-size: 0.85em; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+        .status-safe { background: #e8f5e9; color: #2e7d32; }
+        .status-danger { background: #ffebee; color: #c62828; }
+        .status-neutral { background: #e3f2fd; color: #1565c0; }
+
+        /* 分析面板 */
+        .insight-section { width: 100%; background: #fff; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary-color); box-shadow: 0 5px 20px rgba(0,0,0,0.05); display: none; box-sizing: border-box; }
+        .insight-title { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; color: var(--text-main); border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .insight-list { padding: 0; list-style: none; margin: 0; }
+        .insight-list li { margin-bottom: 12px; font-size: 0.95rem; color: #555; position: relative; padding-left: 25px; }
+        .insight-list li::before { content: "💡"; position: absolute; left: 0; top: 2px; }
+        .insight-highlight { color: #1a1a1a; font-weight: 700; }
+
+        /* 標籤雲 */
+        #tags-container { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        .tag { padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
+        .tag.blue { background: #e1f5fe; color: #0277bd; }
         .tag.red { background: #ffebee; color: #c62828; }
-        .tag.green { background: #e8f5e9; color: #2e7d32; }
+        .tag.green { background: #f1f8e9; color: #33691e; }
 
-        /* --- 關於頁面樣式 --- */
-        .about-section { background: #f8f9fa; padding: 30px; border-radius: 15px; border: 1px solid #e9ecef; }
-        .about-block { margin-bottom: 25px; }
-        .about-block h3 { color: #2c3e50; border-bottom: 2px solid #007bff; padding-bottom: 8px; display: inline-block; margin-top: 0; }
-        .about-text { color: #555; line-height: 1.8; font-size: 0.95em; }
-        .author-card { background: white; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .contact-link { display: inline-block; margin-right: 15px; margin-top: 10px; text-decoration: none; color: white; background-color: #0088cc; padding: 8px 15px; border-radius: 20px; font-weight: bold; transition: 0.2s; font-size: 0.9em; }
-        .contact-link:hover { background-color: #0077b5; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,136,204,0.3); }
-        .ref-link { color: #007bff; text-decoration: none; font-weight: bold; }
-
-        /* --- 合規免責聲明 --- */
-        .compliance-section { margin-top: 50px; padding: 25px; background-color: #f8f9fa; border-top: 3px solid #e9ecef; border-radius: 8px; font-size: 0.8em; color: #666; line-height: 1.6; text-align: justify; }
-        .compliance-section h4 { margin-top: 0; color: #333; font-size: 1.1em; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 10px; }
-        .compliance-block { margin-bottom: 15px; }
-        .compliance-title { font-weight: bold; color: #444; display: block; margin-bottom: 3px; }
-        .data-date-display { float: right; color: #007bff; font-weight: bold; }
-
-        @media (max-width: 768px) { .content-grid { flex-direction: column; } .portfolio-table { width: 100%; } }
+        /* 法律聲明 */
+        .compliance-section { margin-top: 40px; font-size: 0.75rem; color: #999; background: #f8f9fa; padding: 20px; border-radius: 10px; line-height: 1.5; }
+        
+        @media (min-width: 768px) {
+            .chart-section { flex: 0 0 55%; }
+            .insight-section { flex: 1; }
+            .content-grid { align-items: flex-start; }
+            .preset-btn { padding: 8px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -100,29 +114,32 @@
 <div class="container">
     <header>
         <h1>Stock Factor DNA</h1>
-        <div class="subtitle">美股因子特性分析 (Beta / Size / Value / Mom / Quality)</div>
+        <div class="subtitle">機構級視野 · 散戶化解讀 (Retail Pro Edition)</div>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('single')">🔍 個股分析</button>
-        <button class="tab-btn" onclick="switchTab('peer')">⚖️ 同業比較</button>
-        <button class="tab-btn" onclick="switchTab('portfolio')">💼 投資組合診斷</button>
-        <button class="tab-btn" onclick="switchTab('about')">ℹ️ 關於與參考</button>
+        <button class="tab-btn active" onclick="switchTab('single')">🔍 個股體檢</button>
+        <button class="tab-btn" onclick="switchTab('peer')">⚖️ 兩股PK</button>
+        <button class="tab-btn" onclick="switchTab('portfolio')">💼 組合診斷</button>
+        <button class="tab-btn" onclick="switchTab('about')">ℹ️ 說明</button>
     </div>
 
     <div id="tab-single" class="tab-content active">
         <div class="control-panel">
-            <input type="text" id="tickerInput" placeholder="輸入代碼 (e.g. AAPL)" onkeyup="if(event.key==='Enter') updateSingleChart()">
+            <div style="margin-bottom:10px; font-size:0.9em; color:#666;">輸入美股代號 (如 AAPL)</div>
+            <input type="text" id="tickerInput" placeholder="CODE" onkeyup="if(event.key==='Enter') updateSingleChart()">
+            <button class="action-btn" onclick="updateSingleChart()">開始分析</button>
+            
             <div class="filter-section">
-                <button onclick="filterStocks('High Quality')" class="filter-btn">💎 High Quality</button>
-                <button onclick="filterStocks('High Growth')" class="filter-btn">🚀 High Growth</button>
-                <button onclick="filterStocks('Deep Value')" class="filter-btn">💰 Deep Value</button>
-                <button onclick="filterStocks('Small Cap')" class="filter-btn">🐣 Small Cap</button>
-                <button onclick="filterStocks('Defensive')" class="filter-btn">🛡️ Defensive</button>
+                <button onclick="filterStocks('High Quality')" class="filter-btn">💎 優質護城河</button>
+                <button onclick="filterStocks('Deep Value')" class="filter-btn">💰 深度價值(便宜)</button>
+                <button onclick="filterStocks('High Growth')" class="filter-btn">🚀 高成長夢想</button>
+                <button onclick="filterStocks('Defensive')" class="filter-btn">🛡️ 避風港防禦</button>
             </div>
+            
             <div id="filter-results-container">
-                <span class="close-filter" onclick="document.getElementById('filter-results-container').style.display='none'">×</span>
-                <div style="font-size:0.9em; color:#666; margin-bottom:10px;">請選擇股票：</div>
+                <span style="position:absolute; top:5px; right:10px; cursor:pointer; font-size:1.2em;" onclick="this.parentElement.style.display='none'">×</span>
+                <div style="font-size:0.85em; color:#666; margin-bottom:8px;">點擊以載入股票：</div>
                 <div id="filter-results-buttons"></div>
             </div>
         </div>
@@ -130,52 +147,51 @@
 
     <div id="tab-peer" class="tab-content">
         <div class="control-panel">
-            <input type="text" id="peerA" placeholder="股票 A" style="width: 120px;">
-            <span style="font-weight:bold; margin:0 10px; color:#999;">VS</span>
-            <input type="text" id="peerB" placeholder="股票 B" style="width: 120px;">
-            <button class="action-btn" onclick="updatePeerChart()">開始比較</button>
+            <div style="margin-bottom:10px; font-size:0.9em; color:#666;">比較兩支股票的「性格」差異</div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:5px;">
+                <input type="text" id="peerA" placeholder="股票 A" style="width: 100px;">
+                <span style="font-weight:bold; color:#999;">VS</span>
+                <input type="text" id="peerB" placeholder="股票 B" style="width: 100px;">
+            </div>
+            <br>
+            <button class="action-btn" onclick="updatePeerChart()">進行 PK</button>
         </div>
     </div>
 
     <div id="tab-portfolio" class="tab-content">
         <div class="control-panel">
+            <div style="font-size:0.9em; color:#666; margin-bottom:10px;">一鍵套用大師模組 (看看他們買什麼)</div>
+            <div class="preset-group">
+                <button class="preset-btn buffett" onclick="loadPreset('buffett')">👴 巴菲特風格 (穩健)</button>
+                <button class="preset-btn ark" onclick="loadPreset('ark')">👩‍🦰 木頭姐 ARK (激進)</button>
+                <button class="preset-btn paris" onclick="loadPreset('paris')">🦊 ParisTrader (平衡)</button>
+            </div>
+            <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+            
             <table class="portfolio-table" id="portfolioTable">
-                <thead><tr><th>股票代碼</th><th>權重 %</th><th></th></tr></thead>
+                <thead><tr><th style="text-align:left;">代號</th><th style="width:80px;">權重%</th><th></th></tr></thead>
                 <tbody>
                     <tr><td><input type="text" class="portfolio-input" value="AAPL"></td><td><input type="number" class="weight-input" value="50"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td></tr>
                     <tr><td><input type="text" class="portfolio-input" value="KO"></td><td><input type="number" class="weight-input" value="50"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td></tr>
                 </tbody>
             </table>
-            <button onclick="addPortfolioRow()" style="background:#007bff; color:white; border:none; padding:5px 15px; border-radius:15px; cursor:pointer;">+ 新增股票</button>
+            <button onclick="addPortfolioRow()" style="background:#e9ecef; color:#333; border:none; padding:8px 20px; border-radius:20px; cursor:pointer; font-size:0.9em;">+ 新增股票</button>
             <br><br>
-            <button class="action-btn" onclick="updatePortfolioChart()">計算投資組合 DNA</button>
+            <button class="action-btn" onclick="updatePortfolioChart()">診斷我的組合</button>
         </div>
     </div>
 
     <div id="tab-about" class="tab-content">
-        <div class="about-section">
-            <div class="about-block">
-                <h3>📚 模型理論與數據來源</h3>
-                <div class="about-text">
-                    <p>本工具的核心模型基於諾貝爾經濟學獎得主 <strong>Eugene Fama</strong> 與 <strong>Kenneth French</strong> 教授提出的多因子模型 (Fama-French Multi-Factor Model)。該模型認為股票的回報並非隨機，而是由市場風險 (Beta)、規模 (Size)、價值 (Value)、盈利能力 (Quality/RMW) 等結構性因子所驅動。</p>
-                    <p>所有因子原始數據均直接引用自：<br>
-                    <strong>Kenneth R. French Data Library</strong><br>
-                    <em>Tuck School of Business at Dartmouth College</em><br>
-                    <a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" class="ref-link">🌐 Visit Data Library</a></p>
-                </div>
-            </div>
-
-            <div class="about-block">
-                <h3>👨‍💻 關於作者</h3>
-                <div class="author-card about-text">
-                    <p><strong>Developed by ParisTrader</strong></p>
-                    <p>致力於將機構級的量化分析工具普及化，協助投資者以科學視角透視市場風險與機會。</p>
-                    <div style="margin-top: 15px;">
-                        <a href="https://t.me/algoparistrader" target="_blank" class="contact-link">📢 Telegram Channel</a>
-                        <a href="https://t.me/ParisTrader" target="_blank" class="contact-link">💬 PM Contact</a>
-                    </div>
-                </div>
-            </div>
+        <div style="background:#fff; padding:25px; border-radius:15px; border:1px solid #eee;">
+            <h3 style="color:#007bff; border-bottom:2px solid #f0f0f0; padding-bottom:10px; margin-top:0;">📊 這是什麼工具？</h3>
+            <p>這是將機構法人的 **Fama-French 五因子模型** 簡化給散戶使用的「X光機」。</p>
+            <ul style="padding-left:20px; line-height:1.8; color:#555;">
+                <li><strong>波動風險 (Beta):</strong> 越高代表股價越像雲霄飛車。</li>
+                <li><strong>規模 (Size):</strong> 越往外圈代表市值越小 (Small Cap)，爆發力強但風險高。</li>
+                <li><strong>便宜估值 (Value):</strong> 分數高代表股價相對於基本面很「便宜」(Deep Value)。</li>
+                <li><strong>動能 (Mom):</strong> 分數高代表近期股價強勢，正在上漲趨勢中。</li>
+                <li><strong>品質 (Quality):</strong> 代表公司賺錢能力與財務體質是否穩健。</li>
+            </ul>
         </div>
     </div>
 
@@ -184,153 +200,193 @@
             <div class="canvas-container">
                 <canvas id="radarChart"></canvas>
             </div>
+            <div id="tags-container"></div>
             
             <div id="trend-wrapper" class="trend-container">
-                <div style="font-weight:bold; color:#333; margin-bottom:5px;">📉 歷史波動風險走勢 (Beta Trend)</div>
-                <div class="trend-explainer">
-                    <strong>這張圖怎麼看？</strong><br>
-                    此圖顯示過去 2 年股票相對於大盤的風險變化。<br>
-                    <span style="color:#dc3545; font-weight:bold;">● 紅線</span>：股票實際波動 Beta 值。<br>
-                    <span style="color:#666; font-weight:bold;">● 虛線 (1.0)</span>：大盤基準線。<br>
-                    若紅線持續在虛線上方，代表風險比大盤高；反之則較安全。
+                <div class="trend-header">
+                    <div class="trend-title">💓 風險心電圖 (Beta Trend)</div>
+                    <div id="trend-badge" class="trend-badge status-neutral">--</div>
                 </div>
-                <div style="height: 150px; width:100%;">
+                <div id="trend-comment" style="font-size:0.9em; color:#666; margin-bottom:10px; background:#f8f9fa; padding:10px; border-radius:8px;"></div>
+                <div style="height: 120px; width:100%;">
                     <canvas id="trendChart"></canvas>
                 </div>
             </div>
-            <div id="tags-container"></div>
         </div>
 
         <div class="insight-section" id="insight-panel">
-            <div class="insight-title">
-                📊 投資屬性深度解析: <span id="insight-title-text">--</span>
-            </div>
+            <div class="insight-title" id="insight-title-text">📊 AI 診斷報告</div>
             <ul class="insight-list" id="insight-content"></ul>
+            <div style="margin-top:20px; text-align:right; font-size:0.8em; color:#999;">
+                數據日期: <span id="data-date">Loading...</span>
+            </div>
         </div>
     </div>
 
     <div class="compliance-section">
-        <h4>
-            重要法律聲明及免責條款 (Important Legal Notice & Disclaimer)
-            <span class="data-date-display" id="data-date">Data Date: Loading...</span>
-        </h4>
-
-        <div class="compliance-block">
-            <span class="compliance-title">1. 一般聲明 (General)</span>
-            本網站/應用程式所提供的資訊、分析工具及圖表（下稱「本資料」）僅供一般參考及教育用途。本資料不構成，亦無意作為，也不應被詮釋為任何證券、金融產品或工具的要約、招攬、建議、意見或任何保證。本網站並無意針對任何特定司法管轄區的居民分發或使用本資料，如該等分發或使用會違反當地的法律或規例。
-        </div>
-
-        <div class="compliance-block">
-            <span class="compliance-title">2. 無投資建議 (No Investment Advice)</span>
-            本資料並非投資意見，亦不應被視為專業投資建議。本工具產生的分析結果是基於歷史數據的量化模型運算，並未考慮閣下個人的財務狀況、投資目標、風險承受能力或特定需求（Suitability）。閣下在作出任何投資決定前，應自行評估風險，並建議諮詢獨立專業財務顧問的意見。
-        </div>
-
-        <div class="compliance-block">
-            <span class="compliance-title">3. 數據及模型限制 (Data & Model Limitations)</span>
-            本分析採用 Kenneth French Data Library 提供的學術因子數據。使用者應注意：
-            (i) <strong>數據滯後風險：</strong> 因子數據通常有 1 至 1.5 個月的更新滯後，故分析結果主要反映股票的中長期結構性特徵，而非即時市場狀態。
-            (ii) <strong>模型限制：</strong> 因子分析基於歷史回歸模型，過往表現不代表將來表現 (Past performance is not indicative of future results)。
-            (iii) <strong>準確性：</strong> 作者已盡力確保資訊準確，但不會對資訊的準確性、完整性或及時性作出任何明示或暗示的保證。
-        </div>
-
-        <div class="compliance-block">
-            <span class="compliance-title">4. 風險披露 (Risk Disclosure)</span>
-            投資涉及風險。證券價格可升可跌，甚至變成毫無價值。在若干情況下，投資者可能會損失全部投資本金。
-        </div>
+        <strong>⚠️ 免責聲明 (Disclaimer):</strong><br>
+        本工具僅供教學與輔助分析使用，不構成任何投資建議。因子數據基於歷史統計，存在約 1 個月的學術滯後，不適合作為極短線交易依據。投資涉及風險，請評估自身承受能力。Data Source: Kenneth R. French Data Library.
     </div>
 </div>
 
 <script>
     let stockData = {};
-    let myChart = null;    // 雷達圖
-    let trendChart = null; // 折線圖
+    let myChart = null;
+    let trendChart = null;
     
-    let lastState = { tab: 'single', singleTicker: '', peerA: '', peerB: '', hasPortfolioRun: false };
+    // 定義「白話文」軸標籤
+    const axisLabels = ['波動風險 (Beta)', '股價動能 (Mom)', '獲利品質 (Qual)', '市值規模 (Size)', '便宜估值 (Val)'];
+    
+    // 定義大師持倉預設
+    const presets = {
+        'buffett': [['KO', 40], ['AXP', 20], ['BAC', 20], ['CVX', 10], ['KHC', 10]], // 範例：巴菲特愛股
+        'ark': [['TSLA', 30], ['COIN', 25], ['ROKU', 25], ['U', 20]], // 範例：成長型
+        'paris': [['GOOGL', 50], ['RKLB', 30], ['SLV', 20]] // 您的持倉
+    };
 
+    // 初始化
     window.onload = function() {
         Papa.parse("stock_factor_data.csv", {
             download: true, header: true,
             complete: function(results) {
                 results.data.forEach(row => { if(row.Ticker) stockData[row.Ticker] = row; });
                 if(Object.keys(stockData).length > 0) {
-                    let first = Object.keys(stockData)[0];
-                    document.getElementById('tickerInput').value = first;
-                    updateSingleChart();
+                    // 預設載入第一支，或保持空白讓使用者輸入
+                    // document.getElementById('tickerInput').value = Object.keys(stockData)[0];
+                    // updateSingleChart();
                 }
             }
         });
     };
 
     function switchTab(tabId) {
-        lastState.tab = tabId;
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
-        event.target.classList.add('active');
+        event.currentTarget.classList.add('active');
 
-        // 如果切換到"關於"頁面，隱藏主要顯示區 (圖表)
-        if (tabId === 'about') {
-            document.getElementById('main-display-area').style.display = 'none';
-        } else {
-            document.getElementById('main-display-area').style.display = 'flex';
-            
-            // 清理圖表
-            if(myChart) myChart.destroy();
-            if(trendChart) trendChart.destroy();
-            
-            document.getElementById('insight-panel').style.display = 'none';
-            document.getElementById('tags-container').innerHTML = '';
-            document.getElementById('trend-wrapper').style.display = 'none'; 
-
-            // 恢復狀態
-            if (tabId === 'single' && lastState.singleTicker) updateSingleChart(true);
-            else if (tabId === 'peer' && lastState.peerA && lastState.peerB) updatePeerChart(true);
-            else if (tabId === 'portfolio' && lastState.hasPortfolioRun) updatePortfolioChart();
-        }
+        // 如果是關於頁，隱藏下方圖表區
+        document.getElementById('main-display-area').style.display = (tabId === 'about') ? 'none' : 'flex';
+        
+        // 重置圖表狀態
+        if(tabId === 'single') document.getElementById('trend-wrapper').style.display = 'none';
+        if(tabId === 'portfolio') document.getElementById('trend-wrapper').style.display = 'none';
     }
 
-    // --- 個股分析 (含趨勢圖) ---
-    function updateSingleChart(isRestore = false) {
-        let ticker = isRestore ? lastState.singleTicker : document.getElementById('tickerInput').value.toUpperCase().trim();
-        if(!isRestore) lastState.singleTicker = ticker;
+    // --- 核心圖表繪製 (含背景優化) ---
+    // 自定義插件：繪製雷達圖背景色圈
+    const radarBackgroundPlugin = {
+        id: 'radarBackground',
+        beforeDraw: (chart) => {
+            if (chart.config.type !== 'radar') return;
+            const ctx = chart.ctx;
+            const {r} = chart.scales;
+            const xCenter = r.xCenter;
+            const yCenter = r.yCenter;
+            
+            // 畫綠色安全區 (0-5分)
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(xCenter, yCenter, r.getDistanceFromCenterForValue(5), 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(46, 125, 50, 0.05)'; // 淡淡的綠
+            ctx.fill();
+            
+            // 畫紅色極端區 (8-10分) - 這裡用環形畫法比較複雜，簡單起見，我們只畫外圈邊界提示
+            ctx.beginPath();
+            ctx.arc(xCenter, yCenter, r.getDistanceFromCenterForValue(8), 0, 2 * Math.PI);
+            ctx.strokeStyle = 'rgba(231, 76, 60, 0.3)'; // 淡淡的紅線
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.restore();
+        }
+    };
 
+    function renderRadar(datasets) {
+        if (myChart) myChart.destroy();
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        
+        myChart = new Chart(ctx, {
+            type: 'radar',
+            data: { 
+                labels: axisLabels, 
+                datasets: datasets 
+            },
+            options: {
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { 
+                    r: { 
+                        min: 0, max: 10,
+                        pointLabels: { font: { size: 12, weight: 'bold' }, color: '#333' },
+                        grid: { color: '#e0e0e0' },
+                        ticks: { display: false } // 隱藏刻度數字，更簡潔
+                    } 
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let val = context.raw;
+                                let label = context.dataset.label || '';
+                                let comment = "";
+                                if(val > 7.5) comment = " (極高🔥)";
+                                else if(val < 3) comment = " (偏低🧊)";
+                                return `${label}: ${val}${comment}`;
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [radarBackgroundPlugin]
+        });
+    }
+
+    // --- 功能邏輯 ---
+
+    function updateSingleChart() {
+        let ticker = document.getElementById('tickerInput').value.toUpperCase().trim();
         let data = stockData[ticker];
-        if(!validateStock(ticker, data)) return;
+        if(!data) { alert('找不到此代碼 (可能未在資料庫中)'); return; }
 
         showInsightPanel(ticker, data.Last_Date);
         renderTags(data.Baskets);
         generateInsights(data, 'single');
         
         let scores = getScores(data);
-        renderRadar([{ label: ticker, data: scores, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.2)' }]);
+        renderRadar([{ 
+            label: ticker, 
+            data: scores, 
+            borderColor: '#007bff', 
+            backgroundColor: 'rgba(0,123,255,0.25)',
+            pointBackgroundColor: '#007bff'
+        }]);
         
+        // 處理 Beta Trend
         if (data.Beta_Trend) {
             document.getElementById('trend-wrapper').style.display = 'block';
-            renderTrendChart(data.Beta_Trend);
+            renderTrendChart(data.Beta_Trend, ticker);
         } else {
             document.getElementById('trend-wrapper').style.display = 'none';
         }
-
         document.getElementById('filter-results-container').style.display = 'none';
     }
 
-    // --- 同業比較 ---
-    function updatePeerChart(isRestore = false) {
-        let tA = isRestore ? lastState.peerA : document.getElementById('peerA').value.toUpperCase().trim();
-        let tB = isRestore ? lastState.peerB : document.getElementById('peerB').value.toUpperCase().trim();
-        if(!isRestore) { lastState.peerA = tA; lastState.peerB = tB; }
-
+    function updatePeerChart() {
+        let tA = document.getElementById('peerA').value.toUpperCase().trim();
+        let tB = document.getElementById('peerB').value.toUpperCase().trim();
         let dataA = stockData[tA]; let dataB = stockData[tB];
-        if(!validateStock(tA, dataA) || !validateStock(tB, dataB)) return;
+        if(!dataA || !dataB) { alert('請輸入有效的股票代碼'); return; }
 
         showInsightPanel(`${tA} vs ${tB}`, dataA.Last_Date);
         document.getElementById('tags-container').innerHTML = ''; 
         document.getElementById('trend-wrapper').style.display = 'none';
 
         let ul = document.getElementById('insight-content');
-        ul.innerHTML = `<li><strong>比較模式建議：</strong> 觀察兩條線的「面積差異」。面積越大代表因子特徵越極端。</li>`;
-        ul.innerHTML += `<li><strong>${tA}:</strong> 波動度 ${dataA.Score_Beta}/10，價值屬性 ${dataA.Score_Value}/10。</li>`;
-        ul.innerHTML += `<li><strong>${tB}:</strong> 波動度 ${dataB.Score_Beta}/10，價值屬性 ${dataB.Score_Value}/10。</li>`;
+        ul.innerHTML = `<li><strong>比較建議：</strong> 觀察面積重疊部分。若 B 股完全包覆 A 股，代表其在各因子屬性上都更強烈。</li>`;
+        ul.innerHTML += `<li><strong>${tA}:</strong> 風險係數 ${dataA.Score_Beta}，價值分 ${dataA.Score_Value}</li>`;
+        ul.innerHTML += `<li><strong>${tB}:</strong> 風險係數 ${dataB.Score_Beta}，價值分 ${dataB.Score_Value}</li>`;
 
         renderRadar([
             { label: tA, data: getScores(dataA), borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)' },
@@ -338,12 +394,26 @@
         ]);
     }
 
-    // --- 投資組合 ---
+    // --- 投資組合與預設功能 ---
+    function loadPreset(type) {
+        let tbody = document.querySelector('#portfolioTable tbody');
+        tbody.innerHTML = ''; // 清空
+        let items = presets[type];
+        if(items) {
+            items.forEach(item => {
+                let row = tbody.insertRow();
+                row.innerHTML = `<td><input type="text" class="portfolio-input" value="${item[0]}"></td><td><input type="number" class="weight-input" value="${item[1]}"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td>`;
+            });
+            // 自動觸發計算
+            setTimeout(updatePortfolioChart, 100);
+        }
+    }
+
     function addPortfolioRow() {
-        let table = document.getElementById('portfolioTable').getElementsByTagName('tbody')[0];
+        let table = document.querySelector('#portfolioTable tbody');
         if(table.rows.length >= 10) return;
         let newRow = table.insertRow();
-        newRow.innerHTML = `<td><input type="text" class="portfolio-input"></td><td><input type="number" class="weight-input" value="0"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td>`;
+        newRow.innerHTML = `<td><input type="text" class="portfolio-input" value=""></td><td><input type="number" class="weight-input" value="0"></td><td><span class="remove-row" onclick="removeRow(this)">×</span></td>`;
     }
     function removeRow(span) { span.parentElement.parentElement.remove(); }
 
@@ -361,85 +431,87 @@
             for(let i=0; i<5; i++) portfolioScores[i] += s[i] * (weight/100);
         }
 
-        if(Math.abs(totalWeight - 100) > 0.5) { alert(`總權重需為 100%`); return; }
+        if(Math.abs(totalWeight - 100) > 1) { alert(`目前總權重為 ${totalWeight}%，請調整至 100%`); return; }
 
-        lastState.hasPortfolioRun = true;
-        showInsightPanel("My Portfolio", "Weighted Average");
+        showInsightPanel("我的投資組合", "加權計算");
         document.getElementById('tags-container').innerHTML = '';
         document.getElementById('trend-wrapper').style.display = 'none';
 
+        // 生成組合報告
         let pfData = { Score_Beta: portfolioScores[0], Score_Mom: portfolioScores[1], Score_Quality: portfolioScores[2], Score_Size: portfolioScores[3], Score_Value: portfolioScores[4] };
         generateInsights(pfData, 'portfolio');
 
-        renderRadar([{ label: 'Portfolio DNA', data: portfolioScores, borderColor: '#6f42c1', backgroundColor: 'rgba(111, 66, 193, 0.2)' }]);
+        renderRadar([{ 
+            label: '組合 DNA', 
+            data: portfolioScores, 
+            borderColor: '#8e44ad', 
+            backgroundColor: 'rgba(142, 68, 173, 0.25)',
+            pointBackgroundColor: '#8e44ad'
+        }]);
     }
 
-    // --- 圖表繪製 ---
-    function renderRadar(datasets) {
-        if (myChart) myChart.destroy();
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        myChart = new Chart(ctx, {
-            type: 'radar',
-            data: { labels: ['Market Beta (波動)', 'Momentum (動能)', 'Quality (品質)', 'Size (小盤)', 'Value (價值)'], datasets: datasets },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { r: { suggestedMin: 0, suggestedMax: 10, angleLines: { color: '#eee' }, grid: { color: '#eee' } } }
-            }
-        });
-    }
-
-    const horizontalLinePlugin = {
-        id: 'horizontalLine',
-        beforeDraw: (chart) => {
-            if (chart.config.type !== 'line') return;
-            const ctx = chart.ctx;
-            const yAxis = chart.scales.y;
-            const yValue = yAxis.getPixelForValue(1.0);
-            
-            ctx.save(); ctx.strokeStyle = '#666'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]); 
-            ctx.beginPath(); ctx.moveTo(chart.scales.x.left, yValue); ctx.lineTo(chart.scales.x.right, yValue);
-            ctx.stroke(); ctx.restore();
-        }
-    };
-
-    function renderTrendChart(trendStr) {
+    // --- 心電圖 (Beta Trend) 繪製與解讀 ---
+    function renderTrendChart(trendStr, ticker) {
         if (trendChart) trendChart.destroy();
         const ctx = document.getElementById('trendChart').getContext('2d');
         let dataPoints = trendStr.split(',').map(Number);
-        let labels = Array.from({length: dataPoints.length}, (_, i) => i - dataPoints.length + 1);
+        
+        // 取得最新一點的數值
+        let currentBeta = dataPoints[dataPoints.length - 1];
+        let badge = document.getElementById('trend-badge');
+        let commentDiv = document.getElementById('trend-comment');
+        
+        // 動態生成「人話」評語
+        let msg = "";
+        if (currentBeta > 1.3) {
+            badge.innerText = "⚠️ 高風險"; badge.className = "trend-badge status-danger";
+            msg = `<strong>${ticker} 正在發燒：</strong>目前的波動度是市場的 ${currentBeta} 倍。這意味著如果大盤跌 1%，它可能會跌 ${currentBeta}% 以上。這是一支「攻擊型」股票，請繫好安全帶。`;
+        } else if (currentBeta < 0.8) {
+            badge.innerText = "🛡️ 防禦型"; badge.className = "trend-badge status-safe";
+            msg = `<strong>${ticker} 很冷靜：</strong>目前的波動度低於大盤。市場恐慌時，它通常比較抗跌，適合作為資金避風港。`;
+        } else {
+            badge.innerText = "⚖️ 跟隨大盤"; badge.className = "trend-badge status-neutral";
+            msg = `<strong>${ticker} 隨波逐流：</strong>它的風險屬性與大盤指數 (S&P 500) 相當接近，走勢主要受市場整體氣氛影響。`;
+        }
+        commentDiv.innerHTML = msg;
 
+        // 繪圖
+        let labels = Array.from({length: dataPoints.length}, (_, i) => i);
         trendChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Beta Trend',
+                    label: 'Beta',
                     data: dataPoints,
-                    borderColor: '#dc3545',
+                    borderColor: currentBeta > 1.2 ? '#e74c3c' : '#2ecc71', // 紅色或綠色線
                     borderWidth: 2,
                     pointRadius: 0,
                     tension: 0.4,
-                    fill: false
+                    fill: {
+                        target: {value: 1.0},
+                        above: 'rgba(231, 76, 60, 0.1)',   // Area above 1.0 (Red)
+                        below: 'rgba(46, 125, 50, 0.1)'    // Area below 1.0 (Green)
+                    }
                 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false }, tooltip: { intersect: false } },
-                scales: { 
-                    x: { display: false }, 
-                    y: { grid: { display: false }, suggestedMin: 0.5, suggestedMax: 1.5 } 
-                }
-            },
-            plugins: [horizontalLinePlugin]
+                scales: { x: { display: false }, y: { display: true, suggestedMin: 0.5, suggestedMax: 1.5 } }
+            }
         });
     }
 
     // --- 輔助函式 ---
-    function getScores(data) { return [parseFloat(data.Score_Beta), parseFloat(data.Score_Mom), parseFloat(data.Score_Quality), parseFloat(data.Score_Size), parseFloat(data.Score_Value)]; }
-    function validateStock(t, d) { if(!d) return false; return true; }
-    function showInsightPanel(t, d) { document.getElementById('insight-panel').style.display = 'block'; document.getElementById('insight-title-text').innerText = t; document.getElementById('data-date').innerText = `Ref: ${d}`; }
+    function getScores(d) { return [parseFloat(d.Score_Beta), parseFloat(d.Score_Mom), parseFloat(d.Score_Quality), parseFloat(d.Score_Size), parseFloat(d.Score_Value)]; }
+    function showInsightPanel(t, d) { 
+        document.getElementById('insight-panel').style.display = 'block'; 
+        document.getElementById('insight-title-text').innerText = "📊 分析報告: " + t; 
+        document.getElementById('data-date').innerText = d; 
+    }
     
-    // --- 優化版智能分析 (包含中間值評價) ---
+    // 生成智能分析文字 (Retail Version)
     function generateInsights(data, mode) {
         const ul = document.getElementById('insight-content'); ul.innerHTML = '';
         const addLi = (title, text) => { 
@@ -453,40 +525,29 @@
         let size = parseFloat(data.Score_Size);
         let qual = parseFloat(data.Score_Quality);
         let mom = parseFloat(data.Score_Mom);
-        let hasComment = false;
 
         if (mode === 'portfolio') {
-            if (beta > 7) { addLi("高風險警示:", "您的投資組合波動劇烈。建議在市場震盪時減少槓桿，或加入公用事業、必需消費品股票來平衡。"); hasComment=true; }
-            else if (beta < 4) { addLi("保守防禦型:", "組合波動很低，雖然安全，但在大牛市中可能會跑輸大盤。適合退休規劃或低風險承受者。"); hasComment=true; }
-            else { addLi("平衡型配置:", "目前的風險水平適中，適合長期持有。"); hasComment=true; }
-
-            if (val < 3 && qual < 4) { addLi("風格過度集中:", "您持有大量「高估值 + 低獲利」的成長股。這類股票對利率非常敏感，請密切關注聯準會政策。"); hasComment=true; }
+            if (beta > 7) addLi("心臟夠大顆嗎？", "您的組合波動度很高。在大牛市會賺很爽，但空頭來襲時會受重傷。建議加入一些防禦型配置 (如 KO, JNJ)。");
+            else if (beta < 4) addLi("退休養老型：", "您的組合非常穩健保守，晚上睡得著覺，但在市場大漲時績效可能會落後。");
+            else addLi("攻守平衡：", "目前的配置相當標準，既有攻擊力也有防護罩。");
+            
+            if (val < 3 && qual < 4) addLi("注意泡沫風險：", "您持有很多「高本益比 + 低獲利」的股票。這是典型的投機組合，請密切關注利率變化。");
         } else {
             // Beta
-            if (beta > 8.0) { addLi("極高波動 (Beta > 1.5):", "這是一支「心跳股」。大盤跌 1%，它可能跌 2% 以上。不建議重倉，且務必設定嚴格的止損點。"); hasComment=true; }
-            else if (beta < 3.0) { addLi("避風港屬性:", "這支股票走勢與大盤關聯低，甚至在大盤下跌時能抗跌。適合在市場恐慌時買入保值。"); hasComment=true; }
-            else if (beta >= 4.0 && beta <= 6.0) { addLi("跟隨大盤:", "此股票的波動風險與大盤指數相近，屬於標準的市場風險暴露。"); hasComment=true; }
-
-            // Value vs Growth
-            if (val > 7.0) { addLi("深度價值 (Deep Value):", "股價相對於公司資產非常便宜。市場可能過度悲觀，但也可能是「價值陷阱」。"); hasComment=true; }
-            else if (val < 2.5) { addLi("高成長夢想 (High Growth):", "市場給予極高估值，看好未來爆發力。這類股票需要公司持續交出超預期的財報。"); hasComment=true; }
-            else if (val >= 2.5 && val <= 5.0) { addLi("合理成長 (GARP):", "估值雖不便宜，但相對於其成長性來說尚屬合理。這是許多優質科技權值股的特徵。"); hasComment=true; }
-
+            if (beta > 8) addLi("瘋狗浪警示：", "波動極大！這類股票適合短線操作，長抱容易像坐雲霄飛車。");
+            else if (beta < 3) addLi("資金避風港：", "市場崩盤時，這類股票通常跌得比較少。");
+            
+            // Value
+            if (val > 8) addLi("深度特價品：", "股價相對於基本面非常便宜 (Deep Value)。可能是被錯殺的黃金，也可能是價值陷阱。");
+            if (val < 2) addLi("昂貴的夢想：", "市場給予極高估值 (High Growth)。股價是靠未來的想像空間支撐，財報不能出錯。");
+            
             // Quality
-            if (qual > 7.0) { addLi("高品質護城河:", "公司獲利能力強、財務穩健 (High ROE)。這類股票通常是長期投資的核心配置首選。"); hasComment=true; }
-            else if (qual < 3.0) { addLi("投機屬性警告:", "公司獲利不穩甚至虧損。股價上漲主要靠消息面或市場情緒驅動。"); hasComment=true; }
+            if (qual > 7) addLi("資優生體質：", "公司很會賺錢 (High Profitability)，財務穩健，適合長期存股。");
+            if (qual < 3) addLi("體質虛弱：", "公司獲利能力不佳。如果股價在漲，通常是靠題材炒作。");
 
             // Momentum
-            if (mom > 8.5) { addLi("強勢噴出中:", "近期走勢極強。順勢交易者可以續抱，但要注意「乖離率」是否過大。"); hasComment=true; }
-            else if (mom < 1.5) { addLi("接飛刀警示:", "股價正處於自由落體或長期弱勢。在看到打底訊號前，不建議進場抄底。"); hasComment=true; }
-            
-            // Size
-            if (size < 3.0) { addLi("巨型權值股:", "市值極大，流動性極佳，通常是機構法人的核心持倉。"); hasComment=true; }
-
-            // Fallback
-            if (!hasComment) {
-                addLi("均衡發展型:", "此股票在各項因子上表現中規中矩，沒有極端的風險或風格傾向。這通常代表它是一支成熟、穩定的公司，適合做為投資組合的基石。");
-            }
+            if (mom > 8) addLi("人氣王：", "近期股價強勢噴出，順勢交易者最愛。但要小心乖離過大回調。");
+            if (mom < 2) addLi("冷宮股：", "股價趨勢向下，市場目前不愛它。除非您是逆勢交易高手，否則別急著接刀。");
         }
     }
     
@@ -501,17 +562,30 @@
             }
         }
         document.getElementById('filter-results-container').style.display = count ? 'block' : 'none';
-        if(count==0) alert('無符合結果');
+        if(count==0) alert('目前資料庫中無符合此條件的股票');
     }
     
     function renderTags(basketsStr) {
         const container = document.getElementById('tags-container'); container.innerHTML = '';
         if (basketsStr) basketsStr.split(';').forEach(tag => {
-            let span = document.createElement('span'); span.className = 'tag blue';
             tag = tag.trim();
+            let span = document.createElement('span'); 
+            span.className = 'tag blue';
             if(tag.includes('Aggressive') || tag.includes('Speculative') || tag.includes('Knife')) span.className = 'tag red';
             if(tag.includes('Quality') || tag.includes('Defensive')) span.className = 'tag green';
-            span.innerText = tag; container.appendChild(span);
+            
+            // 翻譯標籤 (可選)
+            if(tag.includes('High Beta')) tag = "⚡ 高波動";
+            if(tag.includes('Defensive')) tag = "🛡️ 防禦型";
+            if(tag.includes('Small Cap')) tag = "🐣 小型股";
+            if(tag.includes('Large Cap')) tag = "🐘 大型股";
+            if(tag.includes('Deep Value')) tag = "💰 價值股";
+            if(tag.includes('High Growth')) tag = "🚀 成長股";
+            if(tag.includes('High Quality')) tag = "💎 高品質";
+            if(tag.includes('Junk')) tag = "⚠️ 投機級";
+
+            span.innerText = tag; 
+            container.appendChild(span);
         });
     }
 </script>
