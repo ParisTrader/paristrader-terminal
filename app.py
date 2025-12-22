@@ -352,7 +352,8 @@ with st.sidebar:
             "My Trade",  # Direct
             "MT5 EA",  # Direct
             "Legal",  # Direct
-            "Resources"  # New Section
+            "Resources",  # New Section
+            "Promotion"  # [New] Promotion Section
         ],
         icons=[
             "house",
@@ -363,7 +364,8 @@ with st.sidebar:
             "briefcase",
             "robot",
             "file-text",
-            "collection"  # Icon for Resources
+            "collection",
+            "gift"  # [New] Gift icon for Promotion
         ],
         menu_icon="compass",
         default_index=0,
@@ -389,7 +391,6 @@ with st.sidebar:
         st.caption("MARKET MODULES")
         target_page = option_menu(
             menu_title=None,
-            # [修改] Industry Sector Heatmap 移出
             options=["Market Risk", "Market Breadth"],
             icons=["activity", "bar-chart-line"],
             styles={
@@ -404,7 +405,6 @@ with st.sidebar:
         st.caption("STOCK RESEARCH")
         target_page = option_menu(
             menu_title=None,
-            # [修改] 加入 Industry Sector Heatmap
             options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target", "Industry Sector Heatmap"],
             icons=["cash-coin", "radar", "basket", "bullseye", "grid-3x3"],  # Added icon
             styles={
@@ -444,6 +444,9 @@ with st.sidebar:
 
     elif selected_nav == "Resources":
         target_page = "Resources"
+
+    elif selected_nav == "Promotion":
+        target_page = "Promotion"
 
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
@@ -773,6 +776,19 @@ elif target_page == "Resources":
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ Resources file not found.")
+        st.info(f"Please ensure `{html_path}` exists.")
+
+# [PAGE] Promotion (New)
+elif target_page == "Promotion":
+    # No st.title needed because the HTML has a big header
+    html_path = os.path.join("Promotion", "promo.html")
+    html_content = load_html_file(html_path)
+
+    if html_content and "File not found" not in html_content:
+        # Use a large height to accommodate the content (Cards + Q&A)
+        components.html(html_content, height=1600, scrolling=True)
+    else:
+        st.warning("⚠️ Promotion page not found.")
         st.info(f"Please ensure `{html_path}` exists.")
 
 # ==========================================
