@@ -1,6 +1,8 @@
 Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,HKDNotional,Status,PnLUSD,PnLHKD,Notes
 RKLB,LONG,2025/12/9,53.4,73.39,700,37380,290816.4,OPEN,13993,109145.4,SpaceX sympathy play. Options flow bullish.
-GOOGL,LONG,2025/11/19,298,307.77,150,44700,347766,OPEN,1465.5,11430.9,Gemini 3 AI dominance. Fundamental value gap.
-SI=F,LONG,2025/12/5,53.36,67.395,100,26680,207570.4,OPEN,1403.5,10947.3,Breakout at resistance with new US policy.
-NQ=F,SHORT,2025/12/17,25358,25597,1,-49916,-389344.8,OPEN,-4780,-37284,day chart tp break to tp2.(March future)
-USDJPY,LONG,2025/12/18,155.714,157.778,1,0,0,OPEN,2064,16099.2,Betting on Friday event on raising interest rate.dovish hike
+GOOGL,LONG,2025/11/19,298,308.78,150,44700,347766,OPEN,1617,12612.6,Gemini 3 AI dominance. Fundamental value gap.
+SI=F,LONG,2025/12/5,53.36,68.505,1000,26680,207570.4,OPEN,15145,118131,Breakout at resistance with new US policy.
+USDJPY,LONG,2025/12/18,155.714,156.834,1,0,0,OPEN,1120,8736,Betting on Friday event on raising interest rate.dovish hike
+STT,LONG,2025/12/23,129.74,130.83,300,39249,306142.2,OPEN,327,2550.6,Option abnormal move
+NQ=F,SHORT,2025/12/17,25358,25650,1,-49916,0,CLOSE,-4780,-37284,day chart tp break to tp2.(March future)
+META,LONG,2025/12/23,671.2,661,100,66100,515580,CLOSE,-1020,-7956,Option abnormal move
