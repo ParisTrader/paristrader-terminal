@@ -505,6 +505,7 @@ elif target_page == "Market Dashboard":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
+        # [修改] 允許捲動，解決寬度不足問題
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No dashboard files found.")
@@ -533,6 +534,7 @@ elif target_page == "Market Risk":
             </style>
             """
             html_content = html_content.replace("<head>", "<head>" + fix_style)
+            # [修改] 允許捲動，解決手機版寬度問題
             components.html(html_content, height=2200, scrolling=True)
     else:
         html_content, filename = get_latest_file_content(path)
@@ -573,6 +575,7 @@ elif target_page == "Earnings":
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
     if html_content:
+        # [修改] 允許捲動
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
@@ -594,6 +597,7 @@ elif target_page == "Thematic Basket":
     html_content, filename = get_latest_file_content(path)
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
+        # [修改] 允許捲動
         components.html(html_content, height=6000, scrolling=True)
     else:
         st.warning("⚠️ No basket reports found.")
@@ -623,12 +627,15 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
-    html_path = os.path.join("VP", "volume_profile_dashboard.html")
-    html_content = load_html_file(html_path)
-    if html_content and "File not found" not in html_content:
+
+    # Use get_latest_file_content to automatically find the newest timestamped file in VP folder
+    html_content, filename = get_latest_file_content("VP")
+
+    if html_content:
+        st.caption(f"Displaying Report: {filename}")  # Optional: show which file is loaded
         components.html(html_content, height=1000, scrolling=True)
     else:
-        st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP/volume_profile_dashboard.html)")
+        st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
 
 # [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
@@ -668,12 +675,14 @@ elif target_page == "MT5 EA":
     path = "MT5EA"
     html_content, filename = get_latest_file_content(path)
     if html_content:
+        # [修改] 允許捲動
         components.html(html_content, height=3000, scrolling=True)
     else:
         st.warning("⚠️ No marketing content found.")
         st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
 
 # [PAGE] LEGAL
+# 修正為 "Legal" 以匹配選單選項
 elif target_page == "Legal":
     st.title("📜 Legal & Compliance")
     tab1, tab2, tab3 = st.tabs(["Disclaimer", "Privacy Policy", "Terms of Use"])
