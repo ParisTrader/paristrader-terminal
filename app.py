@@ -628,15 +628,17 @@ elif target_page == "Option":
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
 
-    # Use get_latest_file_content to automatically find the newest timestamped file in VP folder
-    html_content, filename = get_latest_file_content("VP")
+    # [修正] 改用 get_latest_file_content 自動抓取 VP 資料夾內最新的 HTML 檔案
+    # 這樣就會抓到 volume_profile_dashboard_20251222_xxxx.html
+    path = "VP"
+    html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        st.caption(f"Displaying Report: {filename}")  # Optional: show which file is loaded
+        st.caption(f"Displaying Report: {filename}")  # 顯示當前讀取的檔名，方便確認
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
-
+        
 # [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
     st.title("⚡ Intraday Volatility Analysis")
