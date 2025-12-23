@@ -603,8 +603,11 @@ elif target_page == "Stock DNA":
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
+
     path = "ThematicBasket"
-    html_content, filename = get_latest_file_content(path)
+    # [修正] 讀取動態檔名 ( elite_signal_dashboard_2025xxxx_xxxx.html )
+    html_content, filename = get_latest_file_content(path, "elite_signal_dashboard_*.html")
+
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
         # [修改] 允許捲動
