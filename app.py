@@ -21,11 +21,9 @@ def login_system():
     """
     簡單的登入驗證：檢查 Email 是否在白名單內 + 驗證通用密碼
     """
-    # 如果已經登入成功，直接返回 True
     if "authentication_status" in st.session_state and st.session_state["authentication_status"]:
         return True
 
-    # 登入介面
     st.markdown("""
     <style>
         .stApp { background: #0B0E14; }
@@ -53,7 +51,6 @@ def login_system():
             submit_button = st.form_submit_button("Login", type="primary", use_container_width=True)
 
         if submit_button:
-            # 1. 從 Secrets 獲取白名單和密碼
             try:
                 valid_emails = st.secrets["allowed_users"]["emails"]
                 correct_password = st.secrets["access_password"]
@@ -61,13 +58,12 @@ def login_system():
                 st.error("⚠️ 系統錯誤：未設定 Secrets (請聯繫管理員)")
                 return False
 
-            # 2. 驗證邏輯
             if email_input in valid_emails and password_input == correct_password:
                 st.session_state["authentication_status"] = True
                 st.session_state["user_email"] = email_input
                 st.success("Login Successful! Redirecting...")
                 time.sleep(1)
-                st.rerun()  # 重新整理進入主頁
+                st.rerun()
             else:
                 st.session_state["authentication_status"] = False
                 st.error("❌ Access Denied: Email not in whitelist or wrong password.")
@@ -76,9 +72,8 @@ def login_system():
 
 
 # --- 主程式邏輯 ---
-# 如果沒有通過登入驗證，就停止執行後面的程式碼
 # if not login_system():
-#    st.stop()  # ⛔ 這裡會擋住所有人，除非登入成功
+#    st.stop()
 
 # ==========================================
 # 1. 頁面基礎設置
@@ -91,13 +86,12 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. 自定義 CSS (背景與介面優化 - 含手機版修復)
+# 2. 自定義 CSS
 # ==========================================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap');
 
-    /* [關鍵] 強制將 Streamlit 主容器背景設為透明 */
     .stApp {
         background: transparent !important;
     }
@@ -107,85 +101,35 @@ st.markdown("""
         color: #e2e8f0;
     }
 
-    /* ----------------------------------------------------
-       📱 手機與電腦的差異化設定 (Media Queries)
-       ---------------------------------------------------- */
-
-    /* === 電腦版 (螢幕寬度 > 768px) === */
     @media (min-width: 768.1px) {
-        /* 1. 隱藏 Header (因為我們不允許關閉側邊欄，所以不需要 Header 上的開啟按鈕) */
-        header {
-            visibility: hidden !important;
-        }
-
-        /* 2. [關鍵] 隱藏側邊欄內部的「收折按鈕 (X 或 <)」 */
-        [data-testid="stSidebarCollapseButton"] {
-            display: none !important;
-        }
-
-        /* 3. 額外保險：隱藏側邊欄頂部的所有按鈕 (防止 Streamlit 更新改 ID) */
-        section[data-testid="stSidebar"] button {
-            display: none !important;
-        }
-
-        /* 4. 隱藏右上角選單 (Deploy, Settings 等) */
-        [data-testid="stToolbar"], [data-testid="stHeaderActionElements"] {
-            visibility: hidden !important;
-            display: none !important;
-        }
-
-        /* 5. 隱藏原生的漢堡選單 */
-        #MainMenu {
-            visibility: hidden !important;
-            display: none !important;
-        }
+        header { visibility: hidden !important; }
+        [data-testid="stSidebarCollapseButton"] { display: none !important; }
+        section[data-testid="stSidebar"] button { display: none !important; }
+        [data-testid="stToolbar"], [data-testid="stHeaderActionElements"] { visibility: hidden !important; display: none !important; }
+        #MainMenu { visibility: hidden !important; display: none !important; }
     }
 
-    /* === 手機版 (螢幕寬度 <= 768px) === */
     @media (max-width: 768px) {
-        /* 1. 讓 Header 可見，這樣才能點擊左上角的箭頭打開 Sidebar */
-        header {
-            visibility: visible !important;
-            background: transparent !important;
-        }
-
-        /* 2. 讓左上角的選單按鈕更明顯一點 (半透明黑底)，以免看不見 */
+        header { visibility: visible !important; background: transparent !important; }
         header button[kind="header"] {
             background-color: rgba(17, 24, 39, 0.6) !important;
             color: white !important;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 8px;
         }
-
-        /* 3. [解決空間太少] 縮小手機版內容的邊距 (Padding) */
         .block-container {
-            padding-top: 3rem !important;    /* 留一點空間給選單按鈕 */
-            padding-left: 1rem !important;   /* 減少左右留白 */
+            padding-top: 3rem !important;
+            padding-left: 1rem !important;
             padding-right: 1rem !important;
         }
-
-        /* 4. 手機版字體稍微調小，避免標題爆框 */
         h1 { font-size: 1.8rem !important; }
         h2 { font-size: 1.5rem !important; }
         h3 { font-size: 1.2rem !important; }
     }
 
-    /* ----------------------------------------------------
-       共用設定 (保持原樣)
-       ---------------------------------------------------- */
+    footer { visibility: hidden !important; display: none !important; }
+    div[data-testid="stDecoration"] { display: none !important; }
 
-    /* 隱藏右下角 Footer */
-    footer {
-        visibility: hidden !important;
-        display: none !important;
-    }
-
-    /* 隱藏彩虹線裝飾 */
-    div[data-testid="stDecoration"] {
-        display: none !important;
-    }
-
-    /* --- 背景層 --- */
     .fixed-bg {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
         z-index: -1; 
@@ -208,11 +152,10 @@ st.markdown("""
         filter: blur(60px); pointer-events: none;
     }
 
-    /* --- 側邊欄樣式 --- */
     section[data-testid="stSidebar"] {
         background-color: #111827; 
         border-right: 1px solid #374151;
-        z-index: 999999 !important; /* 加大層級，確保蓋過內容 */
+        z-index: 999999 !important;
     }
 
     section[data-testid="stSidebar"] h1,
@@ -224,7 +167,6 @@ st.markdown("""
         color: #F3F4F6 !important;
     }
 
-    /* --- Dashboard 卡片 --- */
     .metric-card {
         background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
@@ -266,7 +208,6 @@ st.markdown("""
 # ==========================================
 
 def load_weekly_analysis():
-    """讀取每週推演文章"""
     file_path = os.path.join("WeeklyContent", "latest_analysis.md")
     if os.path.exists(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -307,11 +248,8 @@ def load_stock_dna_with_injection():
             html_content = html_content.replace('download: true,', '')
     return html_content
 
+
 def get_latest_file_content(folder_path, pattern="*.html"):
-    """
-    Get the latest file in a folder matching a specific pattern.
-    Default pattern is "*.html" if not specified.
-    """
     if not os.path.exists(folder_path):
         return None, f"Directory not found: {folder_path}"
 
@@ -329,6 +267,7 @@ def get_latest_file_content(folder_path, pattern="*.html"):
     except Exception as e:
         return None, str(e)
 
+
 # ==========================================
 # 4. Main App Interface (Mixed Navigation)
 # ==========================================
@@ -342,7 +281,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # 4. 建立導航選單 (純粹的內部導航，不讀寫 URL)
+    # 4. 建立導航選單
     selected_nav = option_menu(
         menu_title="Navigation",
         options=[
@@ -354,7 +293,7 @@ with st.sidebar:
             "graph-up-arrow", "briefcase", "robot", "file-text", "collection", "gift"
         ],
         menu_icon="compass",
-        default_index=0,  # 永遠預設首頁
+        default_index=0,
         styles={
             "container": {"padding": "0!important", "background-color": "transparent"},
             "icon": {"color": "#9CA3AF", "font-size": "15px"},
@@ -366,10 +305,11 @@ with st.sidebar:
         }
     )
 
-    # 路由變數初始化
+    # Default routing: Assume target is what is clicked in main sidebar
     target_page = selected_nav
 
     # --- 次級選單邏輯 (Sub-menus) ---
+    # This overwrites target_page based on sub-menu selection
     if selected_nav == "Market Intelligence":
         st.caption("MARKET MODULES")
         target_page = option_menu(
@@ -377,7 +317,8 @@ with st.sidebar:
             options=["Market Risk", "Market Breadth"],
             icons=["activity", "bar-chart-line"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
@@ -385,7 +326,6 @@ with st.sidebar:
 
     elif selected_nav == "Stock":
         st.caption("STOCK RESEARCH")
-        # [UPDATE] Added "ETF Smart Money" to the options list
         target_page = option_menu(
             menu_title=None,
             options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Volatility Target",
@@ -406,7 +346,8 @@ with st.sidebar:
             options=["Volume Profile", "Intraday Volatility", "HSI CBBC Ladder"],
             icons=["bar-chart-steps", "lightning-charge", "distribute-vertical"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
@@ -415,7 +356,7 @@ with st.sidebar:
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
 
-# --- Content Routing ---
+# --- Content Routing (Based on target_page) ---
 
 # [PAGE] HOME
 if target_page == "Home":
@@ -459,9 +400,6 @@ if target_page == "Home":
             </div>
             """, unsafe_allow_html=True)
 
-        # ------------------------------------------------
-        # 👇 Weekly Deduction Section
-        # ------------------------------------------------
         st.markdown("<br>", unsafe_allow_html=True)
         st.subheader("🧠 Weekly Deduction (本週推演)")
 
@@ -510,7 +448,6 @@ elif target_page == "Market Dashboard":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        # [修改] 允許捲動，解決寬度不足問題
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No dashboard files found.")
@@ -520,34 +457,28 @@ elif target_page == "Market Dashboard":
 elif target_page == "Market Risk":
     st.title("⚠️ Market Implied Risk")
     path = "ImpliedParameters"
-    specific_file = os.path.join(path, "implied_params.html")
 
-    if os.path.exists(specific_file):
-        with open(specific_file, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-            # CSS 修復：取消垂直置中
-            fix_style = """
-            <style>
-                body {
-                    display: block !important;
-                    height: auto !important;
-                    min-height: 100vh;
-                    padding-top: 50px;
-                    background-color: #020617 !important;
-                }
-                .card { margin: 0 auto !important; }
-            </style>
-            """
-            html_content = html_content.replace("<head>", "<head>" + fix_style)
-            # [修改] 允許捲動，解決手機版寬度問題
-            components.html(html_content, height=2200, scrolling=True)
+    html_content, filename = get_latest_file_content(path)
+
+    if html_content:
+        st.caption(f"Displaying Report: {filename}")
+        fix_style = """
+        <style>
+            body {
+                display: block !important;
+                height: auto !important;
+                min-height: 100vh;
+                padding-top: 50px;
+                background-color: #020617 !important;
+            }
+            .card { margin: 0 auto !important; }
+        </style>
+        """
+        html_content = html_content.replace("<head>", "<head>" + fix_style)
+        components.html(html_content, height=2200, scrolling=True)
     else:
-        html_content, filename = get_latest_file_content(path)
-        if html_content:
-            components.html(html_content, height=2200, scrolling=True)
-        else:
-            st.warning("⚠️ No risk reports found.")
-            st.info("Please ensure `ImpliedParameters/implied_params.html` exists.")
+        st.warning("⚠️ No risk reports found.")
+        st.info("Please ensure `ImpliedParameters/implied_params_*.html` exists.")
 
 # [PAGE] Market Breadth
 elif target_page == "Market Breadth":
@@ -566,7 +497,6 @@ elif target_page == "Industry Sector Heatmap":
     st.title("🔥 Industry Sector Heatmap")
     st.caption("Daily Return Heatmap (Last 20 Days)")
 
-    # [Use get_latest_file_content with specific pattern for Heatmap]
     path = "MarketDashboard"
     pattern = "sector_etf_heatmap_*.html"
     html_content, filename = get_latest_file_content(path, pattern)
@@ -581,14 +511,10 @@ elif target_page == "Industry Sector Heatmap":
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
-
-    # 使用 get_latest_file_content 自動抓取最新的 html
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
-
     if html_content:
         st.caption(f"Displaying Report: {filename}")
-        # [修改] 允許捲動
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
@@ -606,34 +532,15 @@ elif target_page == "Stock DNA":
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
-
     path = "ThematicBasket"
-    # [修正] 讀取動態檔名 ( elite_signal_dashboard_2025xxxx_xxxx.html )
     html_content, filename = get_latest_file_content(path, "elite_signal_dashboard_*.html")
 
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
-        # [修改] 允許捲動
         components.html(html_content, height=6000, scrolling=True)
     else:
         st.warning("⚠️ No basket reports found.")
         st.info(f"Checking path: {os.path.abspath(path)}")
-
-elif selected_nav == "Stock":
-    st.caption("STOCK RESEARCH")
-    # [UPDATE] Added "ETF Smart Money" to the options list
-    target_page = option_menu(
-        menu_title=None,
-        options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Volatility Target",
-                 "Industry Sector Heatmap"],
-        icons=["cash-coin", "radar", "basket", "graph-up-arrow", "bullseye", "grid-3x3"],
-        styles={
-            "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
-                          "border-radius": "10px"},
-            "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
-            "nav-link-selected": {"background-color": "#4B5563"},
-        }
-    )
 
 # [PAGE] ETF Smart Money (NEW)
 elif target_page == "ETF Smart Money":
@@ -641,12 +548,10 @@ elif target_page == "ETF Smart Money":
     st.caption("Tracking Leveraged ETF Relative Volume Spikes")
 
     path = "xETF"
-    # Search for files matching the timestamp pattern
     html_content, filename = get_latest_file_content(path, "ETF_Smart_Money_Report_*.html")
 
     if html_content:
         st.caption(f"📅 Report Date: {filename}")
-        # Allow scrolling for the long table
         components.html(html_content, height=2000, scrolling=True)
     else:
         st.warning("⚠️ No ETF Smart Money reports found.")
@@ -655,9 +560,7 @@ elif target_page == "ETF Smart Money":
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
-
     path = "VolTarget"
-    # [修正] 自動搜尋 VolTarget 資料夾下，檔名符合 vol_tool_*.html 的最新檔案
     html_content, filename = get_latest_file_content(path, "vol_tool_*.html")
 
     if html_content:
@@ -680,14 +583,11 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
-
-    # [修正] 改用 get_latest_file_content 自動抓取 VP 資料夾內最新的 HTML 檔案
-    # 這樣就會抓到 volume_profile_dashboard_20251222_xxxx.html
     path = "VP"
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        st.caption(f"Displaying Report: {filename}")  # 顯示當前讀取的檔名，方便確認
+        st.caption(f"Displaying report: {filename}")
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
@@ -730,14 +630,12 @@ elif target_page == "MT5 EA":
     path = "MT5EA"
     html_content, filename = get_latest_file_content(path)
     if html_content:
-        # [修改] 允許捲動
         components.html(html_content, height=3000, scrolling=True)
     else:
         st.warning("⚠️ No marketing content found.")
         st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
 
 # [PAGE] LEGAL
-# 修正為 "Legal" 以匹配選單選項
 elif target_page == "Legal":
     st.title("📜 Legal & Compliance")
     tab1, tab2, tab3 = st.tabs(["Disclaimer", "Privacy Policy", "Terms of Use"])
@@ -764,11 +662,9 @@ elif target_page == "Resources":
 
 # [PAGE] Promotion (NEW)
 elif target_page == "Promotion":
-    # No st.title needed as HTML handles it
     html_path = os.path.join("Promotion", "promo.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
-        # Increase height for full promotional content and allow scrolling
         components.html(html_content, height=1600, scrolling=True)
     else:
         st.warning("⚠️ Promotion page not found.")
