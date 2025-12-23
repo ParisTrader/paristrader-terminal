@@ -353,6 +353,21 @@ with st.sidebar:
             }
         )
 
+    # [NEW] MT5 EA Sub-menu
+    elif selected_nav == "MT5 EA":
+        st.caption("AUTOMATED TRADING")
+        target_page = option_menu(
+            menu_title=None,
+            options=["EA Introduction", "Daily Report"],
+            icons=["robot", "file-earmark-bar-graph"],
+            styles={
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
+                "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+                "nav-link-selected": {"background-color": "#4B5563"},
+            }
+        )
+
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
 
@@ -448,7 +463,6 @@ elif target_page == "Market Dashboard":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        # [修改] 允許捲動，解決寬度不足問題
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No dashboard files found.")
@@ -519,7 +533,6 @@ elif target_page == "Earnings":
 
     if html_content:
         st.caption(f"Displaying Report: {filename}")
-        # [修改] 允許捲動
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
@@ -537,14 +550,11 @@ elif target_page == "Stock DNA":
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
-
     path = "ThematicBasket"
-    # [修正] 讀取動態檔名 ( elite_signal_dashboard_2025xxxx_xxxx.html )
     html_content, filename = get_latest_file_content(path, "elite_signal_dashboard_*.html")
 
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
-        # [修改] 允許捲動
         components.html(html_content, height=6000, scrolling=True)
     else:
         st.warning("⚠️ No basket reports found.")
@@ -583,9 +593,7 @@ elif target_page == "Insider Trading":
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
-
     path = "VolTarget"
-    # [修正] 自動搜尋 VolTarget 資料夾下，檔名符合 vol_tool_*.html 的最新檔案
     html_content, filename = get_latest_file_content(path, "vol_tool_*.html")
 
     if html_content:
@@ -608,8 +616,6 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
-
-    # [修正] 改用 get_latest_file_content 自動抓取 VP 資料夾內最新的 HTML 檔案
     path = "VP"
     html_content, filename = get_latest_file_content(path)
 
@@ -651,17 +657,30 @@ elif target_page == "My Trade":
         st.warning("⚠️ Trade Record HTML not found.")
         st.info("請確認 GitHub Actions 是否已成功執行並生成 `Trade/trade_record.html`。")
 
-# [PAGE] MT5 EA
-elif target_page == "MT5 EA":
+# [PAGE] MT5 EA - Introduction
+elif target_page == "EA Introduction":
     st.title("🤖 MT5 Expert Advisor")
-    path = "MT5EA"
-    html_content, filename = get_latest_file_content(path)
-    if html_content:
-        # [修改] 允許捲動
+    # [修正] 指定讀取 ea_marketing.html
+    html_path = os.path.join("MT5EA", "ea_marketing.html")
+    html_content = load_html_file(html_path)
+    if html_content and "File not found" not in html_content:
         components.html(html_content, height=3000, scrolling=True)
     else:
         st.warning("⚠️ No marketing content found.")
-        st.info("請將行銷 HTML 放入專案根目錄的 `MT5EA` 資料夾中。")
+        st.info("Please ensure `MT5EA/ea_marketing.html` exists.")
+
+# [PAGE] MT5 EA - Daily Report (NEW)
+elif target_page == "Daily Report":
+    st.title("📄 Algo Daily Report")
+    path = "MT5EA"
+    html_content, filename = get_latest_file_content(path, "DailyReport_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No Daily Reports found.")
+        st.info("Please ensure files named `DailyReport_*.html` exist in `MT5EA` folder.")
 
 # [PAGE] LEGAL
 elif target_page == "Legal":
