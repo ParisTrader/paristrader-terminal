@@ -1,0 +1,2638 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ETF Smart Money Tracker</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; padding: 20px; color: #333; }
+        /* Container expanded to 95% width to fit side-by-side tables */
+        .container { max-width: 95%; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+        h1 { color: #2c3e50; margin-bottom: 5px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .subtitle { color: #7f8c8d; font-size: 0.95em; margin-top: 5px; margin-bottom: 20px; }
+
+        /* --- LAYOUT GRID --- */
+        .tables-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .table-column {
+            width: 49%; /* Split screen */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Headers & Badges */
+        h2 { 
+            margin-top: 0; 
+            margin-bottom: 15px;
+            color: #34495e; 
+            font-size: 1.3em; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .badge { padding: 5px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-right: 10px; }
+        .badge-pos { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .badge-neg { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        /* Compact Table Styling */
+        table.dataTable { 
+            width: 100% !important; 
+            border-collapse: collapse; 
+            font-size: 0.85em; /* Slightly smaller font to fit side-by-side */
+        }
+        th { background-color: #2c3e50; color: white; padding: 8px; text-align: left; font-weight: 600; }
+        td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+
+        /* Educational Section */
+        .edu-section { 
+            background-color: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            margin-bottom: 30px; /* Added margin bottom to separate from tables */
+            border-left: 5px solid #2980b9; 
+        }
+        .edu-title { font-size: 1.2em; font-weight: bold; color: #2980b9; margin-bottom: 15px; }
+        .edu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .edu-box h3 { font-size: 1em; color: #444; margin-bottom: 8px; }
+        .edu-box p { font-size: 0.9em; line-height: 1.5; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Leveraged ETF Smart Money Tracker</h1>
+        <p class="subtitle">Generated: 2025-12-23 22:41:06 | <strong>Sorted by Turnover Spike (Relative Volume)</strong></p>
+
+        <div class="edu-section">
+            <div class="edu-title">🎓 Client Guide: How to Use This Report</div>
+            <div class="edu-grid">
+                <div class="edu-box">
+                    <h3>1. What is "Turnover"?</h3>
+                    <p><strong>Relative Volume</strong>. Today's vol vs 3-month avg. <br><strong>>200% (Green)</strong> = "Smart Money" or high conviction move.</p>
+                </div>
+                <div class="edu-box">
+                    <h3>2. Bullish (Left)</h3>
+                    <p>ETFs rising on high volume. Indicates strong breakout momentum. Watch for dark green Turnover cells.</p>
+                </div>
+                <div class="edu-box">
+                    <h3>3. Bearish (Right)</h3>
+                    <p>ETFs falling on high volume. Indicates panic selling or capitulation. Potential washout bottom or crash.</p>
+                </div>
+                <div class="edu-box">
+                    <h3>4. Strategy</h3>
+                    <p>Focus on <strong>Dark Green Turnover</strong>. A +5% move with 300% turnover is actionable. A move with 50% turnover is noise.</p>
+                </div>
+            </div>
+        </div>
+        <div class="tables-row">
+
+            <div class="table-column">
+                <h2><span class="badge badge-pos">BULLISH</span> Positive Momentum</h2>
+                <style type="text/css">
+#T_8c215_row0_col3 {
+  background-color: rgba(30, 144, 255, 0.38875602570452794);
+  color: white;
+}
+#T_8c215_row0_col5 {
+  background-color: rgb(0,100,0);
+  color: white;
+  font-weight: bold;
+}
+#T_8c215_row1_col3, #T_8c215_row2_col3, #T_8c215_row7_col3, #T_8c215_row13_col3, #T_8c215_row18_col3, #T_8c215_row21_col3, #T_8c215_row23_col3, #T_8c215_row24_col3, #T_8c215_row25_col3, #T_8c215_row29_col3, #T_8c215_row38_col3, #T_8c215_row48_col3, #T_8c215_row53_col3, #T_8c215_row69_col3 {
+  background-color: rgba(30, 144, 255, 1.0);
+  color: white;
+}
+#T_8c215_row1_col5 {
+  background-color: rgb(5,105,5);
+  color: white;
+  font-weight: bold;
+}
+#T_8c215_row2_col5 {
+  background-color: rgb(59,156,59);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row3_col3 {
+  background-color: rgba(30, 144, 255, 0.7853656886183733);
+  color: white;
+}
+#T_8c215_row3_col5 {
+  background-color: rgb(70,167,70);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row4_col3 {
+  background-color: rgba(30, 144, 255, 0.40452328568837753);
+  color: white;
+}
+#T_8c215_row4_col5 {
+  background-color: rgb(87,183,87);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row5_col3 {
+  background-color: rgba(30, 144, 255, 0.45181619532912043);
+  color: white;
+}
+#T_8c215_row5_col5 {
+  background-color: rgb(91,187,91);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row6_col3 {
+  background-color: rgba(30, 144, 255, 0.2126573100454723);
+  color: white;
+}
+#T_8c215_row6_col5 {
+  background-color: rgb(94,190,94);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row7_col5 {
+  background-color: rgb(109,204,109);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row8_col3 {
+  background-color: rgba(30, 144, 255, 0.9647282261381958);
+  color: white;
+}
+#T_8c215_row8_col5 {
+  background-color: rgb(115,211,115);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row9_col3 {
+  background-color: rgba(30, 144, 255, 0.863424041306537);
+  color: white;
+}
+#T_8c215_row9_col5 {
+  background-color: rgb(123,218,123);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row10_col3 {
+  background-color: rgba(30, 144, 255, 0.42315180712635453);
+  color: white;
+}
+#T_8c215_row10_col5 {
+  background-color: rgb(126,221,126);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row11_col3 {
+  background-color: rgba(30, 144, 255, 0.6252778174675067);
+  color: white;
+}
+#T_8c215_row11_col5 {
+  background-color: rgb(128,223,128);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row12_col3 {
+  background-color: rgba(30, 144, 255, 0.5219430385811629);
+  color: white;
+}
+#T_8c215_row12_col5 {
+  background-color: rgb(132,226,132);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row13_col5 {
+  background-color: rgb(138,232,138);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row14_col3 {
+  background-color: rgba(30, 144, 255, 0.28199864237340644);
+  color: white;
+}
+#T_8c215_row14_col5 {
+  background-color: rgb(140,234,140);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row15_col3 {
+  background-color: rgba(30, 144, 255, 0.28932827846531334);
+  color: white;
+}
+#T_8c215_row15_col5, #T_8c215_row16_col5 {
+  background-color: rgb(141,235,141);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row16_col3 {
+  background-color: rgba(30, 144, 255, 0.592414727161273);
+  color: white;
+}
+#T_8c215_row17_col3 {
+  background-color: rgba(30, 144, 255, 0.543060091361881);
+  color: white;
+}
+#T_8c215_row17_col5 {
+  background-color: rgb(142,236,142);
+  color: black;
+  font-weight: bold;
+}
+#T_8c215_row19_col3 {
+  background-color: rgba(30, 144, 255, 0.9289930117170975);
+  color: white;
+}
+#T_8c215_row20_col3 {
+  background-color: rgba(30, 144, 255, 0.3600000712195548);
+  color: white;
+}
+#T_8c215_row22_col3 {
+  background-color: rgba(30, 144, 255, 0.4178988711885343);
+  color: white;
+}
+#T_8c215_row26_col3 {
+  background-color: rgba(30, 144, 255, 0.23229005249443044);
+  color: white;
+}
+#T_8c215_row27_col3 {
+  background-color: rgba(30, 144, 255, 0.39157919009560455);
+  color: white;
+}
+#T_8c215_row30_col3 {
+  background-color: rgba(30, 144, 255, 0.26368036368352926);
+  color: white;
+}
+#T_8c215_row31_col3 {
+  background-color: rgba(30, 144, 255, 0.6085810125096516);
+  color: white;
+}
+#T_8c215_row32_col3 {
+  background-color: rgba(30, 144, 255, 0.23504172350972277);
+  color: white;
+}
+#T_8c215_row33_col3 {
+  background-color: rgba(30, 144, 255, 0.36272816008811115);
+  color: white;
+}
+#T_8c215_row34_col3 {
+  background-color: rgba(30, 144, 255, 0.6982165393172731);
+  color: white;
+}
+#T_8c215_row35_col3 {
+  background-color: rgba(30, 144, 255, 0.2038039976431754);
+  color: white;
+}
+#T_8c215_row36_col3 {
+  background-color: rgba(30, 144, 255, 0.21382904779472062);
+  color: white;
+}
+#T_8c215_row37_col3 {
+  background-color: rgba(30, 144, 255, 0.21681836073313254);
+  color: white;
+}
+#T_8c215_row39_col3 {
+  background-color: rgba(30, 144, 255, 0.34171887590095407);
+  color: white;
+}
+#T_8c215_row40_col3 {
+  background-color: rgba(30, 144, 255, 0.6413791571981614);
+  color: white;
+}
+#T_8c215_row41_col3 {
+  background-color: rgba(30, 144, 255, 0.2666069034561746);
+  color: white;
+}
+#T_8c215_row42_col3 {
+  background-color: rgba(30, 144, 255, 0.6359053632397207);
+  color: white;
+}
+#T_8c215_row43_col3 {
+  background-color: rgba(30, 144, 255, 0.24874332928213283);
+  color: white;
+}
+#T_8c215_row44_col3 {
+  background-color: rgba(30, 144, 255, 0.31867115925893513);
+  color: white;
+}
+#T_8c215_row45_col3 {
+  background-color: rgba(30, 144, 255, 0.5032793611649221);
+  color: white;
+}
+#T_8c215_row46_col3 {
+  background-color: rgba(30, 144, 255, 0.5011739466547533);
+  color: white;
+}
+#T_8c215_row47_col3 {
+  background-color: rgba(30, 144, 255, 0.35038563720306165);
+  color: white;
+}
+#T_8c215_row49_col3 {
+  background-color: rgba(30, 144, 255, 0.21427238934003698);
+  color: white;
+}
+#T_8c215_row50_col3 {
+  background-color: rgba(30, 144, 255, 0.631373178806563);
+  color: white;
+}
+#T_8c215_row51_col3 {
+  background-color: rgba(30, 144, 255, 0.4711606686152572);
+  color: white;
+}
+#T_8c215_row52_col3 {
+  background-color: rgba(30, 144, 255, 0.23078609229760322);
+  color: white;
+}
+#T_8c215_row54_col3 {
+  background-color: rgba(30, 144, 255, 0.2638629754170459);
+  color: white;
+}
+#T_8c215_row55_col3 {
+  background-color: rgba(30, 144, 255, 0.32290706957150045);
+  color: white;
+}
+#T_8c215_row56_col3 {
+  background-color: rgba(30, 144, 255, 0.2576057074190628);
+  color: white;
+}
+#T_8c215_row57_col3 {
+  background-color: rgba(30, 144, 255, 0.2001890789162105);
+  color: white;
+}
+#T_8c215_row58_col3 {
+  background-color: rgba(30, 144, 255, 0.3333582300631164);
+  color: white;
+}
+#T_8c215_row59_col3 {
+  background-color: rgba(30, 144, 255, 0.8931207872911286);
+  color: white;
+}
+#T_8c215_row60_col3 {
+  background-color: rgba(30, 144, 255, 0.3955825396402714);
+  color: white;
+}
+#T_8c215_row61_col3 {
+  background-color: rgba(30, 144, 255, 0.5790247766401602);
+  color: white;
+}
+#T_8c215_row62_col3 {
+  background-color: rgba(30, 144, 255, 0.5314627816354185);
+  color: white;
+}
+#T_8c215_row63_col3 {
+  background-color: rgba(30, 144, 255, 0.2830723107657917);
+  color: white;
+}
+#T_8c215_row64_col3 {
+  background-color: rgba(30, 144, 255, 0.3969155875305822);
+  color: white;
+}
+#T_8c215_row65_col3 {
+  background-color: rgba(30, 144, 255, 0.205438883949216);
+  color: white;
+}
+#T_8c215_row66_col3 {
+  background-color: rgba(30, 144, 255, 0.411425588623935);
+  color: white;
+}
+#T_8c215_row67_col3 {
+  background-color: rgba(30, 144, 255, 0.2089849628962513);
+  color: white;
+}
+#T_8c215_row68_col3 {
+  background-color: rgba(30, 144, 255, 0.23180729875410083);
+  color: white;
+}
+#T_8c215_row70_col3 {
+  background-color: rgba(30, 144, 255, 0.4841303217858246);
+  color: white;
+}
+#T_8c215_row71_col3 {
+  background-color: rgba(30, 144, 255, 0.2886432748255515);
+  color: white;
+}
+</style>
+<table id="T_8c215" id="tablePos" class="display">
+  <thead>
+    <tr>
+      <th id="T_8c215_level0_col0" class="col_heading level0 col0" >Ticker</th>
+      <th id="T_8c215_level0_col1" class="col_heading level0 col1" >Underlying</th>
+      <th id="T_8c215_level0_col2" class="col_heading level0 col2" >Price</th>
+      <th id="T_8c215_level0_col3" class="col_heading level0 col3" >Change</th>
+      <th id="T_8c215_level0_col4" class="col_heading level0 col4" >Volume</th>
+      <th id="T_8c215_level0_col5" class="col_heading level0 col5" >Turnover</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td id="T_8c215_row0_col0" class="data row0 col0" >XOMX</td>
+      <td id="T_8c215_row0_col1" class="data row0 col1" >XOM</td>
+      <td id="T_8c215_row0_col2" class="data row0 col2" >$28.51</td>
+      <td id="T_8c215_row0_col3" class="data row0 col3" >+1.18%</td>
+      <td id="T_8c215_row0_col4" class="data row0 col4" >34,408</td>
+      <td id="T_8c215_row0_col5" class="data row0 col5" >301%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row1_col0" class="data row1 col0" >CORD</td>
+      <td id="T_8c215_row1_col1" class="data row1 col1" >CRWV</td>
+      <td id="T_8c215_row1_col2" class="data row1 col2" >$31.94</td>
+      <td id="T_8c215_row1_col3" class="data row1 col3" >+10.60%</td>
+      <td id="T_8c215_row1_col4" class="data row1 col4" >853,582</td>
+      <td id="T_8c215_row1_col5" class="data row1 col5" >293%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row2_col0" class="data row2 col0" >QBTZ</td>
+      <td id="T_8c215_row2_col1" class="data row2 col1" >QBTS</td>
+      <td id="T_8c215_row2_col2" class="data row2 col2" >$8.02</td>
+      <td id="T_8c215_row2_col3" class="data row2 col3" >+18.64%</td>
+      <td id="T_8c215_row2_col4" class="data row2 col4" >8,370,228</td>
+      <td id="T_8c215_row2_col5" class="data row2 col5" >217%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row3_col0" class="data row3 col0" >AVXX</td>
+      <td id="T_8c215_row3_col1" class="data row3 col1" >AVAV</td>
+      <td id="T_8c215_row3_col2" class="data row3 col2" >$9.35</td>
+      <td id="T_8c215_row3_col3" class="data row3 col3" >+3.66%</td>
+      <td id="T_8c215_row3_col4" class="data row3 col4" >93,357</td>
+      <td id="T_8c215_row3_col5" class="data row3 col5" >202%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row4_col0" class="data row4 col0" >TSLZ</td>
+      <td id="T_8c215_row4_col1" class="data row4 col1" >TSLA</td>
+      <td id="T_8c215_row4_col2" class="data row4 col2" >$10.30</td>
+      <td id="T_8c215_row4_col3" class="data row4 col3" >+1.28%</td>
+      <td id="T_8c215_row4_col4" class="data row4 col4" >11,484,164</td>
+      <td id="T_8c215_row4_col5" class="data row4 col5" >179%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row5_col0" class="data row5 col0" >BTCZ</td>
+      <td id="T_8c215_row5_col1" class="data row5 col1" >BTC</td>
+      <td id="T_8c215_row5_col2" class="data row5 col2" >$4.20</td>
+      <td id="T_8c215_row5_col3" class="data row5 col3" >+1.57%</td>
+      <td id="T_8c215_row5_col4" class="data row5 col4" >16,558,440</td>
+      <td id="T_8c215_row5_col5" class="data row5 col5" >173%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row6_col0" class="data row6 col0" >IREX</td>
+      <td id="T_8c215_row6_col1" class="data row6 col1" >IREN</td>
+      <td id="T_8c215_row6_col2" class="data row6 col2" >$12.65</td>
+      <td id="T_8c215_row6_col3" class="data row6 col3" >+0.08%</td>
+      <td id="T_8c215_row6_col4" class="data row6 col4" >1,655,094</td>
+      <td id="T_8c215_row6_col5" class="data row6 col5" >169%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row7_col0" class="data row7 col0" >NVOX</td>
+      <td id="T_8c215_row7_col1" class="data row7 col1" >NVO</td>
+      <td id="T_8c215_row7_col2" class="data row7 col2" >$22.60</td>
+      <td id="T_8c215_row7_col3" class="data row7 col3" >+14.55%</td>
+      <td id="T_8c215_row7_col4" class="data row7 col4" >3,351,125</td>
+      <td id="T_8c215_row7_col5" class="data row7 col5" >149%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row8_col0" class="data row8 col0" >AVGG</td>
+      <td id="T_8c215_row8_col1" class="data row8 col1" >AVGO</td>
+      <td id="T_8c215_row8_col2" class="data row8 col2" >$28.28</td>
+      <td id="T_8c215_row8_col3" class="data row8 col3" >+4.78%</td>
+      <td id="T_8c215_row8_col4" class="data row8 col4" >295,325</td>
+      <td id="T_8c215_row8_col5" class="data row8 col5" >139%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row9_col0" class="data row9 col0" >AVL</td>
+      <td id="T_8c215_row9_col1" class="data row9 col1" >AVGO</td>
+      <td id="T_8c215_row9_col2" class="data row9 col2" >$44.96</td>
+      <td id="T_8c215_row9_col3" class="data row9 col3" >+4.15%</td>
+      <td id="T_8c215_row9_col4" class="data row9 col4" >642,856</td>
+      <td id="T_8c215_row9_col5" class="data row9 col5" >128%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row10_col0" class="data row10 col0" >TSDD</td>
+      <td id="T_8c215_row10_col1" class="data row10 col1" >TSLA</td>
+      <td id="T_8c215_row10_col2" class="data row10 col2" >$7.27</td>
+      <td id="T_8c215_row10_col3" class="data row10 col3" >+1.39%</td>
+      <td id="T_8c215_row10_col4" class="data row10 col4" >20,072,017</td>
+      <td id="T_8c215_row10_col5" class="data row10 col5" >124%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row11_col0" class="data row11 col0" >XPM</td>
+      <td id="T_8c215_row11_col1" class="data row11 col1" >PM</td>
+      <td id="T_8c215_row11_col2" class="data row11 col2" >$18.92</td>
+      <td id="T_8c215_row11_col3" class="data row11 col3" >+2.66%</td>
+      <td id="T_8c215_row11_col4" class="data row11 col4" >1,436</td>
+      <td id="T_8c215_row11_col5" class="data row11 col5" >122%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row12_col0" class="data row12 col0" >KTUP</td>
+      <td id="T_8c215_row12_col1" class="data row12 col1" >KTOS</td>
+      <td id="T_8c215_row12_col2" class="data row12 col2" >$27.72</td>
+      <td id="T_8c215_row12_col3" class="data row12 col3" >+2.01%</td>
+      <td id="T_8c215_row12_col4" class="data row12 col4" >36,544</td>
+      <td id="T_8c215_row12_col5" class="data row12 col5" >116%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row13_col0" class="data row13 col0" >NVDX</td>
+      <td id="T_8c215_row13_col1" class="data row13 col1" >NVDA</td>
+      <td id="T_8c215_row13_col2" class="data row13 col2" >$18.29</td>
+      <td id="T_8c215_row13_col3" class="data row13 col3" >+5.97%</td>
+      <td id="T_8c215_row13_col4" class="data row13 col4" >13,062,302</td>
+      <td id="T_8c215_row13_col5" class="data row13 col5" >108%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row14_col0" class="data row14 col0" >TTDU</td>
+      <td id="T_8c215_row14_col1" class="data row14 col1" >TTD</td>
+      <td id="T_8c215_row14_col2" class="data row14 col2" >$15.69</td>
+      <td id="T_8c215_row14_col3" class="data row14 col3" >+0.51%</td>
+      <td id="T_8c215_row14_col4" class="data row14 col4" >73,261</td>
+      <td id="T_8c215_row14_col5" class="data row14 col5" >105%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row15_col0" class="data row15 col0" >NFLU</td>
+      <td id="T_8c215_row15_col1" class="data row15 col1" >NFLX</td>
+      <td id="T_8c215_row15_col2" class="data row15 col2" >$32.42</td>
+      <td id="T_8c215_row15_col3" class="data row15 col3" >+0.56%</td>
+      <td id="T_8c215_row15_col4" class="data row15 col4" >200,296</td>
+      <td id="T_8c215_row15_col5" class="data row15 col5" >104%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row16_col0" class="data row16 col0" >NVDO</td>
+      <td id="T_8c215_row16_col1" class="data row16 col1" >NVDA</td>
+      <td id="T_8c215_row16_col2" class="data row16 col2" >$21.61</td>
+      <td id="T_8c215_row16_col3" class="data row16 col3" >+2.45%</td>
+      <td id="T_8c215_row16_col4" class="data row16 col4" >1,848</td>
+      <td id="T_8c215_row16_col5" class="data row16 col5" >103%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row17_col0" class="data row17 col0" >VOYX</td>
+      <td id="T_8c215_row17_col1" class="data row17 col1" >VOYG</td>
+      <td id="T_8c215_row17_col2" class="data row17 col2" >$17.15</td>
+      <td id="T_8c215_row17_col3" class="data row17 col3" >+2.14%</td>
+      <td id="T_8c215_row17_col4" class="data row17 col4" >10,090</td>
+      <td id="T_8c215_row17_col5" class="data row17 col5" >102%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row18_col0" class="data row18 col0" >CRCD</td>
+      <td id="T_8c215_row18_col1" class="data row18 col1" >CRCL</td>
+      <td id="T_8c215_row18_col2" class="data row18 col2" >$31.72</td>
+      <td id="T_8c215_row18_col3" class="data row18 col3" >+10.25%</td>
+      <td id="T_8c215_row18_col4" class="data row18 col4" >212,200</td>
+      <td id="T_8c215_row18_col5" class="data row18 col5" >99%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row19_col0" class="data row19 col0" >AVGX</td>
+      <td id="T_8c215_row19_col1" class="data row19 col1" >AVGO</td>
+      <td id="T_8c215_row19_col2" class="data row19 col2" >$48.65</td>
+      <td id="T_8c215_row19_col3" class="data row19 col3" >+4.56%</td>
+      <td id="T_8c215_row19_col4" class="data row19 col4" >840,300</td>
+      <td id="T_8c215_row19_col5" class="data row19 col5" >96%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row20_col0" class="data row20 col0" >LLYZ</td>
+      <td id="T_8c215_row20_col1" class="data row20 col1" >LLY</td>
+      <td id="T_8c215_row20_col2" class="data row20 col2" >$8.66</td>
+      <td id="T_8c215_row20_col3" class="data row20 col3" >+1.00%</td>
+      <td id="T_8c215_row20_col4" class="data row20 col4" >58,912</td>
+      <td id="T_8c215_row20_col5" class="data row20 col5" >92%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row21_col0" class="data row21 col0" >NVDU</td>
+      <td id="T_8c215_row21_col1" class="data row21 col1" >PANW</td>
+      <td id="T_8c215_row21_col2" class="data row21 col2" >$121.61</td>
+      <td id="T_8c215_row21_col3" class="data row21 col3" >+5.38%</td>
+      <td id="T_8c215_row21_col4" class="data row21 col4" >595,609</td>
+      <td id="T_8c215_row21_col5" class="data row21 col5" >87%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row22_col0" class="data row22 col0" >TSLQ</td>
+      <td id="T_8c215_row22_col1" class="data row22 col1" >TSLA</td>
+      <td id="T_8c215_row22_col2" class="data row22 col2" >$15.63</td>
+      <td id="T_8c215_row22_col3" class="data row22 col3" >+1.36%</td>
+      <td id="T_8c215_row22_col4" class="data row22 col4" >16,767,754</td>
+      <td id="T_8c215_row22_col5" class="data row22 col5" >83%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row23_col0" class="data row23 col0" >NVDG</td>
+      <td id="T_8c215_row23_col1" class="data row23 col1" >NVDA</td>
+      <td id="T_8c215_row23_col2" class="data row23 col2" >$19.40</td>
+      <td id="T_8c215_row23_col3" class="data row23 col3" >+5.84%</td>
+      <td id="T_8c215_row23_col4" class="data row23 col4" >294,073</td>
+      <td id="T_8c215_row23_col5" class="data row23 col5" >74%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row24_col0" class="data row24 col0" >AVGU</td>
+      <td id="T_8c215_row24_col1" class="data row24 col1" >AVGO</td>
+      <td id="T_8c215_row24_col2" class="data row24 col2" >$35.33</td>
+      <td id="T_8c215_row24_col3" class="data row24 col3" >+5.40%</td>
+      <td id="T_8c215_row24_col4" class="data row24 col4" >66,266</td>
+      <td id="T_8c215_row24_col5" class="data row24 col5" >74%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row25_col0" class="data row25 col0" >NVDL</td>
+      <td id="T_8c215_row25_col1" class="data row25 col1" >NVDA</td>
+      <td id="T_8c215_row25_col2" class="data row25 col2" >$90.80</td>
+      <td id="T_8c215_row25_col3" class="data row25 col3" >+5.98%</td>
+      <td id="T_8c215_row25_col4" class="data row25 col4" >9,609,913</td>
+      <td id="T_8c215_row25_col5" class="data row25 col5" >73%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row26_col0" class="data row26 col0" >TSLO</td>
+      <td id="T_8c215_row26_col1" class="data row26 col1" >TSLA</td>
+      <td id="T_8c215_row26_col2" class="data row26 col2" >$24.83</td>
+      <td id="T_8c215_row26_col3" class="data row26 col3" >+0.20%</td>
+      <td id="T_8c215_row26_col4" class="data row26 col4" >553</td>
+      <td id="T_8c215_row26_col5" class="data row26 col5" >69%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row27_col0" class="data row27 col0" >NWMX</td>
+      <td id="T_8c215_row27_col1" class="data row27 col1" >NEM</td>
+      <td id="T_8c215_row27_col2" class="data row27 col2" >$34.92</td>
+      <td id="T_8c215_row27_col3" class="data row27 col3" >+1.20%</td>
+      <td id="T_8c215_row27_col4" class="data row27 col4" >3,043</td>
+      <td id="T_8c215_row27_col5" class="data row27 col5" >67%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row28_col0" class="data row28 col0" >NFXL</td>
+      <td id="T_8c215_row28_col1" class="data row28 col1" >NVDA</td>
+      <td id="T_8c215_row28_col2" class="data row28 col2" >$30.55</td>
+      <td id="T_8c215_row28_col3" class="data row28 col3" >+0.00%</td>
+      <td id="T_8c215_row28_col4" class="data row28 col4" >431,229</td>
+      <td id="T_8c215_row28_col5" class="data row28 col5" >66%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row29_col0" class="data row29 col0" >MVLL</td>
+      <td id="T_8c215_row29_col1" class="data row29 col1" >MRVL</td>
+      <td id="T_8c215_row29_col2" class="data row29 col2" >$23.04</td>
+      <td id="T_8c215_row29_col3" class="data row29 col3" >+7.01%</td>
+      <td id="T_8c215_row29_col4" class="data row29 col4" >277,509</td>
+      <td id="T_8c215_row29_col5" class="data row29 col5" >66%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row30_col0" class="data row30 col0" >MSFT</td>
+      <td id="T_8c215_row30_col1" class="data row30 col1" >MSFX</td>
+      <td id="T_8c215_row30_col2" class="data row30 col2" >$486.85</td>
+      <td id="T_8c215_row30_col3" class="data row30 col3" >+0.40%</td>
+      <td id="T_8c215_row30_col4" class="data row30 col4" >14,566,748</td>
+      <td id="T_8c215_row30_col5" class="data row30 col5" >63%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row31_col0" class="data row31 col0" >GGLL</td>
+      <td id="T_8c215_row31_col1" class="data row31 col1" >GOOGL</td>
+      <td id="T_8c215_row31_col2" class="data row31 col2" >$97.99</td>
+      <td id="T_8c215_row31_col3" class="data row31 col3" >+2.55%</td>
+      <td id="T_8c215_row31_col4" class="data row31 col4" >1,142,930</td>
+      <td id="T_8c215_row31_col5" class="data row31 col5" >55%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row32_col0" class="data row32 col0" >PDDL</td>
+      <td id="T_8c215_row32_col1" class="data row32 col1" >PDD</td>
+      <td id="T_8c215_row32_col2" class="data row32 col2" >$27.73</td>
+      <td id="T_8c215_row32_col3" class="data row32 col3" >+0.22%</td>
+      <td id="T_8c215_row32_col4" class="data row32 col4" >5,673</td>
+      <td id="T_8c215_row32_col5" class="data row32 col5" >54%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row33_col0" class="data row33 col0" >FBL</td>
+      <td id="T_8c215_row33_col1" class="data row33 col1" >META</td>
+      <td id="T_8c215_row33_col2" class="data row33 col2" >$33.77</td>
+      <td id="T_8c215_row33_col3" class="data row33 col3" >+1.02%</td>
+      <td id="T_8c215_row33_col4" class="data row33 col4" >1,096,538</td>
+      <td id="T_8c215_row33_col5" class="data row33 col5" >52%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row34_col0" class="data row34 col0" >AMZZ</td>
+      <td id="T_8c215_row34_col1" class="data row34 col1" >AMZN</td>
+      <td id="T_8c215_row34_col2" class="data row34 col2" >$31.79</td>
+      <td id="T_8c215_row34_col3" class="data row34 col3" >+3.11%</td>
+      <td id="T_8c215_row34_col4" class="data row34 col4" >206,114</td>
+      <td id="T_8c215_row34_col5" class="data row34 col5" >51%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row35_col0" class="data row35 col0" >MSFU</td>
+      <td id="T_8c215_row35_col1" class="data row35 col1" >MU</td>
+      <td id="T_8c215_row35_col2" class="data row35 col2" >$42.08</td>
+      <td id="T_8c215_row35_col3" class="data row35 col3" >+0.02%</td>
+      <td id="T_8c215_row35_col4" class="data row35 col4" >393,869</td>
+      <td id="T_8c215_row35_col5" class="data row35 col5" >50%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row36_col0" class="data row36 col0" >RTXG</td>
+      <td id="T_8c215_row36_col1" class="data row36 col1" >RTX</td>
+      <td id="T_8c215_row36_col2" class="data row36 col2" >$24.78</td>
+      <td id="T_8c215_row36_col3" class="data row36 col3" >+0.09%</td>
+      <td id="T_8c215_row36_col4" class="data row36 col4" >6,238</td>
+      <td id="T_8c215_row36_col5" class="data row36 col5" >48%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row37_col0" class="data row37 col0" >BOEG</td>
+      <td id="T_8c215_row37_col1" class="data row37 col1" >BA</td>
+      <td id="T_8c215_row37_col2" class="data row37 col2" >$15.14</td>
+      <td id="T_8c215_row37_col3" class="data row37 col3" >+0.11%</td>
+      <td id="T_8c215_row37_col4" class="data row37 col4" >16,472</td>
+      <td id="T_8c215_row37_col5" class="data row37 col5" >44%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row38_col0" class="data row38 col0" >RGTZ</td>
+      <td id="T_8c215_row38_col1" class="data row38 col1" >RGTI</td>
+      <td id="T_8c215_row38_col2" class="data row38 col2" >$17.74</td>
+      <td id="T_8c215_row38_col3" class="data row38 col3" >+12.42%</td>
+      <td id="T_8c215_row38_col4" class="data row38 col4" >7,933,758</td>
+      <td id="T_8c215_row38_col5" class="data row38 col5" >44%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row39_col0" class="data row39 col0" >COTG</td>
+      <td id="T_8c215_row39_col1" class="data row39 col1" >COST</td>
+      <td id="T_8c215_row39_col2" class="data row39 col2" >$11.39</td>
+      <td id="T_8c215_row39_col3" class="data row39 col3" >+0.89%</td>
+      <td id="T_8c215_row39_col4" class="data row39 col4" >52,617</td>
+      <td id="T_8c215_row39_col5" class="data row39 col5" >44%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row40_col0" class="data row40 col0" >TSMG</td>
+      <td id="T_8c215_row40_col1" class="data row40 col1" >TSM</td>
+      <td id="T_8c215_row40_col2" class="data row40 col2" >$25.42</td>
+      <td id="T_8c215_row40_col3" class="data row40 col3" >+2.76%</td>
+      <td id="T_8c215_row40_col4" class="data row40 col4" >26,790</td>
+      <td id="T_8c215_row40_col5" class="data row40 col5" >42%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row41_col0" class="data row41 col0" >AAPU</td>
+      <td id="T_8c215_row41_col1" class="data row41 col1" >AAPL</td>
+      <td id="T_8c215_row41_col2" class="data row41 col2" >$33.77</td>
+      <td id="T_8c215_row41_col3" class="data row41 col3" >+0.42%</td>
+      <td id="T_8c215_row41_col4" class="data row41 col4" >831,862</td>
+      <td id="T_8c215_row41_col5" class="data row41 col5" >41%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row42_col0" class="data row42 col0" >TSMU</td>
+      <td id="T_8c215_row42_col1" class="data row42 col1" >TSM</td>
+      <td id="T_8c215_row42_col2" class="data row42 col2" >$42.07</td>
+      <td id="T_8c215_row42_col3" class="data row42 col3" >+2.72%</td>
+      <td id="T_8c215_row42_col4" class="data row42 col4" >38,639</td>
+      <td id="T_8c215_row42_col5" class="data row42 col5" >41%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row43_col0" class="data row43 col0" >LRCU</td>
+      <td id="T_8c215_row43_col1" class="data row43 col1" >LRCX</td>
+      <td id="T_8c215_row43_col2" class="data row43 col2" >$70.75</td>
+      <td id="T_8c215_row43_col3" class="data row43 col3" >+0.30%</td>
+      <td id="T_8c215_row43_col4" class="data row43 col4" >7,249</td>
+      <td id="T_8c215_row43_col5" class="data row43 col5" >40%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row44_col0" class="data row44 col0" >UPSX</td>
+      <td id="T_8c215_row44_col1" class="data row44 col1" >UPST</td>
+      <td id="T_8c215_row44_col2" class="data row44 col2" >$62.48</td>
+      <td id="T_8c215_row44_col3" class="data row44 col3" >+0.74%</td>
+      <td id="T_8c215_row44_col4" class="data row44 col4" >85,018</td>
+      <td id="T_8c215_row44_col5" class="data row44 col5" >37%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row45_col0" class="data row45 col0" >CEGX</td>
+      <td id="T_8c215_row45_col1" class="data row45 col1" >CEG</td>
+      <td id="T_8c215_row45_col2" class="data row45 col2" >$29.37</td>
+      <td id="T_8c215_row45_col3" class="data row45 col3" >+1.90%</td>
+      <td id="T_8c215_row45_col4" class="data row45 col4" >13,897</td>
+      <td id="T_8c215_row45_col5" class="data row45 col5" >36%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row46_col0" class="data row46 col0" >JPX</td>
+      <td id="T_8c215_row46_col1" class="data row46 col1" >JPM</td>
+      <td id="T_8c215_row46_col2" class="data row46 col2" >$22.93</td>
+      <td id="T_8c215_row46_col3" class="data row46 col3" >+1.88%</td>
+      <td id="T_8c215_row46_col4" class="data row46 col4" >6,747</td>
+      <td id="T_8c215_row46_col5" class="data row46 col5" >36%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row47_col0" class="data row47 col0" >BKNU</td>
+      <td id="T_8c215_row47_col1" class="data row47 col1" >BKNG</td>
+      <td id="T_8c215_row47_col2" class="data row47 col2" >$22.66</td>
+      <td id="T_8c215_row47_col3" class="data row47 col3" >+0.94%</td>
+      <td id="T_8c215_row47_col4" class="data row47 col4" >1,565</td>
+      <td id="T_8c215_row47_col5" class="data row47 col5" >34%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row48_col0" class="data row48 col0" >SMST</td>
+      <td id="T_8c215_row48_col1" class="data row48 col1" >MSTR</td>
+      <td id="T_8c215_row48_col2" class="data row48 col2" >$86.47</td>
+      <td id="T_8c215_row48_col3" class="data row48 col3" >+7.87%</td>
+      <td id="T_8c215_row48_col4" class="data row48 col4" >262,854</td>
+      <td id="T_8c215_row48_col5" class="data row48 col5" >34%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row49_col0" class="data row49 col0" >PTIR</td>
+      <td id="T_8c215_row49_col1" class="data row49 col1" >PLTR</td>
+      <td id="T_8c215_row49_col2" class="data row49 col2" >$33.66</td>
+      <td id="T_8c215_row49_col3" class="data row49 col3" >+0.09%</td>
+      <td id="T_8c215_row49_col4" class="data row49 col4" >1,325,762</td>
+      <td id="T_8c215_row49_col5" class="data row49 col5" >33%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row50_col0" class="data row50 col0" >GOOX</td>
+      <td id="T_8c215_row50_col1" class="data row50 col1" >GOOL</td>
+      <td id="T_8c215_row50_col2" class="data row50 col2" >$71.23</td>
+      <td id="T_8c215_row50_col3" class="data row50 col3" >+2.70%</td>
+      <td id="T_8c215_row50_col4" class="data row50 col4" >58,587</td>
+      <td id="T_8c215_row50_col5" class="data row50 col5" >33%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row51_col0" class="data row51 col0" >DLLL</td>
+      <td id="T_8c215_row51_col1" class="data row51 col1" >DELL</td>
+      <td id="T_8c215_row51_col2" class="data row51 col2" >$23.59</td>
+      <td id="T_8c215_row51_col3" class="data row51 col3" >+1.69%</td>
+      <td id="T_8c215_row51_col4" class="data row51 col4" >38,703</td>
+      <td id="T_8c215_row51_col5" class="data row51 col5" >31%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row52_col0" class="data row52 col0" >PLOO</td>
+      <td id="T_8c215_row52_col1" class="data row52 col1" >PLTR</td>
+      <td id="T_8c215_row52_col2" class="data row52 col2" >$20.72</td>
+      <td id="T_8c215_row52_col3" class="data row52 col3" >+0.19%</td>
+      <td id="T_8c215_row52_col4" class="data row52 col4" >300</td>
+      <td id="T_8c215_row52_col5" class="data row52 col5" >31%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row53_col0" class="data row53 col0" >IONZ</td>
+      <td id="T_8c215_row53_col1" class="data row53 col1" >IONQ</td>
+      <td id="T_8c215_row53_col2" class="data row53 col2" >$17.91</td>
+      <td id="T_8c215_row53_col3" class="data row53 col3" >+7.83%</td>
+      <td id="T_8c215_row53_col4" class="data row53 col4" >2,091,010</td>
+      <td id="T_8c215_row53_col5" class="data row53 col5" >30%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row54_col0" class="data row54 col0" >METU</td>
+      <td id="T_8c215_row54_col1" class="data row54 col1" >MSFT</td>
+      <td id="T_8c215_row54_col2" class="data row54 col2" >$32.70</td>
+      <td id="T_8c215_row54_col3" class="data row54 col3" >+0.40%</td>
+      <td id="T_8c215_row54_col4" class="data row54 col4" >1,389,359</td>
+      <td id="T_8c215_row54_col5" class="data row54 col5" >29%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row55_col0" class="data row55 col0" >MSFL</td>
+      <td id="T_8c215_row55_col1" class="data row55 col1" >MSFT</td>
+      <td id="T_8c215_row55_col2" class="data row55 col2" >$27.60</td>
+      <td id="T_8c215_row55_col3" class="data row55 col3" >+0.77%</td>
+      <td id="T_8c215_row55_col4" class="data row55 col4" >71,429</td>
+      <td id="T_8c215_row55_col5" class="data row55 col5" >29%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row56_col0" class="data row56 col0" >GLGG</td>
+      <td id="T_8c215_row56_col1" class="data row56 col1" >GLXY</td>
+      <td id="T_8c215_row56_col2" class="data row56 col2" >$11.15</td>
+      <td id="T_8c215_row56_col3" class="data row56 col3" >+0.36%</td>
+      <td id="T_8c215_row56_col4" class="data row56 col4" >16,261</td>
+      <td id="T_8c215_row56_col5" class="data row56 col5" >29%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row57_col0" class="data row57 col0" >LULG</td>
+      <td id="T_8c215_row57_col1" class="data row57 col1" >LULU</td>
+      <td id="T_8c215_row57_col2" class="data row57 col2" >$25.34</td>
+      <td id="T_8c215_row57_col3" class="data row57 col3" >+0.00%</td>
+      <td id="T_8c215_row57_col4" class="data row57 col4" >11,971</td>
+      <td id="T_8c215_row57_col5" class="data row57 col5" >27%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row58_col0" class="data row58 col0" >CELT</td>
+      <td id="T_8c215_row58_col1" class="data row58 col1" >CELH</td>
+      <td id="T_8c215_row58_col2" class="data row58 col2" >$10.98</td>
+      <td id="T_8c215_row58_col3" class="data row58 col3" >+0.83%</td>
+      <td id="T_8c215_row58_col4" class="data row58 col4" >8,381</td>
+      <td id="T_8c215_row58_col5" class="data row58 col5" >26%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row59_col0" class="data row59 col0" >CONI</td>
+      <td id="T_8c215_row59_col1" class="data row59 col1" >COIN</td>
+      <td id="T_8c215_row59_col2" class="data row59 col2" >$60.21</td>
+      <td id="T_8c215_row59_col3" class="data row59 col3" >+4.33%</td>
+      <td id="T_8c215_row59_col4" class="data row59 col4" >114,129</td>
+      <td id="T_8c215_row59_col5" class="data row59 col5" >24%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row60_col0" class="data row60 col0" >ANEL</td>
+      <td id="T_8c215_row60_col1" class="data row60 col1" >ANET</td>
+      <td id="T_8c215_row60_col2" class="data row60 col2" >$16.31</td>
+      <td id="T_8c215_row60_col3" class="data row60 col3" >+1.22%</td>
+      <td id="T_8c215_row60_col4" class="data row60 col4" >17,694</td>
+      <td id="T_8c215_row60_col5" class="data row60 col5" >23%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row61_col0" class="data row61 col0" >CVNX</td>
+      <td id="T_8c215_row61_col1" class="data row61 col1" >CVNA</td>
+      <td id="T_8c215_row61_col2" class="data row61 col2" >$28.11</td>
+      <td id="T_8c215_row61_col3" class="data row61 col3" >+2.37%</td>
+      <td id="T_8c215_row61_col4" class="data row61 col4" >10,148</td>
+      <td id="T_8c215_row61_col5" class="data row61 col5" >21%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row62_col0" class="data row62 col0" >TSMX</td>
+      <td id="T_8c215_row62_col1" class="data row62 col1" >TSM</td>
+      <td id="T_8c215_row62_col2" class="data row62 col2" >$47.30</td>
+      <td id="T_8c215_row62_col3" class="data row62 col3" >+2.07%</td>
+      <td id="T_8c215_row62_col4" class="data row62 col4" >125,446</td>
+      <td id="T_8c215_row62_col5" class="data row62 col5" >20%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row63_col0" class="data row63 col0" >GSX</td>
+      <td id="T_8c215_row63_col1" class="data row63 col1" >GS</td>
+      <td id="T_8c215_row63_col2" class="data row63 col2" >$31.83</td>
+      <td id="T_8c215_row63_col3" class="data row63 col3" >+0.52%</td>
+      <td id="T_8c215_row63_col4" class="data row63 col4" >2,119</td>
+      <td id="T_8c215_row63_col5" class="data row63 col5" >19%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row64_col0" class="data row64 col0" >AAPB</td>
+      <td id="T_8c215_row64_col1" class="data row64 col1" >AAPL</td>
+      <td id="T_8c215_row64_col2" class="data row64 col2" >$33.61</td>
+      <td id="T_8c215_row64_col3" class="data row64 col3" >+1.23%</td>
+      <td id="T_8c215_row64_col4" class="data row64 col4" >26,758</td>
+      <td id="T_8c215_row64_col5" class="data row64 col5" >19%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row65_col0" class="data row65 col0" >VSTL</td>
+      <td id="T_8c215_row65_col1" class="data row65 col1" >VST</td>
+      <td id="T_8c215_row65_col2" class="data row65 col2" >$12.65</td>
+      <td id="T_8c215_row65_col3" class="data row65 col3" >+0.03%</td>
+      <td id="T_8c215_row65_col4" class="data row65 col4" >10,914</td>
+      <td id="T_8c215_row65_col5" class="data row65 col5" >16%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row66_col0" class="data row66 col0" >ASMG</td>
+      <td id="T_8c215_row66_col1" class="data row66 col1" >ASML</td>
+      <td id="T_8c215_row66_col2" class="data row66 col2" >$24.92</td>
+      <td id="T_8c215_row66_col3" class="data row66 col3" >+1.32%</td>
+      <td id="T_8c215_row66_col4" class="data row66 col4" >13,222</td>
+      <td id="T_8c215_row66_col5" class="data row66 col5" >13%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row67_col0" class="data row67 col0" >PLTG</td>
+      <td id="T_8c215_row67_col1" class="data row67 col1" >PLTR</td>
+      <td id="T_8c215_row67_col2" class="data row67 col2" >$36.88</td>
+      <td id="T_8c215_row67_col3" class="data row67 col3" >+0.06%</td>
+      <td id="T_8c215_row67_col4" class="data row67 col4" >27,775</td>
+      <td id="T_8c215_row67_col5" class="data row67 col5" >13%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row68_col0" class="data row68 col0" >BABX</td>
+      <td id="T_8c215_row68_col1" class="data row68 col1" >BABA</td>
+      <td id="T_8c215_row68_col2" class="data row68 col2" >$38.46</td>
+      <td id="T_8c215_row68_col3" class="data row68 col3" >+0.20%</td>
+      <td id="T_8c215_row68_col4" class="data row68 col4" >142,060</td>
+      <td id="T_8c215_row68_col5" class="data row68 col5" >12%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row69_col0" class="data row69 col0" >MSDD</td>
+      <td id="T_8c215_row69_col1" class="data row69 col1" >MSTR</td>
+      <td id="T_8c215_row69_col2" class="data row69 col2" >$87.05</td>
+      <td id="T_8c215_row69_col3" class="data row69 col3" >+7.39%</td>
+      <td id="T_8c215_row69_col4" class="data row69 col4" >1,222</td>
+      <td id="T_8c215_row69_col5" class="data row69 col5" >9%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row70_col0" class="data row70 col0" >SMCZ</td>
+      <td id="T_8c215_row70_col1" class="data row70 col1" >SMCI</td>
+      <td id="T_8c215_row70_col2" class="data row70 col2" >$54.16</td>
+      <td id="T_8c215_row70_col3" class="data row70 col3" >+1.78%</td>
+      <td id="T_8c215_row70_col4" class="data row70 col4" >71,492</td>
+      <td id="T_8c215_row70_col5" class="data row70 col5" >8%</td>
+    </tr>
+    <tr>
+      <td id="T_8c215_row71_col0" class="data row71 col0" >QCML</td>
+      <td id="T_8c215_row71_col1" class="data row71 col1" >QCOM</td>
+      <td id="T_8c215_row71_col2" class="data row71 col2" >$22.23</td>
+      <td id="T_8c215_row71_col3" class="data row71 col3" >+0.55%</td>
+      <td id="T_8c215_row71_col4" class="data row71 col4" >5,896</td>
+      <td id="T_8c215_row71_col5" class="data row71 col5" >3%</td>
+    </tr>
+  </tbody>
+</table>
+
+            </div>
+
+            <div class="table-column">
+                <h2><span class="badge badge-neg">BEARISH</span> Negative Momentum</h2>
+                <style type="text/css">
+#T_2c2ce_row0_col3, #T_2c2ce_row1_col3, #T_2c2ce_row2_col3, #T_2c2ce_row3_col3, #T_2c2ce_row4_col3, #T_2c2ce_row6_col3, #T_2c2ce_row8_col3, #T_2c2ce_row10_col3, #T_2c2ce_row11_col3, #T_2c2ce_row12_col3, #T_2c2ce_row13_col3, #T_2c2ce_row14_col3, #T_2c2ce_row19_col3, #T_2c2ce_row21_col3, #T_2c2ce_row24_col3, #T_2c2ce_row27_col3, #T_2c2ce_row28_col3, #T_2c2ce_row30_col3, #T_2c2ce_row31_col3, #T_2c2ce_row33_col3, #T_2c2ce_row34_col3, #T_2c2ce_row35_col3, #T_2c2ce_row37_col3, #T_2c2ce_row38_col3, #T_2c2ce_row40_col3, #T_2c2ce_row41_col3, #T_2c2ce_row42_col3, #T_2c2ce_row43_col3, #T_2c2ce_row44_col3, #T_2c2ce_row45_col3, #T_2c2ce_row51_col3, #T_2c2ce_row52_col3, #T_2c2ce_row58_col3, #T_2c2ce_row62_col3, #T_2c2ce_row63_col3, #T_2c2ce_row64_col3, #T_2c2ce_row65_col3, #T_2c2ce_row66_col3, #T_2c2ce_row67_col3, #T_2c2ce_row78_col3, #T_2c2ce_row80_col3, #T_2c2ce_row81_col3, #T_2c2ce_row83_col3, #T_2c2ce_row86_col3, #T_2c2ce_row89_col3, #T_2c2ce_row90_col3, #T_2c2ce_row95_col3, #T_2c2ce_row103_col3, #T_2c2ce_row105_col3, #T_2c2ce_row108_col3, #T_2c2ce_row119_col3, #T_2c2ce_row128_col3 {
+  background-color: rgba(255, 69, 0, 1.0);
+  color: white;
+}
+#T_2c2ce_row0_col5 {
+  background-color: rgb(12,111,12);
+  color: white;
+  font-weight: bold;
+}
+#T_2c2ce_row1_col5 {
+  background-color: rgb(34,132,34);
+  color: white;
+  font-weight: bold;
+}
+#T_2c2ce_row2_col5 {
+  background-color: rgb(37,135,37);
+  color: white;
+  font-weight: bold;
+}
+#T_2c2ce_row3_col5 {
+  background-color: rgb(38,137,38);
+  color: white;
+  font-weight: bold;
+}
+#T_2c2ce_row4_col5, #T_2c2ce_row5_col5 {
+  background-color: rgb(71,168,71);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row5_col3 {
+  background-color: rgba(255, 69, 0, 0.41768686299057667);
+  color: white;
+}
+#T_2c2ce_row6_col5 {
+  background-color: rgb(83,179,83);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row7_col3 {
+  background-color: rgba(255, 69, 0, 0.35933011678744653);
+  color: white;
+}
+#T_2c2ce_row7_col5 {
+  background-color: rgb(86,182,86);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row8_col5, #T_2c2ce_row9_col5 {
+  background-color: rgb(87,183,87);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row9_col3 {
+  background-color: rgba(255, 69, 0, 0.9073685495476975);
+  color: white;
+}
+#T_2c2ce_row10_col5 {
+  background-color: rgb(94,190,94);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row11_col5 {
+  background-color: rgb(96,192,96);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row12_col5 {
+  background-color: rgb(97,193,97);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row13_col5 {
+  background-color: rgb(100,195,100);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row14_col5 {
+  background-color: rgb(101,196,101);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row15_col3 {
+  background-color: rgba(255, 69, 0, 0.6833851085732237);
+  color: white;
+}
+#T_2c2ce_row15_col5 {
+  background-color: rgb(104,200,104);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row16_col3 {
+  background-color: rgba(255, 69, 0, 0.47760964642177417);
+  color: white;
+}
+#T_2c2ce_row16_col5 {
+  background-color: rgb(105,200,105);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row17_col3 {
+  background-color: rgba(255, 69, 0, 0.8268842109474683);
+  color: white;
+}
+#T_2c2ce_row17_col5 {
+  background-color: rgb(105,201,105);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row18_col3 {
+  background-color: rgba(255, 69, 0, 0.5112837579147781);
+  color: white;
+}
+#T_2c2ce_row18_col5 {
+  background-color: rgb(112,208,112);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row19_col5 {
+  background-color: rgb(114,209,114);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row20_col3 {
+  background-color: rgba(255, 69, 0, 0.5557950623319985);
+  color: white;
+}
+#T_2c2ce_row20_col5 {
+  background-color: rgb(115,210,115);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row21_col5 {
+  background-color: rgb(117,212,117);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row22_col3 {
+  background-color: rgba(255, 69, 0, 0.6913449395835867);
+  color: white;
+}
+#T_2c2ce_row22_col5 {
+  background-color: rgb(122,217,122);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row23_col3 {
+  background-color: rgba(255, 69, 0, 0.7959942568206635);
+  color: white;
+}
+#T_2c2ce_row23_col5 {
+  background-color: rgb(126,221,126);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row24_col5 {
+  background-color: rgb(132,226,132);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row25_col3 {
+  background-color: rgba(255, 69, 0, 0.4800140036910568);
+  color: white;
+}
+#T_2c2ce_row25_col5 {
+  background-color: rgb(133,227,133);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row26_col3 {
+  background-color: rgba(255, 69, 0, 0.24301071133912988);
+  color: white;
+}
+#T_2c2ce_row26_col5 {
+  background-color: rgb(134,228,134);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row27_col5 {
+  background-color: rgb(136,230,136);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row28_col5 {
+  background-color: rgb(138,232,138);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row29_col3 {
+  background-color: rgba(255, 69, 0, 0.43305843944008915);
+  color: white;
+}
+#T_2c2ce_row29_col5 {
+  background-color: rgb(138,233,138);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row30_col5 {
+  background-color: rgb(141,235,141);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row31_col5 {
+  background-color: rgb(142,236,142);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row32_col3 {
+  background-color: rgba(255, 69, 0, 0.7507721122319899);
+  color: white;
+}
+#T_2c2ce_row32_col5, #T_2c2ce_row33_col5, #T_2c2ce_row34_col5 {
+  background-color: rgb(143,237,143);
+  color: black;
+  font-weight: bold;
+}
+#T_2c2ce_row36_col3 {
+  background-color: rgba(255, 69, 0, 0.5195271581324574);
+  color: white;
+}
+#T_2c2ce_row39_col3 {
+  background-color: rgba(255, 69, 0, 0.8199386443209875);
+  color: white;
+}
+#T_2c2ce_row46_col3 {
+  background-color: rgba(255, 69, 0, 0.7431881379819043);
+  color: white;
+}
+#T_2c2ce_row47_col3 {
+  background-color: rgba(255, 69, 0, 0.9305519516509695);
+  color: white;
+}
+#T_2c2ce_row48_col3 {
+  background-color: rgba(255, 69, 0, 0.698054012663645);
+  color: white;
+}
+#T_2c2ce_row49_col3 {
+  background-color: rgba(255, 69, 0, 0.3340868099787622);
+  color: white;
+}
+#T_2c2ce_row50_col3 {
+  background-color: rgba(255, 69, 0, 0.2051898690400691);
+  color: white;
+}
+#T_2c2ce_row53_col3 {
+  background-color: rgba(255, 69, 0, 0.8054569722164611);
+  color: white;
+}
+#T_2c2ce_row54_col3 {
+  background-color: rgba(255, 69, 0, 0.5769075238865217);
+  color: white;
+}
+#T_2c2ce_row55_col3 {
+  background-color: rgba(255, 69, 0, 0.6223604342446377);
+  color: white;
+}
+#T_2c2ce_row56_col3 {
+  background-color: rgba(255, 69, 0, 0.6414344588416832);
+  color: white;
+}
+#T_2c2ce_row57_col3 {
+  background-color: rgba(255, 69, 0, 0.4645502665526042);
+  color: white;
+}
+#T_2c2ce_row59_col3 {
+  background-color: rgba(255, 69, 0, 0.24695386647924097);
+  color: white;
+}
+#T_2c2ce_row60_col3 {
+  background-color: rgba(255, 69, 0, 0.3903772731663675);
+  color: white;
+}
+#T_2c2ce_row61_col3 {
+  background-color: rgba(255, 69, 0, 0.6359129072706123);
+  color: white;
+}
+#T_2c2ce_row68_col3 {
+  background-color: rgba(255, 69, 0, 0.5013580773457862);
+  color: white;
+}
+#T_2c2ce_row69_col3 {
+  background-color: rgba(255, 69, 0, 0.5335493266999208);
+  color: white;
+}
+#T_2c2ce_row70_col3 {
+  background-color: rgba(255, 69, 0, 0.509833297148534);
+  color: white;
+}
+#T_2c2ce_row71_col3 {
+  background-color: rgba(255, 69, 0, 0.3769963687714062);
+  color: white;
+}
+#T_2c2ce_row72_col3 {
+  background-color: rgba(255, 69, 0, 0.41058172273086524);
+  color: white;
+}
+#T_2c2ce_row73_col3 {
+  background-color: rgba(255, 69, 0, 0.45214930249585994);
+  color: white;
+}
+#T_2c2ce_row74_col3 {
+  background-color: rgba(255, 69, 0, 0.575366227734081);
+  color: white;
+}
+#T_2c2ce_row75_col3 {
+  background-color: rgba(255, 69, 0, 0.4334499947524251);
+  color: white;
+}
+#T_2c2ce_row76_col3 {
+  background-color: rgba(255, 69, 0, 0.7555148485885932);
+  color: white;
+}
+#T_2c2ce_row77_col3 {
+  background-color: rgba(255, 69, 0, 0.4336008852872364);
+  color: white;
+}
+#T_2c2ce_row79_col3 {
+  background-color: rgba(255, 69, 0, 0.2900691868260577);
+  color: white;
+}
+#T_2c2ce_row82_col3 {
+  background-color: rgba(255, 69, 0, 0.39678304681599685);
+  color: white;
+}
+#T_2c2ce_row84_col3 {
+  background-color: rgba(255, 69, 0, 0.9044204752404035);
+  color: white;
+}
+#T_2c2ce_row85_col3 {
+  background-color: rgba(255, 69, 0, 0.32122165559178306);
+  color: white;
+}
+#T_2c2ce_row87_col3 {
+  background-color: rgba(255, 69, 0, 0.3090047967779078);
+  color: white;
+}
+#T_2c2ce_row88_col3 {
+  background-color: rgba(255, 69, 0, 0.34611857829371995);
+  color: white;
+}
+#T_2c2ce_row91_col3 {
+  background-color: rgba(255, 69, 0, 0.907713395590027);
+  color: white;
+}
+#T_2c2ce_row92_col3 {
+  background-color: rgba(255, 69, 0, 0.6789518538974458);
+  color: white;
+}
+#T_2c2ce_row93_col3 {
+  background-color: rgba(255, 69, 0, 0.3094118611343099);
+  color: white;
+}
+#T_2c2ce_row94_col3 {
+  background-color: rgba(255, 69, 0, 0.3533189792616629);
+  color: white;
+}
+#T_2c2ce_row96_col3 {
+  background-color: rgba(255, 69, 0, 0.5767760933975865);
+  color: white;
+}
+#T_2c2ce_row97_col3 {
+  background-color: rgba(255, 69, 0, 0.8525223918811511);
+  color: white;
+}
+#T_2c2ce_row98_col3 {
+  background-color: rgba(255, 69, 0, 0.24090718743357464);
+  color: white;
+}
+#T_2c2ce_row99_col3 {
+  background-color: rgba(255, 69, 0, 0.9563974470672723);
+  color: white;
+}
+#T_2c2ce_row100_col3 {
+  background-color: rgba(255, 69, 0, 0.44237054253035785);
+  color: white;
+}
+#T_2c2ce_row101_col3 {
+  background-color: rgba(255, 69, 0, 0.43671038449223804);
+  color: white;
+}
+#T_2c2ce_row102_col3 {
+  background-color: rgba(255, 69, 0, 0.22038166046606247);
+  color: white;
+}
+#T_2c2ce_row104_col3 {
+  background-color: rgba(255, 69, 0, 0.24405219161291747);
+  color: white;
+}
+#T_2c2ce_row106_col3 {
+  background-color: rgba(255, 69, 0, 0.23424686042095294);
+  color: white;
+}
+#T_2c2ce_row107_col3 {
+  background-color: rgba(255, 69, 0, 0.23051903442132252);
+  color: white;
+}
+#T_2c2ce_row109_col3 {
+  background-color: rgba(255, 69, 0, 0.2868384531324708);
+  color: white;
+}
+#T_2c2ce_row110_col3 {
+  background-color: rgba(255, 69, 0, 0.24005002553078125);
+  color: white;
+}
+#T_2c2ce_row111_col3 {
+  background-color: rgba(255, 69, 0, 0.569392421629063);
+  color: white;
+}
+#T_2c2ce_row112_col3 {
+  background-color: rgba(255, 69, 0, 0.42798517997185015);
+  color: white;
+}
+#T_2c2ce_row113_col3 {
+  background-color: rgba(255, 69, 0, 0.2570740409619569);
+  color: white;
+}
+#T_2c2ce_row114_col3 {
+  background-color: rgba(255, 69, 0, 0.4748534902371079);
+  color: white;
+}
+#T_2c2ce_row115_col3 {
+  background-color: rgba(255, 69, 0, 0.5318398437285068);
+  color: white;
+}
+#T_2c2ce_row116_col3 {
+  background-color: rgba(255, 69, 0, 0.5257446693589338);
+  color: white;
+}
+#T_2c2ce_row117_col3 {
+  background-color: rgba(255, 69, 0, 0.4312926163065005);
+  color: white;
+}
+#T_2c2ce_row118_col3 {
+  background-color: rgba(255, 69, 0, 0.3568315319415713);
+  color: white;
+}
+#T_2c2ce_row120_col3 {
+  background-color: rgba(255, 69, 0, 0.2506977660311018);
+  color: white;
+}
+#T_2c2ce_row121_col3 {
+  background-color: rgba(255, 69, 0, 0.9860863727072011);
+  color: white;
+}
+#T_2c2ce_row122_col3 {
+  background-color: rgba(255, 69, 0, 0.6003141361158565);
+  color: white;
+}
+#T_2c2ce_row123_col3 {
+  background-color: rgba(255, 69, 0, 0.4286466228697856);
+  color: white;
+}
+#T_2c2ce_row124_col3 {
+  background-color: rgba(255, 69, 0, 0.47185110242385336);
+  color: white;
+}
+#T_2c2ce_row125_col3 {
+  background-color: rgba(255, 69, 0, 0.23542380331358836);
+  color: white;
+}
+#T_2c2ce_row126_col3 {
+  background-color: rgba(255, 69, 0, 0.6883253611417668);
+  color: white;
+}
+#T_2c2ce_row127_col3 {
+  background-color: rgba(255, 69, 0, 0.3580309135975276);
+  color: white;
+}
+#T_2c2ce_row129_col3 {
+  background-color: rgba(255, 69, 0, 0.255590294643802);
+  color: white;
+}
+#T_2c2ce_row130_col3 {
+  background-color: rgba(255, 69, 0, 0.33705624916073085);
+  color: white;
+}
+#T_2c2ce_row131_col3 {
+  background-color: rgba(255, 69, 0, 0.35160362905044834);
+  color: white;
+}
+#T_2c2ce_row132_col3 {
+  background-color: rgba(255, 69, 0, 0.5819056074731925);
+  color: white;
+}
+#T_2c2ce_row133_col3 {
+  background-color: rgba(255, 69, 0, 0.2761418471242304);
+  color: white;
+}
+#T_2c2ce_row134_col3 {
+  background-color: rgba(255, 69, 0, 0.3686083325644028);
+  color: white;
+}
+#T_2c2ce_row135_col3 {
+  background-color: rgba(255, 69, 0, 0.22786747696646106);
+  color: white;
+}
+</style>
+<table id="T_2c2ce" id="tableNeg" class="display">
+  <thead>
+    <tr>
+      <th id="T_2c2ce_level0_col0" class="col_heading level0 col0" >Ticker</th>
+      <th id="T_2c2ce_level0_col1" class="col_heading level0 col1" >Underlying</th>
+      <th id="T_2c2ce_level0_col2" class="col_heading level0 col2" >Price</th>
+      <th id="T_2c2ce_level0_col3" class="col_heading level0 col3" >Change</th>
+      <th id="T_2c2ce_level0_col4" class="col_heading level0 col4" >Volume</th>
+      <th id="T_2c2ce_level0_col5" class="col_heading level0 col5" >Turnover</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td id="T_2c2ce_row0_col0" class="data row0 col0" >BMNG</td>
+      <td id="T_2c2ce_row0_col1" class="data row0 col1" >BMNR</td>
+      <td id="T_2c2ce_row0_col2" class="data row0 col2" >$3.87</td>
+      <td id="T_2c2ce_row0_col3" class="data row0 col3" >-8.51%</td>
+      <td id="T_2c2ce_row0_col4" class="data row0 col4" >7,048,407</td>
+      <td id="T_2c2ce_row0_col5" class="data row0 col5" >283%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row1_col0" class="data row1 col0" >PXIU</td>
+      <td id="T_2c2ce_row1_col1" class="data row1 col1" >UPXI</td>
+      <td id="T_2c2ce_row1_col2" class="data row1 col2" >$1.64</td>
+      <td id="T_2c2ce_row1_col3" class="data row1 col3" >-15.03%</td>
+      <td id="T_2c2ce_row1_col4" class="data row1 col4" >289,121</td>
+      <td id="T_2c2ce_row1_col5" class="data row1 col5" >253%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row2_col0" class="data row2 col0" >FLYT</td>
+      <td id="T_2c2ce_row2_col1" class="data row2 col1" >FLY</td>
+      <td id="T_2c2ce_row2_col2" class="data row2 col2" >$19.30</td>
+      <td id="T_2c2ce_row2_col3" class="data row2 col3" >-15.16%</td>
+      <td id="T_2c2ce_row2_col4" class="data row2 col4" >56,672</td>
+      <td id="T_2c2ce_row2_col5" class="data row2 col5" >248%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row3_col0" class="data row3 col0" >SBTU</td>
+      <td id="T_2c2ce_row3_col1" class="data row3 col1" >SBET</td>
+      <td id="T_2c2ce_row3_col2" class="data row3 col2" >$8.28</td>
+      <td id="T_2c2ce_row3_col3" class="data row3 col3" >-7.09%</td>
+      <td id="T_2c2ce_row3_col4" class="data row3 col4" >137,075</td>
+      <td id="T_2c2ce_row3_col5" class="data row3 col5" >246%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row4_col0" class="data row4 col0" >CRWG</td>
+      <td id="T_2c2ce_row4_col1" class="data row4 col1" >CRWV</td>
+      <td id="T_2c2ce_row4_col2" class="data row4 col2" >$3.68</td>
+      <td id="T_2c2ce_row4_col3" class="data row4 col3" >-10.46%</td>
+      <td id="T_2c2ce_row4_col4" class="data row4 col4" >18,614,039</td>
+      <td id="T_2c2ce_row4_col5" class="data row4 col5" >201%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row5_col0" class="data row5 col0" >TSLG</td>
+      <td id="T_2c2ce_row5_col1" class="data row5 col1" >TSLA</td>
+      <td id="T_2c2ce_row5_col2" class="data row5 col2" >$11.60</td>
+      <td id="T_2c2ce_row5_col3" class="data row5 col3" >-1.36%</td>
+      <td id="T_2c2ce_row5_col4" class="data row5 col4" >21,925,960</td>
+      <td id="T_2c2ce_row5_col5" class="data row5 col5" >200%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row6_col0" class="data row6 col0" >QBTX</td>
+      <td id="T_2c2ce_row6_col1" class="data row6 col1" >QBTS</td>
+      <td id="T_2c2ce_row6_col2" class="data row6 col2" >$41.95</td>
+      <td id="T_2c2ce_row6_col3" class="data row6 col3" >-18.95%</td>
+      <td id="T_2c2ce_row6_col4" class="data row6 col4" >2,100,365</td>
+      <td id="T_2c2ce_row6_col5" class="data row6 col5" >185%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row7_col0" class="data row7 col0" >RKLX</td>
+      <td id="T_2c2ce_row7_col1" class="data row7 col1" >RKLB</td>
+      <td id="T_2c2ce_row7_col2" class="data row7 col2" >$56.67</td>
+      <td id="T_2c2ce_row7_col3" class="data row7 col3" >-1.00%</td>
+      <td id="T_2c2ce_row7_col4" class="data row7 col4" >2,914,597</td>
+      <td id="T_2c2ce_row7_col5" class="data row7 col5" >180%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row8_col0" class="data row8 col0" >CRWU</td>
+      <td id="T_2c2ce_row8_col1" class="data row8 col1" >CRWV</td>
+      <td id="T_2c2ce_row8_col2" class="data row8 col2" >$6.80</td>
+      <td id="T_2c2ce_row8_col3" class="data row8 col3" >-10.76%</td>
+      <td id="T_2c2ce_row8_col4" class="data row8 col4" >1,679,214</td>
+      <td id="T_2c2ce_row8_col5" class="data row8 col5" >179%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row9_col0" class="data row9 col0" >DJTU</td>
+      <td id="T_2c2ce_row9_col1" class="data row9 col1" >DJT</td>
+      <td id="T_2c2ce_row9_col2" class="data row9 col2" >$4.54</td>
+      <td id="T_2c2ce_row9_col3" class="data row9 col3" >-4.42%</td>
+      <td id="T_2c2ce_row9_col4" class="data row9 col4" >1,562,984</td>
+      <td id="T_2c2ce_row9_col5" class="data row9 col5" >179%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row10_col0" class="data row10 col0" >BMNU</td>
+      <td id="T_2c2ce_row10_col1" class="data row10 col1" >BMNR</td>
+      <td id="T_2c2ce_row10_col2" class="data row10 col2" >$5.81</td>
+      <td id="T_2c2ce_row10_col3" class="data row10 col3" >-8.21%</td>
+      <td id="T_2c2ce_row10_col4" class="data row10 col4" >35,978,051</td>
+      <td id="T_2c2ce_row10_col5" class="data row10 col5" >169%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row11_col0" class="data row11 col0" >SMUP</td>
+      <td id="T_2c2ce_row11_col1" class="data row11 col1" >SMR</td>
+      <td id="T_2c2ce_row11_col2" class="data row11 col2" >$1.41</td>
+      <td id="T_2c2ce_row11_col3" class="data row11 col3" >-6.00%</td>
+      <td id="T_2c2ce_row11_col4" class="data row11 col4" >1,118,930</td>
+      <td id="T_2c2ce_row11_col5" class="data row11 col5" >166%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row12_col0" class="data row12 col0" >TEMT</td>
+      <td id="T_2c2ce_row12_col1" class="data row12 col1" >TEM</td>
+      <td id="T_2c2ce_row12_col2" class="data row12 col2" >$13.80</td>
+      <td id="T_2c2ce_row12_col3" class="data row12 col3" >-24.55%</td>
+      <td id="T_2c2ce_row12_col4" class="data row12 col4" >914,629</td>
+      <td id="T_2c2ce_row12_col5" class="data row12 col5" >165%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row13_col0" class="data row13 col0" >RGTU</td>
+      <td id="T_2c2ce_row13_col1" class="data row13 col1" >RGTI</td>
+      <td id="T_2c2ce_row13_col2" class="data row13 col2" >$19.55</td>
+      <td id="T_2c2ce_row13_col3" class="data row13 col3" >-13.46%</td>
+      <td id="T_2c2ce_row13_col4" class="data row13 col4" >530,146</td>
+      <td id="T_2c2ce_row13_col5" class="data row13 col5" >161%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row14_col0" class="data row14 col0" >MSTX</td>
+      <td id="T_2c2ce_row14_col1" class="data row14 col1" >MSTR</td>
+      <td id="T_2c2ce_row14_col2" class="data row14 col2" >$4.19</td>
+      <td id="T_2c2ce_row14_col3" class="data row14 col3" >-8.11%</td>
+      <td id="T_2c2ce_row14_col4" class="data row14 col4" >36,343,227</td>
+      <td id="T_2c2ce_row14_col5" class="data row14 col5" >160%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row15_col0" class="data row15 col0" >NOWL</td>
+      <td id="T_2c2ce_row15_col1" class="data row15 col1" >NOW</td>
+      <td id="T_2c2ce_row15_col2" class="data row15 col2" >$14.58</td>
+      <td id="T_2c2ce_row15_col3" class="data row15 col3" >-3.02%</td>
+      <td id="T_2c2ce_row15_col4" class="data row15 col4" >65,682</td>
+      <td id="T_2c2ce_row15_col5" class="data row15 col5" >154%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row16_col0" class="data row16 col0" >ARMU</td>
+      <td id="T_2c2ce_row16_col1" class="data row16 col1" >ARM</td>
+      <td id="T_2c2ce_row16_col2" class="data row16 col2" >$14.80</td>
+      <td id="T_2c2ce_row16_col3" class="data row16 col3" >-1.74%</td>
+      <td id="T_2c2ce_row16_col4" class="data row16 col4" >31,040</td>
+      <td id="T_2c2ce_row16_col5" class="data row16 col5" >154%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row17_col0" class="data row17 col0" >CRDU</td>
+      <td id="T_2c2ce_row17_col1" class="data row17 col1" >CRDO</td>
+      <td id="T_2c2ce_row17_col2" class="data row17 col2" >$15.94</td>
+      <td id="T_2c2ce_row17_col3" class="data row17 col3" >-3.92%</td>
+      <td id="T_2c2ce_row17_col4" class="data row17 col4" >550,869</td>
+      <td id="T_2c2ce_row17_col5" class="data row17 col5" >154%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row18_col0" class="data row18 col0" >SMCL</td>
+      <td id="T_2c2ce_row18_col1" class="data row18 col1" >SMCI</td>
+      <td id="T_2c2ce_row18_col2" class="data row18 col2" >$5.04</td>
+      <td id="T_2c2ce_row18_col3" class="data row18 col3" >-1.95%</td>
+      <td id="T_2c2ce_row18_col4" class="data row18 col4" >2,515,342</td>
+      <td id="T_2c2ce_row18_col5" class="data row18 col5" >143%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row19_col0" class="data row19 col0" >NVD</td>
+      <td id="T_2c2ce_row19_col1" class="data row19 col1" >NVDA</td>
+      <td id="T_2c2ce_row19_col2" class="data row19 col2" >$7.80</td>
+      <td id="T_2c2ce_row19_col3" class="data row19 col3" >-6.02%</td>
+      <td id="T_2c2ce_row19_col4" class="data row19 col4" >41,419,370</td>
+      <td id="T_2c2ce_row19_col5" class="data row19 col5" >141%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row20_col0" class="data row20 col0" >ASTX</td>
+      <td id="T_2c2ce_row20_col1" class="data row20 col1" >ASTS</td>
+      <td id="T_2c2ce_row20_col2" class="data row20 col2" >$58.04</td>
+      <td id="T_2c2ce_row20_col3" class="data row20 col3" >-2.22%</td>
+      <td id="T_2c2ce_row20_col4" class="data row20 col4" >1,640,651</td>
+      <td id="T_2c2ce_row20_col5" class="data row20 col5" >140%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row21_col0" class="data row21 col0" >CLSX</td>
+      <td id="T_2c2ce_row21_col1" class="data row21 col1" >CLSK</td>
+      <td id="T_2c2ce_row21_col2" class="data row21 col2" >$21.17</td>
+      <td id="T_2c2ce_row21_col3" class="data row21 col3" >-9.95%</td>
+      <td id="T_2c2ce_row21_col4" class="data row21 col4" >664,784</td>
+      <td id="T_2c2ce_row21_col5" class="data row21 col5" >136%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row22_col0" class="data row22 col0" >ORCX</td>
+      <td id="T_2c2ce_row22_col1" class="data row22 col1" >ORCL</td>
+      <td id="T_2c2ce_row22_col2" class="data row22 col2" >$17.36</td>
+      <td id="T_2c2ce_row22_col3" class="data row22 col3" >-3.07%</td>
+      <td id="T_2c2ce_row22_col4" class="data row22 col4" >4,400,914</td>
+      <td id="T_2c2ce_row22_col5" class="data row22 col5" >130%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row23_col0" class="data row23 col0" >OKTX</td>
+      <td id="T_2c2ce_row23_col1" class="data row23 col1" >OKTA</td>
+      <td id="T_2c2ce_row23_col2" class="data row23 col2" >$23.03</td>
+      <td id="T_2c2ce_row23_col3" class="data row23 col3" >-3.72%</td>
+      <td id="T_2c2ce_row23_col4" class="data row23 col4" >5,097</td>
+      <td id="T_2c2ce_row23_col5" class="data row23 col5" >124%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row24_col0" class="data row24 col0" >AFRU</td>
+      <td id="T_2c2ce_row24_col1" class="data row24 col1" >AFRM</td>
+      <td id="T_2c2ce_row24_col2" class="data row24 col2" >$15.31</td>
+      <td id="T_2c2ce_row24_col3" class="data row24 col3" >-8.10%</td>
+      <td id="T_2c2ce_row24_col4" class="data row24 col4" >47,805</td>
+      <td id="T_2c2ce_row24_col5" class="data row24 col5" >116%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row25_col0" class="data row25 col0" >ELIL</td>
+      <td id="T_2c2ce_row25_col1" class="data row25 col1" >LLY</td>
+      <td id="T_2c2ce_row25_col2" class="data row25 col2" >$28.07</td>
+      <td id="T_2c2ce_row25_col3" class="data row25 col3" >-1.75%</td>
+      <td id="T_2c2ce_row25_col4" class="data row25 col4" >153,402</td>
+      <td id="T_2c2ce_row25_col5" class="data row25 col5" >114%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row26_col0" class="data row26 col0" >IRE</td>
+      <td id="T_2c2ce_row26_col1" class="data row26 col1" >IREN</td>
+      <td id="T_2c2ce_row26_col2" class="data row26 col2" >$7.42</td>
+      <td id="T_2c2ce_row26_col3" class="data row26 col3" >-0.27%</td>
+      <td id="T_2c2ce_row26_col4" class="data row26 col4" >12,892,967</td>
+      <td id="T_2c2ce_row26_col5" class="data row26 col5" >113%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row27_col0" class="data row27 col0" >LMNX</td>
+      <td id="T_2c2ce_row27_col1" class="data row27 col1" >LMND</td>
+      <td id="T_2c2ce_row27_col2" class="data row27 col2" >$36.83</td>
+      <td id="T_2c2ce_row27_col3" class="data row27 col3" >-8.43%</td>
+      <td id="T_2c2ce_row27_col4" class="data row27 col4" >41,021</td>
+      <td id="T_2c2ce_row27_col5" class="data row27 col5" >111%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row28_col0" class="data row28 col0" >CRCG</td>
+      <td id="T_2c2ce_row28_col1" class="data row28 col1" >CRCL</td>
+      <td id="T_2c2ce_row28_col2" class="data row28 col2" >$2.84</td>
+      <td id="T_2c2ce_row28_col3" class="data row28 col3" >-9.55%</td>
+      <td id="T_2c2ce_row28_col4" class="data row28 col4" >6,474,005</td>
+      <td id="T_2c2ce_row28_col5" class="data row28 col5" >108%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row29_col0" class="data row29 col0" >SNOU</td>
+      <td id="T_2c2ce_row29_col1" class="data row29 col1" >SNOW</td>
+      <td id="T_2c2ce_row29_col2" class="data row29 col2" >$46.68</td>
+      <td id="T_2c2ce_row29_col3" class="data row29 col3" >-1.46%</td>
+      <td id="T_2c2ce_row29_col4" class="data row29 col4" >70,804</td>
+      <td id="T_2c2ce_row29_col5" class="data row29 col5" >107%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row30_col0" class="data row30 col0" >CWVX</td>
+      <td id="T_2c2ce_row30_col1" class="data row30 col1" >CRWV</td>
+      <td id="T_2c2ce_row30_col2" class="data row30 col2" >$28.14</td>
+      <td id="T_2c2ce_row30_col3" class="data row30 col3" >-10.58%</td>
+      <td id="T_2c2ce_row30_col4" class="data row30 col4" >2,053,153</td>
+      <td id="T_2c2ce_row30_col5" class="data row30 col5" >104%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row31_col0" class="data row31 col0" >APLX</td>
+      <td id="T_2c2ce_row31_col1" class="data row31 col1" >APLD</td>
+      <td id="T_2c2ce_row31_col2" class="data row31 col2" >$58.36</td>
+      <td id="T_2c2ce_row31_col3" class="data row31 col3" >-12.24%</td>
+      <td id="T_2c2ce_row31_col4" class="data row31 col4" >283,925</td>
+      <td id="T_2c2ce_row31_col5" class="data row31 col5" >102%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row32_col0" class="data row32 col0" >HOOG</td>
+      <td id="T_2c2ce_row32_col1" class="data row32 col1" >HOOD</td>
+      <td id="T_2c2ce_row32_col2" class="data row32 col2" >$69.07</td>
+      <td id="T_2c2ce_row32_col3" class="data row32 col3" >-3.44%</td>
+      <td id="T_2c2ce_row32_col4" class="data row32 col4" >275,551</td>
+      <td id="T_2c2ce_row32_col5" class="data row32 col5" >101%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row33_col0" class="data row33 col0" >SOUX</td>
+      <td id="T_2c2ce_row33_col1" class="data row33 col1" >SOUN</td>
+      <td id="T_2c2ce_row33_col2" class="data row33 col2" >$16.03</td>
+      <td id="T_2c2ce_row33_col3" class="data row33 col3" >-5.65%</td>
+      <td id="T_2c2ce_row33_col4" class="data row33 col4" >309,184</td>
+      <td id="T_2c2ce_row33_col5" class="data row33 col5" >101%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row34_col0" class="data row34 col0" >MSTU</td>
+      <td id="T_2c2ce_row34_col1" class="data row34 col1" >MSTR</td>
+      <td id="T_2c2ce_row34_col2" class="data row34 col2" >$9.09</td>
+      <td id="T_2c2ce_row34_col3" class="data row34 col3" >-7.90%</td>
+      <td id="T_2c2ce_row34_col4" class="data row34 col4" >9,952,387</td>
+      <td id="T_2c2ce_row34_col5" class="data row34 col5" >100%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row35_col0" class="data row35 col0" >IONX</td>
+      <td id="T_2c2ce_row35_col1" class="data row35 col1" >IONQ</td>
+      <td id="T_2c2ce_row35_col2" class="data row35 col2" >$29.56</td>
+      <td id="T_2c2ce_row35_col3" class="data row35 col3" >-9.13%</td>
+      <td id="T_2c2ce_row35_col4" class="data row35 col4" >1,959,682</td>
+      <td id="T_2c2ce_row35_col5" class="data row35 col5" >91%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row36_col0" class="data row36 col0" >SMCX</td>
+      <td id="T_2c2ce_row36_col1" class="data row36 col1" >SMCI</td>
+      <td id="T_2c2ce_row36_col2" class="data row36 col2" >$13.25</td>
+      <td id="T_2c2ce_row36_col3" class="data row36 col3" >-2.00%</td>
+      <td id="T_2c2ce_row36_col4" class="data row36 col4" >2,025,453</td>
+      <td id="T_2c2ce_row36_col5" class="data row36 col5" >90%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row37_col0" class="data row37 col0" >MSTP</td>
+      <td id="T_2c2ce_row37_col1" class="data row37 col1" >MSTR</td>
+      <td id="T_2c2ce_row37_col2" class="data row37 col2" >$2.98</td>
+      <td id="T_2c2ce_row37_col3" class="data row37 col3" >-7.68%</td>
+      <td id="T_2c2ce_row37_col4" class="data row37 col4" >117,776</td>
+      <td id="T_2c2ce_row37_col5" class="data row37 col5" >90%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row38_col0" class="data row38 col0" >SMU</td>
+      <td id="T_2c2ce_row38_col1" class="data row38 col1" >SMR</td>
+      <td id="T_2c2ce_row38_col2" class="data row38 col2" >$13.31</td>
+      <td id="T_2c2ce_row38_col3" class="data row38 col3" >-5.54%</td>
+      <td id="T_2c2ce_row38_col4" class="data row38 col4" >1,020,207</td>
+      <td id="T_2c2ce_row38_col5" class="data row38 col5" >88%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row39_col0" class="data row39 col0" >OKLL</td>
+      <td id="T_2c2ce_row39_col1" class="data row39 col1" >OKLO</td>
+      <td id="T_2c2ce_row39_col2" class="data row39 col2" >$22.08</td>
+      <td id="T_2c2ce_row39_col3" class="data row39 col3" >-3.87%</td>
+      <td id="T_2c2ce_row39_col4" class="data row39 col4" >2,343,099</td>
+      <td id="T_2c2ce_row39_col5" class="data row39 col5" >86%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row40_col0" class="data row40 col0" >NBIL</td>
+      <td id="T_2c2ce_row40_col1" class="data row40 col1" >NBIS</td>
+      <td id="T_2c2ce_row40_col2" class="data row40 col2" >$10.51</td>
+      <td id="T_2c2ce_row40_col3" class="data row40 col3" >-6.49%</td>
+      <td id="T_2c2ce_row40_col4" class="data row40 col4" >875,299</td>
+      <td id="T_2c2ce_row40_col5" class="data row40 col5" >86%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row41_col0" class="data row41 col0" >IONL</td>
+      <td id="T_2c2ce_row41_col1" class="data row41 col1" >IONQ</td>
+      <td id="T_2c2ce_row41_col2" class="data row41 col2" >$43.74</td>
+      <td id="T_2c2ce_row41_col3" class="data row41 col3" >-9.13%</td>
+      <td id="T_2c2ce_row41_col4" class="data row41 col4" >247,260</td>
+      <td id="T_2c2ce_row41_col5" class="data row41 col5" >86%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row42_col0" class="data row42 col0" >NVDQ</td>
+      <td id="T_2c2ce_row42_col1" class="data row42 col1" >NVDA</td>
+      <td id="T_2c2ce_row42_col2" class="data row42 col2" >$16.36</td>
+      <td id="T_2c2ce_row42_col3" class="data row42 col3" >-6.08%</td>
+      <td id="T_2c2ce_row42_col4" class="data row42 col4" >1,540,967</td>
+      <td id="T_2c2ce_row42_col5" class="data row42 col5" >85%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row43_col0" class="data row43 col0" >LCDL</td>
+      <td id="T_2c2ce_row43_col1" class="data row43 col1" >LCID</td>
+      <td id="T_2c2ce_row43_col2" class="data row43 col2" >$3.99</td>
+      <td id="T_2c2ce_row43_col3" class="data row43 col3" >-10.24%</td>
+      <td id="T_2c2ce_row43_col4" class="data row43 col4" >166,811</td>
+      <td id="T_2c2ce_row43_col5" class="data row43 col5" >84%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row44_col0" class="data row44 col0" >RGTX</td>
+      <td id="T_2c2ce_row44_col1" class="data row44 col1" >RGTI</td>
+      <td id="T_2c2ce_row44_col2" class="data row44 col2" >$16.02</td>
+      <td id="T_2c2ce_row44_col3" class="data row44 col3" >-13.22%</td>
+      <td id="T_2c2ce_row44_col4" class="data row44 col4" >3,061,980</td>
+      <td id="T_2c2ce_row44_col5" class="data row44 col5" >84%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row45_col0" class="data row45 col0" >BLSG</td>
+      <td id="T_2c2ce_row45_col1" class="data row45 col1" >BLSH</td>
+      <td id="T_2c2ce_row45_col2" class="data row45 col2" >$8.27</td>
+      <td id="T_2c2ce_row45_col3" class="data row45 col3" >-12.76%</td>
+      <td id="T_2c2ce_row45_col4" class="data row45 col4" >17,308</td>
+      <td id="T_2c2ce_row45_col5" class="data row45 col5" >84%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row46_col0" class="data row46 col0" >ROBN</td>
+      <td id="T_2c2ce_row46_col1" class="data row46 col1" >HOOD</td>
+      <td id="T_2c2ce_row46_col2" class="data row46 col2" >$64.31</td>
+      <td id="T_2c2ce_row46_col3" class="data row46 col3" >-3.39%</td>
+      <td id="T_2c2ce_row46_col4" class="data row46 col4" >769,669</td>
+      <td id="T_2c2ce_row46_col5" class="data row46 col5" >83%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row47_col0" class="data row47 col0" >CONL</td>
+      <td id="T_2c2ce_row47_col1" class="data row47 col1" >COIN</td>
+      <td id="T_2c2ce_row47_col2" class="data row47 col2" >$16.93</td>
+      <td id="T_2c2ce_row47_col3" class="data row47 col3" >-4.57%</td>
+      <td id="T_2c2ce_row47_col4" class="data row47 col4" >5,017,545</td>
+      <td id="T_2c2ce_row47_col5" class="data row47 col5" >81%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row48_col0" class="data row48 col0" >GMEU</td>
+      <td id="T_2c2ce_row48_col1" class="data row48 col1" >GME</td>
+      <td id="T_2c2ce_row48_col2" class="data row48 col2" >$9.96</td>
+      <td id="T_2c2ce_row48_col3" class="data row48 col3" >-3.11%</td>
+      <td id="T_2c2ce_row48_col4" class="data row48 col4" >377,834</td>
+      <td id="T_2c2ce_row48_col5" class="data row48 col5" >79%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row49_col0" class="data row49 col0" >MUU</td>
+      <td id="T_2c2ce_row49_col1" class="data row49 col1" >NFLX</td>
+      <td id="T_2c2ce_row49_col2" class="data row49 col2" >$94.66</td>
+      <td id="T_2c2ce_row49_col3" class="data row49 col3" >-0.84%</td>
+      <td id="T_2c2ce_row49_col4" class="data row49 col4" >999,577</td>
+      <td id="T_2c2ce_row49_col5" class="data row49 col5" >77%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row50_col0" class="data row50 col0" >AAPX</td>
+      <td id="T_2c2ce_row50_col1" class="data row50 col1" >AAPL</td>
+      <td id="T_2c2ce_row50_col2" class="data row50 col2" >$30.82</td>
+      <td id="T_2c2ce_row50_col3" class="data row50 col3" >-0.03%</td>
+      <td id="T_2c2ce_row50_col4" class="data row50 col4" >100,483</td>
+      <td id="T_2c2ce_row50_col5" class="data row50 col5" >76%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row51_col0" class="data row51 col0" >JOBX</td>
+      <td id="T_2c2ce_row51_col1" class="data row51 col1" >JOBY</td>
+      <td id="T_2c2ce_row51_col2" class="data row51 col2" >$21.66</td>
+      <td id="T_2c2ce_row51_col3" class="data row51 col3" >-6.96%</td>
+      <td id="T_2c2ce_row51_col4" class="data row51 col4" >218,369</td>
+      <td id="T_2c2ce_row51_col5" class="data row51 col5" >75%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row52_col0" class="data row52 col0" >MRAL</td>
+      <td id="T_2c2ce_row52_col1" class="data row52 col1" >MARA</td>
+      <td id="T_2c2ce_row52_col2" class="data row52 col2" >$5.55</td>
+      <td id="T_2c2ce_row52_col3" class="data row52 col3" >-5.45%</td>
+      <td id="T_2c2ce_row52_col4" class="data row52 col4" >809,364</td>
+      <td id="T_2c2ce_row52_col5" class="data row52 col5" >75%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row53_col0" class="data row53 col0" >LYFX</td>
+      <td id="T_2c2ce_row53_col1" class="data row53 col1" >LYFT</td>
+      <td id="T_2c2ce_row53_col2" class="data row53 col2" >$19.43</td>
+      <td id="T_2c2ce_row53_col3" class="data row53 col3" >-3.78%</td>
+      <td id="T_2c2ce_row53_col4" class="data row53 col4" >8,877</td>
+      <td id="T_2c2ce_row53_col5" class="data row53 col5" >74%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row54_col0" class="data row54 col0" >COIO</td>
+      <td id="T_2c2ce_row54_col1" class="data row54 col1" >COIN</td>
+      <td id="T_2c2ce_row54_col2" class="data row54 col2" >$15.95</td>
+      <td id="T_2c2ce_row54_col3" class="data row54 col3" >-2.36%</td>
+      <td id="T_2c2ce_row54_col4" class="data row54 col4" >728</td>
+      <td id="T_2c2ce_row54_col5" class="data row54 col5" >74%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row55_col0" class="data row55 col0" >ARMG</td>
+      <td id="T_2c2ce_row55_col1" class="data row55 col1" >ARM</td>
+      <td id="T_2c2ce_row55_col2" class="data row55 col2" >$6.27</td>
+      <td id="T_2c2ce_row55_col3" class="data row55 col3" >-2.64%</td>
+      <td id="T_2c2ce_row55_col4" class="data row55 col4" >231,725</td>
+      <td id="T_2c2ce_row55_col5" class="data row55 col5" >70%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row56_col0" class="data row56 col0" >AXUP</td>
+      <td id="T_2c2ce_row56_col1" class="data row56 col1" >AXON</td>
+      <td id="T_2c2ce_row56_col2" class="data row56 col2" >$13.64</td>
+      <td id="T_2c2ce_row56_col3" class="data row56 col3" >-2.76%</td>
+      <td id="T_2c2ce_row56_col4" class="data row56 col4" >13,727</td>
+      <td id="T_2c2ce_row56_col5" class="data row56 col5" >69%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row57_col0" class="data row57 col0" >BTCL</td>
+      <td id="T_2c2ce_row57_col1" class="data row57 col1" >BTC</td>
+      <td id="T_2c2ce_row57_col2" class="data row57 col2" >$29.74</td>
+      <td id="T_2c2ce_row57_col3" class="data row57 col3" >-1.65%</td>
+      <td id="T_2c2ce_row57_col4" class="data row57 col4" >100,630</td>
+      <td id="T_2c2ce_row57_col5" class="data row57 col5" >67%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row58_col0" class="data row58 col0" >NEBX</td>
+      <td id="T_2c2ce_row58_col1" class="data row58 col1" >NBIS</td>
+      <td id="T_2c2ce_row58_col2" class="data row58 col2" >$32.96</td>
+      <td id="T_2c2ce_row58_col3" class="data row58 col3" >-6.84%</td>
+      <td id="T_2c2ce_row58_col4" class="data row58 col4" >755,482</td>
+      <td id="T_2c2ce_row58_col5" class="data row58 col5" >66%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row59_col0" class="data row59 col0" >MULL</td>
+      <td id="T_2c2ce_row59_col1" class="data row59 col1" >MU</td>
+      <td id="T_2c2ce_row59_col2" class="data row59 col2" >$84.94</td>
+      <td id="T_2c2ce_row59_col3" class="data row59 col3" >-0.29%</td>
+      <td id="T_2c2ce_row59_col4" class="data row59 col4" >219,239</td>
+      <td id="T_2c2ce_row59_col5" class="data row59 col5" >63%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row60_col0" class="data row60 col0" >WULX</td>
+      <td id="T_2c2ce_row60_col1" class="data row60 col1" >WULF</td>
+      <td id="T_2c2ce_row60_col2" class="data row60 col2" >$19.10</td>
+      <td id="T_2c2ce_row60_col3" class="data row60 col3" >-1.19%</td>
+      <td id="T_2c2ce_row60_col4" class="data row60 col4" >132,465</td>
+      <td id="T_2c2ce_row60_col5" class="data row60 col5" >62%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row61_col0" class="data row61 col0" >LABX</td>
+      <td id="T_2c2ce_row61_col1" class="data row61 col1" >ALAB</td>
+      <td id="T_2c2ce_row61_col2" class="data row61 col2" >$15.71</td>
+      <td id="T_2c2ce_row61_col3" class="data row61 col3" >-2.72%</td>
+      <td id="T_2c2ce_row61_col4" class="data row61 col4" >450,289</td>
+      <td id="T_2c2ce_row61_col5" class="data row61 col5" >59%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row62_col0" class="data row62 col0" >BLSX</td>
+      <td id="T_2c2ce_row62_col1" class="data row62 col1" >BLSH</td>
+      <td id="T_2c2ce_row62_col2" class="data row62 col2" >$14.61</td>
+      <td id="T_2c2ce_row62_col3" class="data row62 col3" >-12.92%</td>
+      <td id="T_2c2ce_row62_col4" class="data row62 col4" >7,206</td>
+      <td id="T_2c2ce_row62_col5" class="data row62 col5" >58%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row63_col0" class="data row63 col0" >CCUP</td>
+      <td id="T_2c2ce_row63_col1" class="data row63 col1" >CRCL</td>
+      <td id="T_2c2ce_row63_col2" class="data row63 col2" >$4.76</td>
+      <td id="T_2c2ce_row63_col3" class="data row63 col3" >-9.33%</td>
+      <td id="T_2c2ce_row63_col4" class="data row63 col4" >578,234</td>
+      <td id="T_2c2ce_row63_col5" class="data row63 col5" >56%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row64_col0" class="data row64 col0" >RIOX</td>
+      <td id="T_2c2ce_row64_col1" class="data row64 col1" >RIOT</td>
+      <td id="T_2c2ce_row64_col2" class="data row64 col2" >$13.34</td>
+      <td id="T_2c2ce_row64_col3" class="data row64 col3" >-10.53%</td>
+      <td id="T_2c2ce_row64_col4" class="data row64 col4" >273,984</td>
+      <td id="T_2c2ce_row64_col5" class="data row64 col5" >56%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row65_col0" class="data row65 col0" >NBIG</td>
+      <td id="T_2c2ce_row65_col1" class="data row65 col1" >NBIS</td>
+      <td id="T_2c2ce_row65_col2" class="data row65 col2" >$7.49</td>
+      <td id="T_2c2ce_row65_col3" class="data row65 col3" >-6.83%</td>
+      <td id="T_2c2ce_row65_col4" class="data row65 col4" >211,235</td>
+      <td id="T_2c2ce_row65_col5" class="data row65 col5" >55%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row66_col0" class="data row66 col0" >TARK</td>
+      <td id="T_2c2ce_row66_col1" class="data row66 col1" >ARKK</td>
+      <td id="T_2c2ce_row66_col2" class="data row66 col2" >$53.26</td>
+      <td id="T_2c2ce_row66_col3" class="data row66 col3" >-22.97%</td>
+      <td id="T_2c2ce_row66_col4" class="data row66 col4" >42,340</td>
+      <td id="T_2c2ce_row66_col5" class="data row66 col5" >55%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row67_col0" class="data row67 col0" >GEMG</td>
+      <td id="T_2c2ce_row67_col1" class="data row67 col1" >GEMI</td>
+      <td id="T_2c2ce_row67_col2" class="data row67 col2" >$5.34</td>
+      <td id="T_2c2ce_row67_col3" class="data row67 col3" >-11.35%</td>
+      <td id="T_2c2ce_row67_col4" class="data row67 col4" >22,225</td>
+      <td id="T_2c2ce_row67_col5" class="data row67 col5" >54%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row68_col0" class="data row68 col0" >TSLL</td>
+      <td id="T_2c2ce_row68_col1" class="data row68 col1" >TSLA</td>
+      <td id="T_2c2ce_row68_col2" class="data row68 col2" >$22.40</td>
+      <td id="T_2c2ce_row68_col3" class="data row68 col3" >-1.88%</td>
+      <td id="T_2c2ce_row68_col4" class="data row68 col4" >61,705,065</td>
+      <td id="T_2c2ce_row68_col5" class="data row68 col5" >53%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row69_col0" class="data row69 col0" >PALU</td>
+      <td id="T_2c2ce_row69_col1" class="data row69 col1" >PLTR</td>
+      <td id="T_2c2ce_row69_col2" class="data row69 col2" >$18.73</td>
+      <td id="T_2c2ce_row69_col3" class="data row69 col3" >-2.08%</td>
+      <td id="T_2c2ce_row69_col4" class="data row69 col4" >16,963</td>
+      <td id="T_2c2ce_row69_col5" class="data row69 col5" >51%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row70_col0" class="data row70 col0" >CRWL</td>
+      <td id="T_2c2ce_row70_col1" class="data row70 col1" >CRWV</td>
+      <td id="T_2c2ce_row70_col2" class="data row70 col2" >$32.41</td>
+      <td id="T_2c2ce_row70_col3" class="data row70 col3" >-1.94%</td>
+      <td id="T_2c2ce_row70_col4" class="data row70 col4" >71,435</td>
+      <td id="T_2c2ce_row70_col5" class="data row70 col5" >50%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row71_col0" class="data row71 col0" >GLXU</td>
+      <td id="T_2c2ce_row71_col1" class="data row71 col1" >GLXY</td>
+      <td id="T_2c2ce_row71_col2" class="data row71 col2" >$13.50</td>
+      <td id="T_2c2ce_row71_col3" class="data row71 col3" >-1.11%</td>
+      <td id="T_2c2ce_row71_col4" class="data row71 col4" >99,308</td>
+      <td id="T_2c2ce_row71_col5" class="data row71 col5" >49%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row72_col0" class="data row72 col0" >TSLR</td>
+      <td id="T_2c2ce_row72_col1" class="data row72 col1" >TSLA</td>
+      <td id="T_2c2ce_row72_col2" class="data row72 col2" >$37.49</td>
+      <td id="T_2c2ce_row72_col3" class="data row72 col3" >-1.32%</td>
+      <td id="T_2c2ce_row72_col4" class="data row72 col4" >1,010,031</td>
+      <td id="T_2c2ce_row72_col5" class="data row72 col5" >47%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row73_col0" class="data row73 col0" >HIMZ</td>
+      <td id="T_2c2ce_row73_col1" class="data row73 col1" >HIMZ</td>
+      <td id="T_2c2ce_row73_col2" class="data row73 col2" >$6.87</td>
+      <td id="T_2c2ce_row73_col3" class="data row73 col3" >-1.58%</td>
+      <td id="T_2c2ce_row73_col4" class="data row73 col4" >2,616,835</td>
+      <td id="T_2c2ce_row73_col5" class="data row73 col5" >46%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row74_col0" class="data row74 col0" >AMZD</td>
+      <td id="T_2c2ce_row74_col1" class="data row74 col1" >AMZN</td>
+      <td id="T_2c2ce_row74_col2" class="data row74 col2" >$9.99</td>
+      <td id="T_2c2ce_row74_col3" class="data row74 col3" >-2.35%</td>
+      <td id="T_2c2ce_row74_col4" class="data row74 col4" >856,515</td>
+      <td id="T_2c2ce_row74_col5" class="data row74 col5" >46%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row75_col0" class="data row75 col0" >QSU</td>
+      <td id="T_2c2ce_row75_col1" class="data row75 col1" >QS</td>
+      <td id="T_2c2ce_row75_col2" class="data row75 col2" >$7.94</td>
+      <td id="T_2c2ce_row75_col3" class="data row75 col3" >-1.46%</td>
+      <td id="T_2c2ce_row75_col4" class="data row75 col4" >153,682</td>
+      <td id="T_2c2ce_row75_col5" class="data row75 col5" >45%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row76_col0" class="data row76 col0" >HOOX</td>
+      <td id="T_2c2ce_row76_col1" class="data row76 col1" >HOOD</td>
+      <td id="T_2c2ce_row76_col2" class="data row76 col2" >$26.69</td>
+      <td id="T_2c2ce_row76_col3" class="data row76 col3" >-3.47%</td>
+      <td id="T_2c2ce_row76_col4" class="data row76 col4" >119,809</td>
+      <td id="T_2c2ce_row76_col5" class="data row76 col5" >45%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row77_col0" class="data row77 col0" >PANG</td>
+      <td id="T_2c2ce_row77_col1" class="data row77 col1" >PANW</td>
+      <td id="T_2c2ce_row77_col2" class="data row77 col2" >$12.90</td>
+      <td id="T_2c2ce_row77_col3" class="data row77 col3" >-1.46%</td>
+      <td id="T_2c2ce_row77_col4" class="data row77 col4" >10,217</td>
+      <td id="T_2c2ce_row77_col5" class="data row77 col5" >45%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row78_col0" class="data row78 col0" >NVTX</td>
+      <td id="T_2c2ce_row78_col1" class="data row78 col1" >NVTS</td>
+      <td id="T_2c2ce_row78_col2" class="data row78 col2" >$24.00</td>
+      <td id="T_2c2ce_row78_col3" class="data row78 col3" >-7.48%</td>
+      <td id="T_2c2ce_row78_col4" class="data row78 col4" >72,763</td>
+      <td id="T_2c2ce_row78_col5" class="data row78 col5" >43%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row79_col0" class="data row79 col0" >BRKU</td>
+      <td id="T_2c2ce_row79_col1" class="data row79 col1" >BRKB</td>
+      <td id="T_2c2ce_row79_col2" class="data row79 col2" >$24.73</td>
+      <td id="T_2c2ce_row79_col3" class="data row79 col3" >-0.56%</td>
+      <td id="T_2c2ce_row79_col4" class="data row79 col4" >146,385</td>
+      <td id="T_2c2ce_row79_col5" class="data row79 col5" >42%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row80_col0" class="data row80 col0" >QUBX</td>
+      <td id="T_2c2ce_row80_col1" class="data row80 col1" >QUBT</td>
+      <td id="T_2c2ce_row80_col2" class="data row80 col2" >$28.80</td>
+      <td id="T_2c2ce_row80_col3" class="data row80 col3" >-8.83%</td>
+      <td id="T_2c2ce_row80_col4" class="data row80 col4" >206,823</td>
+      <td id="T_2c2ce_row80_col5" class="data row80 col5" >40%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row81_col0" class="data row81 col0" >RDTL</td>
+      <td id="T_2c2ce_row81_col1" class="data row81 col1" >RDDT</td>
+      <td id="T_2c2ce_row81_col2" class="data row81 col2" >$48.75</td>
+      <td id="T_2c2ce_row81_col3" class="data row81 col3" >-6.04%</td>
+      <td id="T_2c2ce_row81_col4" class="data row81 col4" >242,699</td>
+      <td id="T_2c2ce_row81_col5" class="data row81 col5" >40%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row82_col0" class="data row82 col0" >TSLT</td>
+      <td id="T_2c2ce_row82_col1" class="data row82 col1" >TSLA</td>
+      <td id="T_2c2ce_row82_col2" class="data row82 col2" >$31.32</td>
+      <td id="T_2c2ce_row82_col3" class="data row82 col3" >-1.23%</td>
+      <td id="T_2c2ce_row82_col4" class="data row82 col4" >1,868,585</td>
+      <td id="T_2c2ce_row82_col5" class="data row82 col5" >38%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row83_col0" class="data row83 col0" >BULG</td>
+      <td id="T_2c2ce_row83_col1" class="data row83 col1" >BULL</td>
+      <td id="T_2c2ce_row83_col2" class="data row83 col2" >$3.79</td>
+      <td id="T_2c2ce_row83_col3" class="data row83 col3" >-8.33%</td>
+      <td id="T_2c2ce_row83_col4" class="data row83 col4" >218,861</td>
+      <td id="T_2c2ce_row83_col5" class="data row83 col5" >38%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row84_col0" class="data row84 col0" >UNX</td>
+      <td id="T_2c2ce_row84_col1" class="data row84 col1" >U</td>
+      <td id="T_2c2ce_row84_col2" class="data row84 col2" >$20.37</td>
+      <td id="T_2c2ce_row84_col3" class="data row84 col3" >-4.40%</td>
+      <td id="T_2c2ce_row84_col4" class="data row84 col4" >8,125</td>
+      <td id="T_2c2ce_row84_col5" class="data row84 col5" >38%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row85_col0" class="data row85 col0" >UBRL</td>
+      <td id="T_2c2ce_row85_col1" class="data row85 col1" >UBER</td>
+      <td id="T_2c2ce_row85_col2" class="data row85 col2" >$23.05</td>
+      <td id="T_2c2ce_row85_col3" class="data row85 col3" >-0.76%</td>
+      <td id="T_2c2ce_row85_col4" class="data row85 col4" >52,903</td>
+      <td id="T_2c2ce_row85_col5" class="data row85 col5" >37%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row86_col0" class="data row86 col0" >ENPX</td>
+      <td id="T_2c2ce_row86_col1" class="data row86 col1" >ENPH</td>
+      <td id="T_2c2ce_row86_col2" class="data row86 col2" >$15.29</td>
+      <td id="T_2c2ce_row86_col3" class="data row86 col3" >-7.45%</td>
+      <td id="T_2c2ce_row86_col4" class="data row86 col4" >14,460</td>
+      <td id="T_2c2ce_row86_col5" class="data row86 col5" >36%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row87_col0" class="data row87 col0" >SHPU</td>
+      <td id="T_2c2ce_row87_col1" class="data row87 col1" >SHOP</td>
+      <td id="T_2c2ce_row87_col2" class="data row87 col2" >$32.51</td>
+      <td id="T_2c2ce_row87_col3" class="data row87 col3" >-0.68%</td>
+      <td id="T_2c2ce_row87_col4" class="data row87 col4" >16,940</td>
+      <td id="T_2c2ce_row87_col5" class="data row87 col5" >36%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row88_col0" class="data row88 col0" >LLYX</td>
+      <td id="T_2c2ce_row88_col1" class="data row88 col1" >LLY</td>
+      <td id="T_2c2ce_row88_col2" class="data row88 col2" >$26.04</td>
+      <td id="T_2c2ce_row88_col3" class="data row88 col3" >-0.91%</td>
+      <td id="T_2c2ce_row88_col4" class="data row88 col4" >391,998</td>
+      <td id="T_2c2ce_row88_col5" class="data row88 col5" >36%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row89_col0" class="data row89 col0" >OPEX</td>
+      <td id="T_2c2ce_row89_col1" class="data row89 col1" >OPEN</td>
+      <td id="T_2c2ce_row89_col2" class="data row89 col2" >$16.27</td>
+      <td id="T_2c2ce_row89_col3" class="data row89 col3" >-5.19%</td>
+      <td id="T_2c2ce_row89_col4" class="data row89 col4" >123,512</td>
+      <td id="T_2c2ce_row89_col5" class="data row89 col5" >34%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row90_col0" class="data row90 col0" >BAIG</td>
+      <td id="T_2c2ce_row90_col1" class="data row90 col1" >BBAI</td>
+      <td id="T_2c2ce_row90_col2" class="data row90 col2" >$11.74</td>
+      <td id="T_2c2ce_row90_col3" class="data row90 col3" >-10.38%</td>
+      <td id="T_2c2ce_row90_col4" class="data row90 col4" >245,030</td>
+      <td id="T_2c2ce_row90_col5" class="data row90 col5" >34%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row91_col0" class="data row91 col0" >ARCX</td>
+      <td id="T_2c2ce_row91_col1" class="data row91 col1" >ACHR</td>
+      <td id="T_2c2ce_row91_col2" class="data row91 col2" >$43.00</td>
+      <td id="T_2c2ce_row91_col3" class="data row91 col3" >-4.42%</td>
+      <td id="T_2c2ce_row91_col4" class="data row91 col4" >31,400</td>
+      <td id="T_2c2ce_row91_col5" class="data row91 col5" >33%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row92_col0" class="data row92 col0" >ADBG</td>
+      <td id="T_2c2ce_row92_col1" class="data row92 col1" >ADBE</td>
+      <td id="T_2c2ce_row92_col2" class="data row92 col2" >$10.37</td>
+      <td id="T_2c2ce_row92_col3" class="data row92 col3" >-2.99%</td>
+      <td id="T_2c2ce_row92_col4" class="data row92 col4" >216,769</td>
+      <td id="T_2c2ce_row92_col5" class="data row92 col5" >32%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row93_col0" class="data row93 col0" >AMUU</td>
+      <td id="T_2c2ce_row93_col1" class="data row93 col1" >AMD</td>
+      <td id="T_2c2ce_row93_col2" class="data row93 col2" >$55.19</td>
+      <td id="T_2c2ce_row93_col3" class="data row93 col3" >-0.68%</td>
+      <td id="T_2c2ce_row93_col4" class="data row93 col4" >78,098</td>
+      <td id="T_2c2ce_row93_col5" class="data row93 col5" >31%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row94_col0" class="data row94 col0" >ETU</td>
+      <td id="T_2c2ce_row94_col1" class="data row94 col1" >ETH</td>
+      <td id="T_2c2ce_row94_col2" class="data row94 col2" >$14.47</td>
+      <td id="T_2c2ce_row94_col3" class="data row94 col3" >-0.96%</td>
+      <td id="T_2c2ce_row94_col4" class="data row94 col4" >68,395</td>
+      <td id="T_2c2ce_row94_col5" class="data row94 col5" >31%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row95_col0" class="data row95 col0" >RVNL</td>
+      <td id="T_2c2ce_row95_col1" class="data row95 col1" >RIVN</td>
+      <td id="T_2c2ce_row95_col2" class="data row95 col2" >$65.33</td>
+      <td id="T_2c2ce_row95_col3" class="data row95 col3" >-5.64%</td>
+      <td id="T_2c2ce_row95_col4" class="data row95 col4" >25,588</td>
+      <td id="T_2c2ce_row95_col5" class="data row95 col5" >30%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row96_col0" class="data row96 col0" >RBLU</td>
+      <td id="T_2c2ce_row96_col1" class="data row96 col1" >RBLX</td>
+      <td id="T_2c2ce_row96_col2" class="data row96 col2" >$29.80</td>
+      <td id="T_2c2ce_row96_col3" class="data row96 col3" >-2.35%</td>
+      <td id="T_2c2ce_row96_col4" class="data row96 col4" >19,821</td>
+      <td id="T_2c2ce_row96_col5" class="data row96 col5" >29%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row97_col0" class="data row97 col0" >FIGG</td>
+      <td id="T_2c2ce_row97_col1" class="data row97 col1" >FIG</td>
+      <td id="T_2c2ce_row97_col2" class="data row97 col2" >$4.83</td>
+      <td id="T_2c2ce_row97_col3" class="data row97 col3" >-4.08%</td>
+      <td id="T_2c2ce_row97_col4" class="data row97 col4" >90,281</td>
+      <td id="T_2c2ce_row97_col5" class="data row97 col5" >28%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row98_col0" class="data row98 col0" >FUTG</td>
+      <td id="T_2c2ce_row98_col1" class="data row98 col1" >FUTU</td>
+      <td id="T_2c2ce_row98_col2" class="data row98 col2" >$14.51</td>
+      <td id="T_2c2ce_row98_col3" class="data row98 col3" >-0.26%</td>
+      <td id="T_2c2ce_row98_col4" class="data row98 col4" >12,656</td>
+      <td id="T_2c2ce_row98_col5" class="data row98 col5" >28%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row99_col0" class="data row99 col0" >COIG</td>
+      <td id="T_2c2ce_row99_col1" class="data row99 col1" >COIN</td>
+      <td id="T_2c2ce_row99_col2" class="data row99 col2" >$16.71</td>
+      <td id="T_2c2ce_row99_col3" class="data row99 col3" >-4.73%</td>
+      <td id="T_2c2ce_row99_col4" class="data row99 col4" >19,070</td>
+      <td id="T_2c2ce_row99_col5" class="data row99 col5" >27%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row100_col0" class="data row100 col0" >APPX</td>
+      <td id="T_2c2ce_row100_col1" class="data row100 col1" >APP</td>
+      <td id="T_2c2ce_row100_col2" class="data row100 col2" >$44.86</td>
+      <td id="T_2c2ce_row100_col3" class="data row100 col3" >-1.51%</td>
+      <td id="T_2c2ce_row100_col4" class="data row100 col4" >220,491</td>
+      <td id="T_2c2ce_row100_col5" class="data row100 col5" >27%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row101_col0" class="data row101 col0" >MDBX</td>
+      <td id="T_2c2ce_row101_col1" class="data row101 col1" >MDB</td>
+      <td id="T_2c2ce_row101_col2" class="data row101 col2" >$77.14</td>
+      <td id="T_2c2ce_row101_col3" class="data row101 col3" >-1.48%</td>
+      <td id="T_2c2ce_row101_col4" class="data row101 col4" >5,329</td>
+      <td id="T_2c2ce_row101_col5" class="data row101 col5" >26%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row102_col0" class="data row102 col0" >AMDL</td>
+      <td id="T_2c2ce_row102_col1" class="data row102 col1" >AMD</td>
+      <td id="T_2c2ce_row102_col2" class="data row102 col2" >$15.68</td>
+      <td id="T_2c2ce_row102_col3" class="data row102 col3" >-0.13%</td>
+      <td id="T_2c2ce_row102_col4" class="data row102 col4" >4,987,248</td>
+      <td id="T_2c2ce_row102_col5" class="data row102 col5" >26%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row103_col0" class="data row103 col0" >BULU</td>
+      <td id="T_2c2ce_row103_col1" class="data row103 col1" >BULL</td>
+      <td id="T_2c2ce_row103_col2" class="data row103 col2" >$6.70</td>
+      <td id="T_2c2ce_row103_col3" class="data row103 col3" >-7.98%</td>
+      <td id="T_2c2ce_row103_col4" class="data row103 col4" >5,863</td>
+      <td id="T_2c2ce_row103_col5" class="data row103 col5" >25%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row104_col0" class="data row104 col0" >UNHG</td>
+      <td id="T_2c2ce_row104_col1" class="data row104 col1" >UNH</td>
+      <td id="T_2c2ce_row104_col2" class="data row104 col2" >$18.11</td>
+      <td id="T_2c2ce_row104_col3" class="data row104 col3" >-0.28%</td>
+      <td id="T_2c2ce_row104_col4" class="data row104 col4" >654,417</td>
+      <td id="T_2c2ce_row104_col5" class="data row104 col5" >25%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row105_col0" class="data row105 col0" >AALG</td>
+      <td id="T_2c2ce_row105_col1" class="data row105 col1" >AAL</td>
+      <td id="T_2c2ce_row105_col2" class="data row105 col2" >$18.68</td>
+      <td id="T_2c2ce_row105_col3" class="data row105 col3" >-8.22%</td>
+      <td id="T_2c2ce_row105_col4" class="data row105 col4" >6,326</td>
+      <td id="T_2c2ce_row105_col5" class="data row105 col5" >25%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row106_col0" class="data row106 col0" >VRTL</td>
+      <td id="T_2c2ce_row106_col1" class="data row106 col1" >VRT</td>
+      <td id="T_2c2ce_row106_col2" class="data row106 col2" >$52.59</td>
+      <td id="T_2c2ce_row106_col3" class="data row106 col3" >-0.21%</td>
+      <td id="T_2c2ce_row106_col4" class="data row106 col4" >31,440</td>
+      <td id="T_2c2ce_row106_col5" class="data row106 col5" >25%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row107_col0" class="data row107 col0" >PLTZ</td>
+      <td id="T_2c2ce_row107_col1" class="data row107 col1" >PLTR</td>
+      <td id="T_2c2ce_row107_col2" class="data row107 col2" >$20.93</td>
+      <td id="T_2c2ce_row107_col3" class="data row107 col3" >-0.19%</td>
+      <td id="T_2c2ce_row107_col4" class="data row107 col4" >1,108,397</td>
+      <td id="T_2c2ce_row107_col5" class="data row107 col5" >24%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row108_col0" class="data row108 col0" >PONX</td>
+      <td id="T_2c2ce_row108_col1" class="data row108 col1" >PONY</td>
+      <td id="T_2c2ce_row108_col2" class="data row108 col2" >$23.68</td>
+      <td id="T_2c2ce_row108_col3" class="data row108 col3" >-6.11%</td>
+      <td id="T_2c2ce_row108_col4" class="data row108 col4" >10,570</td>
+      <td id="T_2c2ce_row108_col5" class="data row108 col5" >24%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row109_col0" class="data row109 col0" >MPL</td>
+      <td id="T_2c2ce_row109_col1" class="data row109 col1" >MP</td>
+      <td id="T_2c2ce_row109_col2" class="data row109 col2" >$7.33</td>
+      <td id="T_2c2ce_row109_col3" class="data row109 col3" >-0.54%</td>
+      <td id="T_2c2ce_row109_col4" class="data row109 col4" >81,958</td>
+      <td id="T_2c2ce_row109_col5" class="data row109 col5" >23%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row110_col0" class="data row110 col0" >GEVX</td>
+      <td id="T_2c2ce_row110_col1" class="data row110 col1" >GEV</td>
+      <td id="T_2c2ce_row110_col2" class="data row110 col2" >$31.88</td>
+      <td id="T_2c2ce_row110_col3" class="data row110 col3" >-0.25%</td>
+      <td id="T_2c2ce_row110_col4" class="data row110 col4" >44,320</td>
+      <td id="T_2c2ce_row110_col5" class="data row110 col5" >22%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row111_col0" class="data row111 col0" >DKNX</td>
+      <td id="T_2c2ce_row111_col1" class="data row111 col1" >DKNX</td>
+      <td id="T_2c2ce_row111_col2" class="data row111 col2" >$9.65</td>
+      <td id="T_2c2ce_row111_col3" class="data row111 col3" >-2.31%</td>
+      <td id="T_2c2ce_row111_col4" class="data row111 col4" >34,883</td>
+      <td id="T_2c2ce_row111_col5" class="data row111 col5" >22%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row112_col0" class="data row112 col0" >SOFX</td>
+      <td id="T_2c2ce_row112_col1" class="data row112 col1" >SOFI</td>
+      <td id="T_2c2ce_row112_col2" class="data row112 col2" >$34.59</td>
+      <td id="T_2c2ce_row112_col3" class="data row112 col3" >-1.42%</td>
+      <td id="T_2c2ce_row112_col4" class="data row112 col4" >184,475</td>
+      <td id="T_2c2ce_row112_col5" class="data row112 col5" >22%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row113_col0" class="data row113 col0" >INTW</td>
+      <td id="T_2c2ce_row113_col1" class="data row113 col1" >INTC</td>
+      <td id="T_2c2ce_row113_col2" class="data row113 col2" >$41.90</td>
+      <td id="T_2c2ce_row113_col3" class="data row113 col3" >-0.36%</td>
+      <td id="T_2c2ce_row113_col4" class="data row113 col4" >248,339</td>
+      <td id="T_2c2ce_row113_col5" class="data row113 col5" >21%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row114_col0" class="data row114 col0" >SARK</td>
+      <td id="T_2c2ce_row114_col1" class="data row114 col1" >ARKK</td>
+      <td id="T_2c2ce_row114_col2" class="data row114 col2" >$28.88</td>
+      <td id="T_2c2ce_row114_col3" class="data row114 col3" >-1.72%</td>
+      <td id="T_2c2ce_row114_col4" class="data row114 col4" >223,884</td>
+      <td id="T_2c2ce_row114_col5" class="data row114 col5" >20%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row115_col0" class="data row115 col0" >DASX</td>
+      <td id="T_2c2ce_row115_col1" class="data row115 col1" >DASH</td>
+      <td id="T_2c2ce_row115_col2" class="data row115 col2" >$19.35</td>
+      <td id="T_2c2ce_row115_col3" class="data row115 col3" >-2.07%</td>
+      <td id="T_2c2ce_row115_col4" class="data row115 col4" >2,848</td>
+      <td id="T_2c2ce_row115_col5" class="data row115 col5" >20%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row116_col0" class="data row116 col0" >DKUP</td>
+      <td id="T_2c2ce_row116_col1" class="data row116 col1" >DKNG</td>
+      <td id="T_2c2ce_row116_col2" class="data row116 col2" >$12.33</td>
+      <td id="T_2c2ce_row116_col3" class="data row116 col3" >-2.04%</td>
+      <td id="T_2c2ce_row116_col4" class="data row116 col4" >1,992</td>
+      <td id="T_2c2ce_row116_col5" class="data row116 col5" >18%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row117_col0" class="data row117 col0" >PYPG</td>
+      <td id="T_2c2ce_row117_col1" class="data row117 col1" >PYPL</td>
+      <td id="T_2c2ce_row117_col2" class="data row117 col2" >$11.59</td>
+      <td id="T_2c2ce_row117_col3" class="data row117 col3" >-1.45%</td>
+      <td id="T_2c2ce_row117_col4" class="data row117 col4" >80,089</td>
+      <td id="T_2c2ce_row117_col5" class="data row117 col5" >18%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row118_col0" class="data row118 col0" >LMTL</td>
+      <td id="T_2c2ce_row118_col1" class="data row118 col1" >LMT</td>
+      <td id="T_2c2ce_row118_col2" class="data row118 col2" >$29.99</td>
+      <td id="T_2c2ce_row118_col3" class="data row118 col3" >-0.98%</td>
+      <td id="T_2c2ce_row118_col4" class="data row118 col4" >1,830</td>
+      <td id="T_2c2ce_row118_col5" class="data row118 col5" >15%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row119_col0" class="data row119 col0" >BULX</td>
+      <td id="T_2c2ce_row119_col1" class="data row119 col1" >BULL</td>
+      <td id="T_2c2ce_row119_col2" class="data row119 col2" >$8.25</td>
+      <td id="T_2c2ce_row119_col3" class="data row119 col3" >-8.24%</td>
+      <td id="T_2c2ce_row119_col4" class="data row119 col4" >4,041</td>
+      <td id="T_2c2ce_row119_col5" class="data row119 col5" >14%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row120_col0" class="data row120 col0" >BOEU</td>
+      <td id="T_2c2ce_row120_col1" class="data row120 col1" >BA</td>
+      <td id="T_2c2ce_row120_col2" class="data row120 col2" >$38.38</td>
+      <td id="T_2c2ce_row120_col3" class="data row120 col3" >-0.32%</td>
+      <td id="T_2c2ce_row120_col4" class="data row120 col4" >7,152</td>
+      <td id="T_2c2ce_row120_col5" class="data row120 col5" >14%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row121_col0" class="data row121 col0" >COZX</td>
+      <td id="T_2c2ce_row121_col1" class="data row121 col1" >CORZ</td>
+      <td id="T_2c2ce_row121_col2" class="data row121 col2" >$10.94</td>
+      <td id="T_2c2ce_row121_col3" class="data row121 col3" >-4.91%</td>
+      <td id="T_2c2ce_row121_col4" class="data row121 col4" >7,172</td>
+      <td id="T_2c2ce_row121_col5" class="data row121 col5" >14%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row122_col0" class="data row122 col0" >OSCX</td>
+      <td id="T_2c2ce_row122_col1" class="data row122 col1" >OSCR</td>
+      <td id="T_2c2ce_row122_col2" class="data row122 col2" >$9.94</td>
+      <td id="T_2c2ce_row122_col3" class="data row122 col3" >-2.50%</td>
+      <td id="T_2c2ce_row122_col4" class="data row122 col4" >25,087</td>
+      <td id="T_2c2ce_row122_col5" class="data row122 col5" >13%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row123_col0" class="data row123 col0" >QSX</td>
+      <td id="T_2c2ce_row123_col1" class="data row123 col1" >QS</td>
+      <td id="T_2c2ce_row123_col2" class="data row123 col2" >$14.90</td>
+      <td id="T_2c2ce_row123_col3" class="data row123 col3" >-1.43%</td>
+      <td id="T_2c2ce_row123_col4" class="data row123 col4" >1,372</td>
+      <td id="T_2c2ce_row123_col5" class="data row123 col5" >12%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row124_col0" class="data row124 col0" >ETRL</td>
+      <td id="T_2c2ce_row124_col1" class="data row124 col1" >ETOR</td>
+      <td id="T_2c2ce_row124_col2" class="data row124 col2" >$13.14</td>
+      <td id="T_2c2ce_row124_col3" class="data row124 col3" >-1.70%</td>
+      <td id="T_2c2ce_row124_col4" class="data row124 col4" >1,507</td>
+      <td id="T_2c2ce_row124_col5" class="data row124 col5" >11%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row125_col0" class="data row125 col0" >AMDG</td>
+      <td id="T_2c2ce_row125_col1" class="data row125 col1" >AMD</td>
+      <td id="T_2c2ce_row125_col2" class="data row125 col2" >$29.65</td>
+      <td id="T_2c2ce_row125_col3" class="data row125 col3" >-0.22%</td>
+      <td id="T_2c2ce_row125_col4" class="data row125 col4" >25,425</td>
+      <td id="T_2c2ce_row125_col5" class="data row125 col5" >10%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row126_col0" class="data row126 col0" >FRDU</td>
+      <td id="T_2c2ce_row126_col1" class="data row126 col1" >FLY</td>
+      <td id="T_2c2ce_row126_col2" class="data row126 col2" >$33.53</td>
+      <td id="T_2c2ce_row126_col3" class="data row126 col3" >-3.05%</td>
+      <td id="T_2c2ce_row126_col4" class="data row126 col4" >408</td>
+      <td id="T_2c2ce_row126_col5" class="data row126 col5" >10%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row127_col0" class="data row127 col0" >CSCL</td>
+      <td id="T_2c2ce_row127_col1" class="data row127 col1" >CSCO</td>
+      <td id="T_2c2ce_row127_col2" class="data row127 col2" >$30.82</td>
+      <td id="T_2c2ce_row127_col3" class="data row127 col3" >-0.99%</td>
+      <td id="T_2c2ce_row127_col4" class="data row127 col4" >1,343</td>
+      <td id="T_2c2ce_row127_col5" class="data row127 col5" >9%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row128_col0" class="data row128 col0" >AURU</td>
+      <td id="T_2c2ce_row128_col1" class="data row128 col1" >AUR</td>
+      <td id="T_2c2ce_row128_col2" class="data row128 col2" >$12.45</td>
+      <td id="T_2c2ce_row128_col3" class="data row128 col3" >-6.23%</td>
+      <td id="T_2c2ce_row128_col4" class="data row128 col4" >563</td>
+      <td id="T_2c2ce_row128_col5" class="data row128 col5" >8%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row129_col0" class="data row129 col0" >XYZG</td>
+      <td id="T_2c2ce_row129_col1" class="data row129 col1" >XYZ</td>
+      <td id="T_2c2ce_row129_col2" class="data row129 col2" >$15.69</td>
+      <td id="T_2c2ce_row129_col3" class="data row129 col3" >-0.35%</td>
+      <td id="T_2c2ce_row129_col4" class="data row129 col4" >2,168</td>
+      <td id="T_2c2ce_row129_col5" class="data row129 col5" >7%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row130_col0" class="data row130 col0" >DOGD</td>
+      <td id="T_2c2ce_row130_col1" class="data row130 col1" >DDOG</td>
+      <td id="T_2c2ce_row130_col2" class="data row130 col2" >$26.45</td>
+      <td id="T_2c2ce_row130_col3" class="data row130 col3" >-0.86%</td>
+      <td id="T_2c2ce_row130_col4" class="data row130 col4" >1,032</td>
+      <td id="T_2c2ce_row130_col5" class="data row130 col5" >7%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row131_col0" class="data row131 col0" >CRMG</td>
+      <td id="T_2c2ce_row131_col1" class="data row131 col1" >CRM</td>
+      <td id="T_2c2ce_row131_col2" class="data row131 col2" >$13.59</td>
+      <td id="T_2c2ce_row131_col3" class="data row131 col3" >-0.95%</td>
+      <td id="T_2c2ce_row131_col4" class="data row131 col4" >25,417</td>
+      <td id="T_2c2ce_row131_col5" class="data row131 col5" >6%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row132_col0" class="data row132 col0" >OSCG</td>
+      <td id="T_2c2ce_row132_col1" class="data row132 col1" >OSCR</td>
+      <td id="T_2c2ce_row132_col2" class="data row132 col2" >$9.60</td>
+      <td id="T_2c2ce_row132_col3" class="data row132 col3" >-2.39%</td>
+      <td id="T_2c2ce_row132_col4" class="data row132 col4" >767</td>
+      <td id="T_2c2ce_row132_col5" class="data row132 col5" >5%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row133_col0" class="data row133 col0" >MPG</td>
+      <td id="T_2c2ce_row133_col1" class="data row133 col1" >MP</td>
+      <td id="T_2c2ce_row133_col2" class="data row133 col2" >$7.74</td>
+      <td id="T_2c2ce_row133_col3" class="data row133 col3" >-0.48%</td>
+      <td id="T_2c2ce_row133_col4" class="data row133 col4" >2,341</td>
+      <td id="T_2c2ce_row133_col5" class="data row133 col5" >5%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row134_col0" class="data row134 col0" >ISUL</td>
+      <td id="T_2c2ce_row134_col1" class="data row134 col1" >ISRG</td>
+      <td id="T_2c2ce_row134_col2" class="data row134 col2" >$39.23</td>
+      <td id="T_2c2ce_row134_col3" class="data row134 col3" >-1.05%</td>
+      <td id="T_2c2ce_row134_col4" class="data row134 col4" >1,396</td>
+      <td id="T_2c2ce_row134_col5" class="data row134 col5" >4%</td>
+    </tr>
+    <tr>
+      <td id="T_2c2ce_row135_col0" class="data row135 col0" >QCMU</td>
+      <td id="T_2c2ce_row135_col1" class="data row135 col1" >QCOM</td>
+      <td id="T_2c2ce_row135_col2" class="data row135 col2" >$28.31</td>
+      <td id="T_2c2ce_row135_col3" class="data row135 col3" >-0.17%</td>
+      <td id="T_2c2ce_row135_col4" class="data row135 col4" >1,784</td>
+      <td id="T_2c2ce_row135_col5" class="data row135 col5" >4%</td>
+    </tr>
+  </tbody>
+</table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Common settings for both tables
+            var tableSettings = {
+                "order": [[ 5, "desc" ]], // Sort by Turnover
+                "pageLength": 50,
+                "searching": true,
+                "info": false,
+                "lengthChange": false, // Remove "Show 10 entries" dropdown to save space
+                "scrollY": "600px",    // Add vertical scroll if lists are long
+                "scrollCollapse": true,
+                "paging": false        // Disable paging for infinite scroll feel
+            };
+
+            $('#tablePos').DataTable(tableSettings);
+            $('#tableNeg').DataTable(tableSettings);
+        });
+    </script>
+</body>
+</html>
