@@ -560,15 +560,19 @@ elif target_page == "Market Breadth":
 elif target_page == "Industry Sector Heatmap":
     st.title("🔥 Industry Sector Heatmap")
     st.caption("Daily Return Heatmap (Last 20 Days)")
-    path = os.path.join("MarketDashboard", "sector_etf_heatmap.html")
-    if os.path.exists(path):
-        with open(path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-            components.html(html_content, height=1200, scrolling=True)
+
+    # [Use get_latest_file_content with specific pattern for Heatmap]
+    path = "MarketDashboard"
+    pattern = "sector_etf_heatmap_*.html"
+    html_content, filename = get_latest_file_content(path, pattern)
+
+    if html_content:
+        st.caption(f"Displaying Report: {filename}")
+        components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ Sector Heatmap not found.")
-        st.info("Please run `MarketDashboard/ETF_sector_heatmap.py`.")
-
+        st.info(f"Please ensure `{path}/{pattern}` exists.")
+        
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
@@ -638,7 +642,7 @@ elif target_page == "Volume Profile":
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
-        
+
 # [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
     st.title("⚡ Intraday Volatility Analysis")
