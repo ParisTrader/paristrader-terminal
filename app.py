@@ -328,9 +328,9 @@ with st.sidebar:
         st.caption("STOCK RESEARCH")
         target_page = option_menu(
             menu_title=None,
-            options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Volatility Target",
-                     "Industry Sector Heatmap"],
-            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "bullseye", "grid-3x3"],
+            options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Insider Trading",
+                     "Volatility Target", "Industry Sector Heatmap"],
+            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "people", "bullseye", "grid-3x3"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -448,6 +448,7 @@ elif target_page == "Market Dashboard":
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
+        # [修改] 允許捲動，解決寬度不足問題
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No dashboard files found.")
@@ -511,10 +512,14 @@ elif target_page == "Industry Sector Heatmap":
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
+
+    # 使用 get_latest_file_content 自動抓取最新的 html
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
+
     if html_content:
         st.caption(f"Displaying Report: {filename}")
+        # [修改] 允許捲動
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
@@ -532,17 +537,20 @@ elif target_page == "Stock DNA":
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
     st.title("🧺 Thematic Basket Analysis")
+
     path = "ThematicBasket"
+    # [修正] 讀取動態檔名 ( elite_signal_dashboard_2025xxxx_xxxx.html )
     html_content, filename = get_latest_file_content(path, "elite_signal_dashboard_*.html")
 
     if html_content:
         st.caption(f"📅 Strategy Report: {filename}")
+        # [修改] 允許捲動
         components.html(html_content, height=6000, scrolling=True)
     else:
         st.warning("⚠️ No basket reports found.")
         st.info(f"Checking path: {os.path.abspath(path)}")
 
-# [PAGE] ETF Smart Money (NEW)
+# [PAGE] ETF Smart Money
 elif target_page == "ETF Smart Money":
     st.title("🚀 ETF Smart Money Tracker")
     st.caption("Tracking Leveraged ETF Relative Volume Spikes")
@@ -557,10 +565,27 @@ elif target_page == "ETF Smart Money":
         st.warning("⚠️ No ETF Smart Money reports found.")
         st.info(f"Please ensure `{path}` folder exists and contains `ETF_Smart_Money_Report_*.html` files.")
 
+# [PAGE] Insider Trading
+elif target_page == "Insider Trading":
+    st.title("🕴️ Insider Trading Activity")
+    st.caption("Daily Cluster Buys & Significant Insider Transactions")
+
+    path = "Insider"
+    html_content, filename = get_latest_file_content(path, "Insider_Trading_Report_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No Insider Trading reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `Insider_Trading_Report_*.html` files.")
+
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
+
     path = "VolTarget"
+    # [修正] 自動搜尋 VolTarget 資料夾下，檔名符合 vol_tool_*.html 的最新檔案
     html_content, filename = get_latest_file_content(path, "vol_tool_*.html")
 
     if html_content:
@@ -583,11 +608,13 @@ elif target_page == "Option":
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
+
+    # [修正] 改用 get_latest_file_content 自動抓取 VP 資料夾內最新的 HTML 檔案
     path = "VP"
     html_content, filename = get_latest_file_content(path)
 
     if html_content:
-        st.caption(f"Displaying report: {filename}")
+        st.caption(f"Displaying Report: {filename}")
         components.html(html_content, height=1000, scrolling=True)
     else:
         st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
@@ -630,6 +657,7 @@ elif target_page == "MT5 EA":
     path = "MT5EA"
     html_content, filename = get_latest_file_content(path)
     if html_content:
+        # [修改] 允許捲動
         components.html(html_content, height=3000, scrolling=True)
     else:
         st.warning("⚠️ No marketing content found.")
