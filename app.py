@@ -307,16 +307,19 @@ def load_stock_dna_with_injection():
             html_content = html_content.replace('download: true,', '')
     return html_content
 
-
-def get_latest_file_content(folder_path):
+def get_latest_file_content(folder_path, pattern="*.html"):
+    """
+    Get the latest file in a folder matching a specific pattern.
+    Default pattern is "*.html" if not specified.
+    """
     if not os.path.exists(folder_path):
         return None, f"Directory not found: {folder_path}"
 
-    search_pattern = os.path.join(folder_path, "*.html")
+    search_pattern = os.path.join(folder_path, pattern)
     list_of_files = glob.glob(search_pattern)
 
     if not list_of_files:
-        return None, "No HTML files found."
+        return None, f"No files found matching {pattern}."
 
     latest_file = max(list_of_files, key=os.path.getctime)
 
@@ -325,7 +328,6 @@ def get_latest_file_content(folder_path):
             return f.read(), os.path.basename(latest_file)
     except Exception as e:
         return None, str(e)
-
 
 # ==========================================
 # 4. Main App Interface (Mixed Navigation)
@@ -572,7 +574,7 @@ elif target_page == "Industry Sector Heatmap":
     else:
         st.warning("⚠️ Sector Heatmap not found.")
         st.info(f"Please ensure `{path}/{pattern}` exists.")
-        
+
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
