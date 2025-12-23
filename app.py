@@ -385,12 +385,15 @@ with st.sidebar:
 
     elif selected_nav == "Stock":
         st.caption("STOCK RESEARCH")
+        # [UPDATE] Added "ETF Smart Money" to the options list
         target_page = option_menu(
             menu_title=None,
-            options=["Earnings", "Stock DNA", "Thematic Basket", "Volatility Target", "Industry Sector Heatmap"],
-            icons=["cash-coin", "radar", "basket", "bullseye", "grid-3x3"],
+            options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Volatility Target",
+                     "Industry Sector Heatmap"],
+            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "bullseye", "grid-3x3"],
             styles={
-                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border-radius": "10px"},
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
                 "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
                 "nav-link-selected": {"background-color": "#4B5563"},
             }
@@ -615,6 +618,39 @@ elif target_page == "Thematic Basket":
     else:
         st.warning("⚠️ No basket reports found.")
         st.info(f"Checking path: {os.path.abspath(path)}")
+
+elif selected_nav == "Stock":
+    st.caption("STOCK RESEARCH")
+    # [UPDATE] Added "ETF Smart Money" to the options list
+    target_page = option_menu(
+        menu_title=None,
+        options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Volatility Target",
+                 "Industry Sector Heatmap"],
+        icons=["cash-coin", "radar", "basket", "graph-up-arrow", "bullseye", "grid-3x3"],
+        styles={
+            "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                          "border-radius": "10px"},
+            "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+            "nav-link-selected": {"background-color": "#4B5563"},
+        }
+    )
+
+# [PAGE] ETF Smart Money (NEW)
+elif target_page == "ETF Smart Money":
+    st.title("🚀 ETF Smart Money Tracker")
+    st.caption("Tracking Leveraged ETF Relative Volume Spikes")
+
+    path = "xETF"
+    # Search for files matching the timestamp pattern
+    html_content, filename = get_latest_file_content(path, "ETF_Smart_Money_Report_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        # Allow scrolling for the long table
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No ETF Smart Money reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `ETF_Smart_Money_Report_*.html` files.")
 
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
