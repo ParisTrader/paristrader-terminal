@@ -616,13 +616,17 @@ elif target_page == "Thematic Basket":
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
-    html_path = os.path.join("VolTarget", "vol_tool.html")
-    html_content = load_html_file(html_path)
-    if html_content and "File not found" not in html_content:
+
+    path = "VolTarget"
+    # [修正] 自動搜尋 VolTarget 資料夾下，檔名符合 vol_tool_*.html 的最新檔案
+    html_content, filename = get_latest_file_content(path, "vol_tool_*.html")
+
+    if html_content:
+        st.caption(f"Displaying Report: {filename}")
         components.html(html_content, height=1500, scrolling=True)
     else:
         st.warning("⚠️ Volatility Tool not found.")
-        st.info(f"Please ensure {html_path} exists.")
+        st.info("請確認 `VolTarget` 資料夾中是否有 `vol_tool_*.html` 檔案。")
 
 # [PAGE] Option
 elif target_page == "Option":
