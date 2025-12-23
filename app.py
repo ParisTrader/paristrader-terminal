@@ -578,9 +578,13 @@ elif target_page == "Industry Sector Heatmap":
 # [PAGE] Earnings
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
+
+    # 使用 get_latest_file_content 自動抓取最新的 html
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
+
     if html_content:
+        st.caption(f"Displaying Report: {filename}")
         # [修改] 允許捲動
         components.html(html_content, height=2500, scrolling=True)
     else:
