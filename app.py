@@ -6,7 +6,7 @@ import sys
 import glob
 import time
 
-# 加入 Trade 資料夾路徑
+# Add Trade folder path
 sys.path.append('Trade')
 try:
     from Trade import trade_app
@@ -15,11 +15,11 @@ except ImportError:
 
 
 # ==========================================
-# 🔐 安全登入系統 (Security Gate)
+# 🔐 Security Login System
 # ==========================================
 def login_system():
     """
-    簡單的登入驗證：檢查 Email 是否在白名單內 + 驗證通用密碼
+    Simple login verification: Checks if Email is in whitelist + verifies universal password
     """
     if "authentication_status" in st.session_state and st.session_state["authentication_status"]:
         return True
@@ -55,7 +55,7 @@ def login_system():
                 valid_emails = st.secrets["allowed_users"]["emails"]
                 correct_password = st.secrets["access_password"]
             except FileNotFoundError:
-                st.error("⚠️ 系統錯誤：未設定 Secrets (請聯繫管理員)")
+                st.error("⚠️ System Error: Secrets not set (Please contact admin)")
                 return False
 
             if email_input in valid_emails and password_input == correct_password:
@@ -71,12 +71,13 @@ def login_system():
     return False
 
 
-# --- 主程式邏輯 ---
+# --- Main Program Logic ---
+# Uncomment the following lines to enable login protection
 # if not login_system():
 #    st.stop()
 
 # ==========================================
-# 1. 頁面基礎設置
+# 1. Page Configuration
 # ==========================================
 st.set_page_config(
     page_title="ParisTrader Professional Research",
@@ -86,7 +87,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. 自定義 CSS
+# 2. Custom CSS
 # ==========================================
 st.markdown("""
 <style>
@@ -213,7 +214,7 @@ def load_weekly_analysis():
         with open(file_path, 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        return "⚠️ 本週推演文章尚未上傳 (File not found: WeeklyContent/latest_analysis.md)"
+        return "⚠️ Weekly analysis not uploaded yet (File not found: WeeklyContent/latest_analysis.md)"
 
 
 def load_html_file(file_path):
@@ -229,7 +230,7 @@ def load_stock_dna_with_injection():
     csv_path = os.path.join("FamaFrench", "stock_factor_data.csv")
 
     if not os.path.exists(html_path):
-        return f"<div style='color:red'>找不到 HTML: {html_path}</div>"
+        return f"<div style='color:red'>HTML not found: {html_path}</div>"
 
     with open(html_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
@@ -281,7 +282,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # 4. 建立導航選單
+    # 4. Create Navigation Menu
     selected_nav = option_menu(
         menu_title="Navigation",
         options=[
@@ -308,8 +309,7 @@ with st.sidebar:
     # Default routing: Assume target is what is clicked in main sidebar
     target_page = selected_nav
 
-    # --- 次級選單邏輯 (Sub-menus) ---
-    # This overwrites target_page based on sub-menu selection
+    # --- Sub-menu Logic ---
     if selected_nav == "Market Intelligence":
         st.caption("MARKET MODULES")
         target_page = option_menu(
@@ -353,7 +353,6 @@ with st.sidebar:
             }
         )
 
-    # [NEW] MT5 EA Sub-menu
     elif selected_nav == "MT5 EA":
         st.caption("AUTOMATED TRADING")
         target_page = option_menu(
@@ -379,48 +378,43 @@ if target_page == "Home":
 
     with col_main:
         st.markdown("""
-        <h1 style='color:white;'>這裡是您的量化交易資源倉</h1>
-        <h3 style='color:#94a3b8;'>有助你戰勝市場的投行級APP。</h3>
+        <h1 style='color:white;'>Your Quant Trading Resource Hub</h1>
+        <h3 style='color:#94a3b8;'>Investment bank-grade apps to help you beat the market.</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
-        僅限尊貴谷友實時解鎖所有強大功能。請從左側導航欄選擇工具開始分析(每個都有Sub Modules)。
+        Exclusive real-time access to all powerful features for VIP members. Please select tools from the sidebar menu to start.
         </p>
         """, unsafe_allow_html=True)
 
         st.markdown("---")
 
-        st.subheader("📊 Market Overview")
-        m1, m2, m3 = st.columns(3)
-        with m1:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Risk Appetite</h4>
-                <h2 style="color:#10B981 !important;">Risk-On</h2>
-                <span style="color:#10B981; font-weight:bold; font-size:0.9em;">▲ Momentum not very strong</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with m2:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Sector Rotation</h4>
-                <h2 style="color:#3b82f6 !important;">Health care & Space</h2>
-                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Inflow</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with m3:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Volatility (VIX)</h4>
-                <h2 style="color:#94a3b8 !important;">14.91</h2>
-                <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
-            </div>
-            """, unsafe_allow_html=True)
+        # TradingView Widget Embed Code
+        components.html("""
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+          {
+          "symbols": [
+            {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
+            {"proName": "FOREXCOM:NSXUSD", "title": "US 100"},
+            {"description": "Gold", "proName": "OANDA:XAUUSD"},
+            {"description": "VIX", "proName": "TVC:VIX"}
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "displayMode": "adaptive",
+          "locale": "en"
+          }
+          </script>
+        </div>
+        """, height=100)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.subheader("🧠 Weekly Deduction (本週推演)")
+        st.subheader("🧠 Weekly Deduction")
 
         with st.container():
             analysis_content = load_weekly_analysis()
-            with st.expander("📖 點擊展開/收合完整推演", expanded=True):
+            with st.expander("📖 Click to expand/collapse full analysis", expanded=True):
                 st.markdown(analysis_content)
 
     with col_profile:
@@ -441,12 +435,12 @@ if target_page == "Home":
             <p style="color: #9CA3AF; font-size: 0.9em;">Quantitative Analyst | Trader</p>
             <hr style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1);">
             <p style="text-align: left; font-size: 0.9em; line-height: 1.6; color: #e2e8f0;">
-                專注於量化因子挖掘與演算法交易。擅長將複雜的金融模型轉化為可執行的交易策略。提供TradingView指標及回測。
+                Focusing on quantitative factor mining and algorithmic trading. Specialized in transforming complex financial models into executable trading strategies. Providing TradingView indicators and backtesting.
                 <br><br>
-                <b>主力策略：</b><br>
+                <b>Main Strategies:</b><br>
                 • Multi-Factor Long/Short<br>
-                • Equity Future HSI/NQ Scapling by Fate Engine<br>
-                • XAU M1 EA Scapling<br>
+                • Future Scapling on HSI/NQ/GC <br>
+                • Unusual Options Activity Trading Strategies on U.S. market<br>
             </p>
             <a href="https://t.me/ParisTrader" target="_blank" style="text-decoration: none;">
                 <button style="background-color:#2563EB; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; width:100%; margin-top:10px; font-weight:bold;">
@@ -527,7 +521,7 @@ elif target_page == "Industry Sector Heatmap":
 elif target_page == "Earnings":
     st.title("📅 Earnings Calendar Analysis")
 
-    # 使用 get_latest_file_content 自動抓取最新的 html
+    # Use get_latest_file_content to automatically fetch the latest html
     path = "Earnings"
     html_content, filename = get_latest_file_content(path)
 
@@ -536,16 +530,16 @@ elif target_page == "Earnings":
         components.html(html_content, height=2500, scrolling=True)
     else:
         st.warning("⚠️ No earnings reports found.")
-        st.info("請確認根目錄下有 `Earnings` 資料夾，並且裡面有 .html 檔案。")
+        st.info("Please ensure there is an `Earnings` folder in the root directory containing .html files.")
 
 # [PAGE] Stock DNA
 elif target_page == "Stock DNA":
     st.title("🧬 Stock Factor DNA")
     html_content = load_stock_dna_with_injection()
-    if html_content and "找不到 HTML" not in html_content:
+    if html_content and "HTML not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
-        st.error("找不到 FamaFrench/index.html")
+        st.error("FamaFrench/index.html not found")
 
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
@@ -601,7 +595,7 @@ elif target_page == "Volatility Target":
         components.html(html_content, height=1500, scrolling=True)
     else:
         st.warning("⚠️ Volatility Tool not found.")
-        st.info("請確認 `VolTarget` 資料夾中是否有 `vol_tool_*.html` 檔案。")
+        st.info("Please ensure `vol_tool_*.html` exists in the `VolTarget` folder.")
 
 # [PAGE] Option
 elif target_page == "Option":
@@ -623,7 +617,7 @@ elif target_page == "Volume Profile":
         st.caption(f"Displaying Report: {filename}")
         components.html(html_content, height=1000, scrolling=True)
     else:
-        st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
+        st.warning("⚠️ Volume Profile module not deployed (VP folder is empty)")
 
 # [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
@@ -633,19 +627,19 @@ elif target_page == "Intraday Volatility":
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
-        st.warning("⚠️ 找不到 Intraday Volatility 報告")
-        st.info(f"請確認檔案 `{html_path}` 是否存在。")
+        st.warning("⚠️ Intraday Volatility Report not found")
+        st.info(f"Please check if `{html_path}` exists.")
 
 # [PAGE] Future -> HSI CBBC Ladder
 elif target_page == "HSI CBBC Ladder":
-    st.title("🐻 HSI CBBC Heavy Zone (牛熊重貨區)")
+    st.title("🐻 HSI CBBC Heavy Zone")
     html_path = os.path.join("MarketDashboard", "HSI_CBBC_Ladder.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
-        st.warning("⚠️ 尚未生成牛熊證分佈報告")
-        st.info(f"請確認檔案 `{html_path}` 是否存在。")
+        st.warning("⚠️ CBBC Distribution Report not generated yet")
+        st.info(f"Please check if `{html_path}` exists.")
 
 # [PAGE] My Trade
 elif target_page == "My Trade":
@@ -655,12 +649,11 @@ elif target_page == "My Trade":
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ Trade Record HTML not found.")
-        st.info("請確認 GitHub Actions 是否已成功執行並生成 `Trade/trade_record.html`。")
+        st.info("Please check if GitHub Actions successfully ran and generated `Trade/trade_record.html`.")
 
 # [PAGE] MT5 EA - Introduction
 elif target_page == "EA Introduction":
     st.title("🤖 MT5 Expert Advisor")
-    # [修正] 指定讀取 ea_marketing.html
     html_path = os.path.join("MT5EA", "ea_marketing.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
@@ -669,7 +662,7 @@ elif target_page == "EA Introduction":
         st.warning("⚠️ No marketing content found.")
         st.info("Please ensure `MT5EA/ea_marketing.html` exists.")
 
-# [PAGE] MT5 EA - Daily Report (NEW)
+# [PAGE] MT5 EA - Daily Report
 elif target_page == "Daily Report":
     st.title("📄 Algo Daily Report")
     path = "MT5EA"
@@ -707,7 +700,7 @@ elif target_page == "Resources":
         st.warning("⚠️ Resources file not found.")
         st.info(f"Please ensure `{html_path}` exists.")
 
-# [PAGE] Promotion (NEW)
+# [PAGE] Promotion
 elif target_page == "Promotion":
     html_path = os.path.join("Promotion", "promo.html")
     html_content = load_html_file(html_path)
