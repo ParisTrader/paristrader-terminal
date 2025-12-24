@@ -72,7 +72,7 @@ def login_system():
 
 
 # --- Main Program Logic ---
-# Uncomment the following lines to enable login protection
+# Uncomment to enable login
 # if not login_system():
 #    st.stop()
 
@@ -326,11 +326,13 @@ with st.sidebar:
 
     elif selected_nav == "Stock":
         st.caption("STOCK RESEARCH")
+        # [UPDATE] Added "Reddit Sentiment" to the list
         target_page = option_menu(
             menu_title=None,
             options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Insider Trading",
+                     "Reddit Sentiment",
                      "Volatility Target", "Industry Sector Heatmap"],
-            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "people", "bullseye", "grid-3x3"],
+            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "people", "reddit", "bullseye", "grid-3x3"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -387,27 +389,32 @@ if target_page == "Home":
 
         st.markdown("---")
 
-        # TradingView Widget Embed Code
-        components.html("""
-        <div class="tradingview-widget-container">
-          <div class="tradingview-widget-container__widget"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-          {
-          "symbols": [
-            {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
-            {"proName": "FOREXCOM:NSXUSD", "title": "US 100"},
-            {"description": "Gold", "proName": "OANDA:XAUUSD"},
-            {"description": "VIX", "proName": "TVC:VIX"}
-          ],
-          "showSymbolLogo": true,
-          "colorTheme": "dark",
-          "isTransparent": true,
-          "displayMode": "adaptive",
-          "locale": "en"
-          }
-          </script>
-        </div>
-        """, height=100)
+        st.subheader("📊 Market Overview")
+        m1, m2, m3 = st.columns(3)
+        with m1:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Risk Appetite</h4>
+                <h2 style="color:#10B981 !important;">Risk-On</h2>
+                <span style="color:#10B981; font-weight:bold; font-size:0.9em;">▲ Momentum not very strong</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with m2:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Sector Rotation</h4>
+                <h2 style="color:#3b82f6 !important;">Health care & Space</h2>
+                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Inflow</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with m3:
+            st.markdown("""
+            <div class="metric-card">
+                <h4>Volatility (VIX)</h4>
+                <h2 style="color:#94a3b8 !important;">14.91</h2>
+                <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
+            </div>
+            """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.subheader("🧠 Weekly Deduction")
@@ -584,6 +591,22 @@ elif target_page == "Insider Trading":
         st.warning("⚠️ No Insider Trading reports found.")
         st.info(f"Please ensure `{path}` folder exists and contains `Insider_Trading_Report_*.html` files.")
 
+# [PAGE] Reddit Sentiment (NEW)
+elif target_page == "Reddit Sentiment":
+    st.title("🤖 Reddit Sentiment Scanner")
+    st.caption("Short Squeeze Candidates & Retail Hype (r/Shortsqueeze, r/wallstreetbets)")
+
+    path = "Rddt"
+    # Assuming your script outputs files like reddit_scanner_YYYY-MM-DD.html
+    html_content, filename = get_latest_file_content(path, "reddit_scanner_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No Reddit reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `reddit_scanner_*.html` files.")
+
 # [PAGE] Volatility Target
 elif target_page == "Volatility Target":
     st.title("📉 Volatility Target Strategy")
@@ -617,7 +640,7 @@ elif target_page == "Volume Profile":
         st.caption(f"Displaying Report: {filename}")
         components.html(html_content, height=1000, scrolling=True)
     else:
-        st.warning("⚠️ Volume Profile module not deployed (VP folder is empty)")
+        st.warning("⚠️ 尚未部署 Volume Profile 模組 (VP 資料夾為空)")
 
 # [PAGE] Future -> Intraday Volatility
 elif target_page == "Intraday Volatility":
@@ -627,19 +650,19 @@ elif target_page == "Intraday Volatility":
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
-        st.warning("⚠️ Intraday Volatility Report not found")
-        st.info(f"Please check if `{html_path}` exists.")
+        st.warning("⚠️ 找不到 Intraday Volatility 報告")
+        st.info(f"請確認檔案 `{html_path}` 是否存在。")
 
 # [PAGE] Future -> HSI CBBC Ladder
 elif target_page == "HSI CBBC Ladder":
-    st.title("🐻 HSI CBBC Heavy Zone")
+    st.title("🐻 HSI CBBC Heavy Zone (牛熊重貨區)")
     html_path = os.path.join("MarketDashboard", "HSI_CBBC_Ladder.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
         components.html(html_content, height=1200, scrolling=True)
     else:
-        st.warning("⚠️ CBBC Distribution Report not generated yet")
-        st.info(f"Please check if `{html_path}` exists.")
+        st.warning("⚠️ 尚未生成牛熊證分佈報告")
+        st.info(f"請確認檔案 `{html_path}` 是否存在。")
 
 # [PAGE] My Trade
 elif target_page == "My Trade":
@@ -649,11 +672,12 @@ elif target_page == "My Trade":
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.warning("⚠️ Trade Record HTML not found.")
-        st.info("Please check if GitHub Actions successfully ran and generated `Trade/trade_record.html`.")
+        st.info("請確認 GitHub Actions 是否已成功執行並生成 `Trade/trade_record.html`。")
 
 # [PAGE] MT5 EA - Introduction
 elif target_page == "EA Introduction":
     st.title("🤖 MT5 Expert Advisor")
+    # [修正] 指定讀取 ea_marketing.html
     html_path = os.path.join("MT5EA", "ea_marketing.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
@@ -662,7 +686,7 @@ elif target_page == "EA Introduction":
         st.warning("⚠️ No marketing content found.")
         st.info("Please ensure `MT5EA/ea_marketing.html` exists.")
 
-# [PAGE] MT5 EA - Daily Report
+# [PAGE] MT5 EA - Daily Report (NEW)
 elif target_page == "Daily Report":
     st.title("📄 Algo Daily Report")
     path = "MT5EA"
@@ -700,7 +724,7 @@ elif target_page == "Resources":
         st.warning("⚠️ Resources file not found.")
         st.info(f"Please ensure `{html_path}` exists.")
 
-# [PAGE] Promotion
+# [PAGE] Promotion (NEW)
 elif target_page == "Promotion":
     html_path = os.path.join("Promotion", "promo.html")
     html_content = load_html_file(html_path)
