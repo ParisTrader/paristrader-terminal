@@ -593,9 +593,7 @@ elif target_page == "Insider Trading":
 
 # [PAGE] Reddit Sentiment (NEW)
 elif target_page == "Reddit Sentiment":
-    st.title("🤖 Reddit Sentiment Scanner")
-    st.caption("Short Squeeze Candidates & Retail Hype (r/Shortsqueeze, r/wallstreetbets)")
-
+    #st.title("🤖 Reddit Sentiment Scanner")
     path = "Rddt"
     # Assuming your script outputs files like reddit_scanner_YYYY-MM-DD.html
     html_content, filename = get_latest_file_content(path, "reddit_scanner_*.html")
