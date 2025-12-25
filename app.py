@@ -326,13 +326,14 @@ with st.sidebar:
 
     elif selected_nav == "Stock":
         st.caption("STOCK RESEARCH")
-        # [UPDATE] Added "Reddit Sentiment" to the list
+        # [UPDATE] Added "Short Squeeze"
         target_page = option_menu(
             menu_title=None,
             options=["Earnings", "Stock DNA", "Thematic Basket", "ETF Smart Money", "Insider Trading",
-                     "Reddit Sentiment",
+                     "Short Squeeze",
                      "Volatility Target", "Industry Sector Heatmap"],
-            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "people", "reddit", "bullseye", "grid-3x3"],
+            icons=["cash-coin", "radar", "basket", "graph-up-arrow", "people", "lightning-charge", "bullseye",
+                   "grid-3x3"],
             styles={
                 "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
                               "border-radius": "10px"},
@@ -506,7 +507,7 @@ elif target_page == "Market Breadth":
     else:
         st.warning("⚠️ Market Breadth report not found.")
         st.info(f"Please ensure `{path}` contains `market_breadth_*.html` files.")
-        
+
 # [PAGE] Industry Sector Heatmap
 elif target_page == "Industry Sector Heatmap":
     st.title("🔥 Industry Sector Heatmap")
@@ -590,6 +591,23 @@ elif target_page == "Insider Trading":
         st.warning("⚠️ No Insider Trading reports found.")
         st.info(f"Please ensure `{path}` folder exists and contains `Insider_Trading_Report_*.html` files.")
 
+# [PAGE] Short Squeeze (NEW)
+elif target_page == "Short Squeeze":
+    st.title("⚡ Short Squeeze Scanner")
+    st.caption("Retail Hype & High Short Interest Candidates")
+
+    path = "Short_squeeze"
+    # Match the filename format from your Python script: Short_squeeze_YYYYMMDD_HHMMSS.html
+    html_content, filename = get_latest_file_content(path, "Short_squeeze_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No Short Squeeze reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `Short_squeeze_*.html` files.")
+
+        
 # [PAGE] Reddit Sentiment (NEW)
 elif target_page == "Reddit Sentiment":
     #st.title("🤖 Reddit Sentiment Scanner")
