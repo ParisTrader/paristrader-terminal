@@ -1,38 +1,59 @@
-下週經濟大事總結：重點數據與潛在市場影響下週適逢聖誕假期，數據發布相對稀疏，但仍有多項關鍵指標可能影響大市，尤其是債券拍賣、GDP 修訂及就業數據。
-我們應注意這些事件對 Fed 政策預期、通脹及增長信號的影響。
+📅 Weekly Summary: Market Dynamics During the Christmas Holiday
+With the Christmas holiday approaching, data releases are relatively sparse this week. However, key indicators—specifically bond auctions, GDP revisions, and employment data—remain crucial. We are closely monitoring how these events influence expectations for Fed policy, inflation, and growth signals.
 
-12 月 22 日（週一）：
-下午 1 時：2 年期國債拍賣（690 億美元）。影響：年終拍賣需求可能反映投資者對短期收益率的預期，若需求強勁，可能壓低收益率，支持債券市場；反之，則暗示資金外流風險。
+⚠️ ParisTrader Note: Due to thin liquidity on December 25-26, we are halting all intraday trading and EA operations. Please manage your risk accordingly.
 
-12 月 23 日（週二）：
-上午 8:30：第三季度 GDP（二次修訂）。BE 預估：季調年化率 3.3%（共識 3.2%，前值 3.8%）。貢獻細項：消費 2.7%、非住宅投資 0.5 ppt、貿易 1.0 ppt、庫存 0.3 ppt。影響：若確認增長堅韌（得益 AI 及數據中心投資），可提振股市樂觀，但第四季度政府關門拖累預示增長放緩至 1.7%（全年），可能強化 Fed 降息預期。
-上午 8:30：耐用品訂單（10 月）。BE 預估：總額 -0.5%（共識 -1.5%，前值 0.5%）；剔除交通 0.2%（共識 0.3%，前值 0.6%）。影響：運輸拖累總額，但 AI 相關投資（如電氣設備）亮點突出；若超預期，可支持製造業復甦敘事，利好工業股。
-上午 9:15：工業生產（11 月）。BE 預估：總額 0.1%（共識 0.1%，前值 0.1%）；製造業 0.2%（共識 0.0%，前值 0.0%）；產能利用率 76.0%（共識 76.0%，前值 75.9%）。影響：運輸設備及能源波動為關鍵，若製造業反彈，可緩解關稅壓力擔憂，利好週期股。
-上午 10:00：里士滿聯儲製造業指數（12 月）。BE 預估：-10（前值 -15）。影響：若改善，顯示區域就業及資本支出穩定，可緩解製造業收縮擔憂；但全年負值居多，需警惕需求疲弱。
-上午 10:00：消費者信心（12 月）。BE 預估：90.5（共識 92.0，前值 88.7）。影響：就業改善支撐信心，但行業集中風險存在；若超預期，可強化消費驅動增長，利好零售股。
-下午 1 時：5 年期國債拍賣（700 億美元）。影響：中期限拍賣測試收益率曲線，若需求疲軟，可能推升收益率，壓抑股市。
+📊 Key Economic Calendar (ET)
+Monday, Dec 22: Bond Market Test
 
-12 月 24 日（週三）：
-上午 8:30：首次失業救濟申請（12 月 20 日週）。BE 預估：225k（共識 223k，前值 224k）。影響：裁員新聞減少，加上政府關門裁員逆轉；若低於預期，強化勞動市場韌性，減弱 Fed 降息呼聲。
-上午 11:30：7 年期國債拍賣（440 億美元）。影響：長期拍賣反映通脹預期，若競標強勁，可壓低長端收益率，支持成長股。
+13:00 2-Year Treasury Auction ($69B): Strong demand could reflect expectations for lower short-term yields; weak demand may signal capital outflow risks.
 
-12 月 25 日（週四）：聖誕節，美國市場休市，無主要數據發布。流動性低，我們不做日內交易/EA。
+Tuesday, Dec 23: Growth & Confidence
 
-12 月 26 日（週五）：無主要數據發布。流動性低，我們不做日內交易/EA。
+08:30 Q3 GDP (2nd Revision): Est. 3.3% (Consensus 3.2%). Resilient growth, driven by AI and data center investment, could boost equity optimism, though a Q4 government shutdown may weigh on full-year projections.
 
-延伸至年末（12 月 29-31 日），重點包括待售屋銷售（29 日，BE 預估月增 4.0%）、達拉斯聯儲製造業調查（29 日，BE 預估 -2）、Case-Shiller 房價指數（30 日，BE 預估 1.1%）、FOMC 會議紀要（30 日，預計顯示政策分歧）及首次失業救濟申請（31 日，BE 預估 220k）。這些可能影響 2026 年 Fed 降息預期（預計 100 bps），投資者應監測就業及房市數據，以評估增長放緩風險。
-總體而言，下週數據若確認經濟韌性，可延續年終樂觀，但假期波動及政府關門餘波需謹慎。
-個別資產類別詳細推演：
+08:30 Durable Goods: Watch for "Ex-Transport" data; AI-related electrical equipment investment is a key bright spot.
 
-1. 外匯：美元賣壓增大，JPY持續疲弱
-推演解說：CFTC 報告顯示，Fed 前美元賣壓達近 60 億美元，投機者買入歐元 (+30.3k，至兩年高)、英鎊 (+4.7k)、加元 (+19.4k)、澳元 (+20.4k) 及墨西哥披索 (+8k），儘管日圓 (-19k)、瑞郎 (-2.8k) 及紐元 (-3.7k) 有賣壓，總美元淨多頭仍達 40 億美元。日圓方面，日本央行加息但實質收益率仍負，無法改善資金外流；組合流動持續拖累，USD/JPY 脫鉤利率差，需波動衝擊（如 2024 年 8 月）才逆轉。官員口頭干預無效，實際干預門檻高。
-市場影響：美元貶值 10% 反映特朗普交易落空；亞洲央行動態（如日本央行謹慎）維持日圓弱勢，利好套利策略。
-投資啟示：短期減持美元多頭，轉向歐元或加元；日圓需波動觸發才升值，繼續Long USDJPY(我們的swing 策略上周行得很好!!)
-3. 股票：AI 貿易疲勞但未崩潰，估值敏感
-推演解說：CFTC 報告顯示股票流動溫和，買入 SPX (+5k)、道瓊 (+2k) 及 Russell (+9k)，NDX 持平，VIX 空頭增 12k。AI 貿易中，Nvidia 及 Oracle 賣壓暴露估值疲勞及資本密集擔憂，但 Micron 強勁業績（數據中心及記憶體需求旺盛）穩定情緒。年終障礙清除（如 VIX 到期及三巫日）助 S&P 500 上漲，強化樂觀。
-市場影響：科技股敏感高估值，但 AI 敘事支撐；軟數據未改變 1 月降息機率，顯示市場紀律。
-投資啟示：維持 AI 相關持倉，但分散至太空股，AI電力股，自動駕駛等2026的新方向(一如往年，我會有影片詳細講解2026年大機會發生的行情和板塊)
-4. 商品：黃金需求疲軟，白銀及銅搶鏡
-推演解說：ETF 轉向白銀，黃金持倉面臨近月首週流出（儘管全年上漲 66%），反映需求疲軟及 Fed 降息預期溫和。白銀連六週流入，得益物理短缺更嚴重。銅價逼近紀錄高位，受 AI、電動化及國安驅動：AI 建置銅密集，供應中斷（智利、秘魯、印尼），加上美中關稅扭曲市場（Comex 溢價，美國庫存膨脹）。CFTC 顯示買入黃金 (+6k)、石油 (+7k) 及銅 (+9k)。銅成「商品控制週期」焦點，政策扭曲勝過供需。
-市場影響：黃金作為財政壓力避險，但堅韌增長可能轉向高收益資產；白銀短缺支撐垂直上漲
-投資啟示：轉倉LONG白銀及銅作為 AI/電動化主題(白銀-我們已入手2周,很不錯的回報),黃金持穩作對沖(直接用XAUUSD M1 EA做日內交易即可)
+10:00 Consumer Confidence: Improved employment supports confidence; a beat here favors retail stocks.
+
+Wednesday, Dec 24: Jobs & Inflation Expectations
+
+08:30 Initial Jobless Claims: Est. 225k. Lower-than-expected numbers would reinforce labor market resilience, potentially dampening calls for Fed rate cuts.
+
+11:30 7-Year Treasury Auction: A key test for long-end yields and inflation expectations.
+
+Dec 25-26 (Thu/Fri): Christmas Holiday. Markets closed / No major data.
+
+🚀 Asset Class Outlook & Strategy
+1. FX: Dollar Selling Pressure & The JPY Carry
+
+Analysis: Despite selling pressure on the Yen, the USD faces broader outflows. However, with Japan's real yields remaining negative, USD/JPY has decoupled from interest rate differentials, rendering verbal intervention ineffective.
+
+ParisTrader View: Central bank dynamics in Asia continue to favor carry trade strategies.
+
+Action: Reduce short-term USD longs; pivot to EUR or CAD. Continue to hold Long USDJPY (Our swing strategy performed excellently last week!).
+
+2. Equities: AI Fatigue & New Directions for 2026
+
+Analysis: The AI trade is showing signs of valuation fatigue (selling in Nvidia/Oracle) but hasn't collapsed, stabilized by strong earnings from Micron. Soft data has not altered the probability of a January rate cut.
+
+ParisTrader View: While maintaining AI exposure, we are diversifying into new themes for 2026.
+
+Action: Allocate towards Space, AI Power/Energy, and Autonomous Driving sectors.
+
+📢 Coming Soon: I will be releasing a video detailing the high-probability trends and sectors for 2026.
+
+3. Commodities: The Silver & Copper "Super Cycle"
+
+Analysis: ETF flows are shifting to Silver. Copper is nearing record highs, driven by AI infrastructure needs and supply disruptions (Chile/Peru). Gold faces softer demand despite its annual rally.
+
+ParisTrader View: Copper and Silver are in a "Commodity Control Cycle," where policy distortions outweigh simple supply/demand.
+
+Action:
+
+Silver/Copper: Rotate into Long positions as an AI/Electrification play (We entered Silver 2 weeks ago with solid returns).
+
+Gold: Hold as a hedge; use our XAUUSD M1 EA for intraday scalping.
+
+🔮 Year-End Lookahead (Dec 29-31)
+As we close out 2025, focus shifts to Pending Home Sales, Case-Shiller Home Price Index, and FOMC Minutes. These will shape expectations for the anticipated 100 bps Fed rate cuts in 2026. If economic data confirms resilience, the year-end optimism is likely to extend into the new year.
