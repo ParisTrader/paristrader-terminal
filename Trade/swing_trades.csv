@@ -1,8 +1,15 @@
-Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,HKDNotional,Status,PnLUSD,PnLHKD,Notes
-RKLB,LONG,2025/12/9,53.4,73.39,700,37380,290816.4,OPEN,13993,109145.4,SpaceX sympathy play. Options flow bullish.
-GOOGL,LONG,2025/11/19,298,308.78,150,44700,347766,OPEN,1617,12612.6,Gemini 3 AI dominance. Fundamental value gap.
-SI=F,LONG,2025/12/5,53.36,68.505,1000,26680,207570.4,OPEN,15145,118131,Breakout at resistance with new US policy.
-USDJPY,LONG,2025/12/18,155.714,156.834,1,0,0,OPEN,1120,8736,Betting on Friday event on raising interest rate.dovish hike
-STT,LONG,2025/12/23,129.74,130.83,300,39249,306142.2,OPEN,327,2550.6,Option abnormal move
-NQ=F,SHORT,2025/12/17,25358,25650,1,-49916,0,CLOSED,-4780,-37284,day chart tp break to tp2.(March future)
-META,LONG,2025/12/23,671.2,661,100,66100,515580,CLOSED,-1020,-7956,Option abnormal move
+Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,Status,PnLUSD,Notes
+GOOGL,LONG,2025/11/19,298,314.09,500,157045,OPEN,8045,Gemini 3 AI dominance. Fundamental value gap.
+SI=F,LONG,2025/12/5,53.36,71.031,1000,71031,OPEN,17671,Breakout at resistance with new US policy.
+RKLB,LONG,2025/12/9,53.4,77.18,1500,115770,OPEN,35670,SpaceX sympathy play. Options flow bullish.
+AMC,SHORT,2025/12/9,2.33,1.68,53000,89040,OPEN,34450,"fund outflow, financing long on space stock(memes to high beta)"
+ALB,LONG,2025/12/17,135,148.51,500,74255,OPEN,6755,"Spike in lithium prices in China amid renewed supply concerns and growing demand for energy storage and Evs,risk of lithium price volatility
+"
+RTX,LONG,2025/12/19,181.76,186.38,500,93190,OPEN,2310,"day chart TA (engulfing),multiple new defense contract awards for its Raytheon business,analyst upgrade from JPMorgan raising its price target to $200
+"
+STT,LONG,2025/12/23,129.74,132.22,600,79332,OPEN,1488,Option abnormal move
+AVGO,LONG,2025/12/24,350.2,350.22,250,87555,OPEN,0,rebound play with day vv up
+NVDA,SHORT,2025/11/18,179.28,188,1000,179280,CLOSED,-8720,AI reset theme
+USDJPY,LONG,2025/12/18,155.714,157,20000,20000,CLOSED,25720,Betting on Friday event on raising interest rate.dovish hike
+NQ=F,SHORT,2025/12/17,25358,25750,1,507160,CLOSED,-7840,"day chart tp break to tp2.(March future),SL on 22Dec"
+META,LONG,2025/12/23,671.2,661,100,66100,CLOSED,-1020,Option abnormal move
