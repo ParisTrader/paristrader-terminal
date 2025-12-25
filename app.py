@@ -383,38 +383,32 @@ if target_page == "Home":
         <h1 style='color:white;'>Your Quant Trading Resource Hub</h1>
         <h3 style='color:#94a3b8;'>Investment bank-grade apps to help you beat the market.</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
-        Exclusive real-time access to all powerful features for VIP members. Please select tools from the sidebar menu to start.
+        Exclusive real-time access to all powerful features for VIP members.
         </p>
         """, unsafe_allow_html=True)
 
         st.markdown("---")
 
-        st.subheader("📊 Market Overview")
-        m1, m2, m3 = st.columns(3)
-        with m1:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Risk Appetite</h4>
-                <h2 style="color:#10B981 !important;">Risk-On</h2>
-                <span style="color:#10B981; font-weight:bold; font-size:0.9em;">▲ Momentum not very strong</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with m2:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Sector Rotation</h4>
-                <h2 style="color:#3b82f6 !important;">Health care & Space</h2>
-                <span style="color:#3b82f6; font-weight:bold; font-size:0.9em;">Inflow</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with m3:
-            st.markdown("""
-            <div class="metric-card">
-                <h4>Volatility (VIX)</h4>
-                <h2 style="color:#94a3b8 !important;">14.91</h2>
-                <span style="color:#64748b; font-weight:bold; font-size:0.9em;">low vol</span>
-            </div>
-            """, unsafe_allow_html=True)
+        # [RESTORED] TradingView Widget
+        components.html("""
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+          {
+          "symbols": [
+            {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
+            {"proName": "FOREXCOM:NSXUSD", "title": "US 100"},
+            {"description": "Gold", "proName": "OANDA:XAUUSD"}
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "displayMode": "adaptive",
+          "locale": "en"
+          }
+          </script>
+        </div>
+        """, height=100)
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.subheader("🧠 Weekly Deduction")
@@ -675,7 +669,6 @@ elif target_page == "My Trade":
 # [PAGE] MT5 EA - Introduction
 elif target_page == "EA Introduction":
     st.title("🤖 MT5 Expert Advisor")
-    # [修正] 指定讀取 ea_marketing.html
     html_path = os.path.join("MT5EA", "ea_marketing.html")
     html_content = load_html_file(html_path)
     if html_content and "File not found" not in html_content:
