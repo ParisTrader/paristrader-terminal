@@ -412,7 +412,7 @@ if target_page == "Home":
         """, height=100)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.subheader("🧠 Weekly Deduction")
+        st.subheader("🧠 Week Ahead")
 
         with st.container():
             analysis_content = load_weekly_analysis()
