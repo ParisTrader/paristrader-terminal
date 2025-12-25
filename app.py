@@ -493,15 +493,20 @@ elif target_page == "Market Risk":
 # [PAGE] Market Breadth
 elif target_page == "Market Breadth":
     st.title("🌊 Market Breadth")
-    path = os.path.join("MarketDashboard", "market_breadth.html")
-    if os.path.exists(path):
-        with open(path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-            components.html(html_content, height=2200, scrolling=True)
+
+    # [修正] 路徑指向新的子資料夾 MarketBreadth
+    path = os.path.join("MarketDashboard", "MarketBreadth")
+
+    # [修正] 自動讀取該資料夾內最新的 html 檔案 (market_breadth_*.html)
+    html_content, filename = get_latest_file_content(path, "market_breadth_*.html")
+
+    if html_content:
+        st.caption(f"Displaying Report: {filename}")
+        components.html(html_content, height=2200, scrolling=True)
     else:
         st.warning("⚠️ Market Breadth report not found.")
-        st.info(f"Please run `MarketDashboard/generate_market_breadth.py` to generate the report.")
-
+        st.info(f"Please ensure `{path}` contains `market_breadth_*.html` files.")
+        
 # [PAGE] Industry Sector Heatmap
 elif target_page == "Industry Sector Heatmap":
     st.title("🔥 Industry Sector Heatmap")
