@@ -1,15 +1,16 @@
 Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,Status,PnLUSD,Notes
-GOOGL,LONG,2025/11/19,298.0,314.09,500,157045.0,OPEN,8045.0,Gemini 3 AI dominance. Fundamental value gap.
-SI=F,LONG,2025/12/5,53.36,71.031,1000,71031.0,OPEN,17671.0,Breakout at resistance with new US policy.
-RKLB,LONG,2025/12/9,53.4,77.18,1500,115770.0,OPEN,35670.0,SpaceX sympathy play. Options flow bullish.
-AMC,SHORT,2025/12/9,2.33,1.68,53000,89040.0,OPEN,34450.0,"fund outflow, financing long on space stock(memes to high beta)"
-ALB,LONG,2025/12/17,135.0,148.51,500,74255.0,OPEN,6755.0,"Spike in lithium prices in China amid renewed supply concerns and growing demand for energy storage and Evs,risk of lithium price volatility
+GOOGL,LONG,2025/11/19,298,314.09,500,157045,OPEN,8045,Gemini 3 AI dominance. Fundamental value gap.
+SI=F,LONG,2025/12/5,53.36,71.031,1000,71031,OPEN,17671,Breakout at resistance with new US policy.
+RKLB,LONG,2025/12/9,53.4,77.18,1500,115770,OPEN,35670,SpaceX sympathy play. Options flow bullish.
+AMC,SHORT,2025/12/9,2.33,1.68,53000,89040,OPEN,34450,"Persistent revenue declines vs. pre-COVID levels, Heavy debt burden.Share dilution risks. financing long on space stock(memes to high beta)"
+ALB,LONG,2025/12/17,135,148.51,500,74255,OPEN,6755,late 2025 on recovering lithium prices and demand signals.The stock remains undervalued relative to cycle recovery upside.
+RTX,LONG,2025/12/19,181.76,186.38,500,93190,OPEN,2310,"day chart TA (engulfing),multiple new defense contract awards for its Raytheon business,analyst upgrade from JPMorgan raising its price target to $200
 "
-RTX,LONG,2025/12/19,181.76,186.38,500,93190.0,OPEN,2310.0,"day chart TA (engulfing),multiple new defense contract awards for its Raytheon business,analyst upgrade from JPMorgan raising its price target to $200
+STT,LONG,2025/12/23,129.74,132.22,600,79332,OPEN,1488,"Option abnormal move + offers exposure to asset servicing and management fees in a rate-cut environment.Benefits from market inflows, digital assets/tokenization trends."
+AVGO,LONG,2025/12/24,350.2,350.22,250,87555,OPEN,5,"Rebound play:Valuation appeared more attractive after the correction, despite premium multiples.
 "
-STT,LONG,2025/12/23,129.74,132.22,600,79332.0,OPEN,1488.0,Option abnormal move
-AVGO,LONG,2025/12/24,350.2,350.22,250,87555.0,OPEN,5.0,rebound play with day vv up
-NVDA,SHORT,2025/11/18,179.28,188.0,1000,179280.0,CLOSED,-8720.0,AI reset theme
-USDJPY,LONG,2025/12/18,155.714,157.0,20000,20000.0,CLOSED,25720.0,Betting on Friday event on raising interest rate.dovish hike
-NQ=F,SHORT,2025/12/17,25358.0,25750.0,1,507160.0,CLOSED,-7840.0,"day chart tp break to tp2.(March future),SL on 22Dec"
-META,LONG,2025/12/23,671.2,661.0,100,66100.0,CLOSED,-1020.0,Option abnormal move
+SOFI,LONG,2025/11/25,28.45,27.48,2000,54960,OPEN,-1940,"Fundamentals remained robust: accelerating revenue growth (~38% YoY), improving profitability, and new products like SoFi Crypto positioned the company for long-term gains in digital banking and fintech."
+NVDA,SHORT,2025/11/18,179.28,188,1000,179280,CLOSED,-8720,AI reset theme
+USDJPY,LONG,2025/12/18,155.714,157,20000,20000,CLOSED,25720,Betting on Friday event on raising interest rate.dovish hike
+NQ=F,SHORT,2025/12/17,25358,25750,1,507160,CLOSED,-7840,"day chart tp break to tp2.(March future),SL on 22Dec"
+META,LONG,2025/12/23,671.2,661,100,66100,CLOSED,-1020,Option abnormal move
