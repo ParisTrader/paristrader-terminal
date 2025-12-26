@@ -700,13 +700,19 @@ elif target_page == "Volatility Target":
 # [PAGE] Option
 elif target_page == "Option":
     st.title("🎲 Option Analytics")
-    st.markdown("""
-    <div style='text-align: center; padding: 50px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1); margin-top: 20px;'>
-        <h2 style='color: #94A3B8; margin-bottom: 10px;'>🚧 Module Under Construction</h2>
-        <p style='color: #64748B;'>Advanced Option Chain & Volatility Surface analysis tools are currently in development.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # st.caption("Strike Price Analysis & Volatility Surface") # Optional caption
 
+    path = "Option"
+    # Match the filename pattern provided by the user
+    html_content, filename = get_latest_file_content(path, "option_strike_analysis_*.html")
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        # Adjust height as needed, usually 2000+ for detailed reports
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No Option Strike Analysis reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `option_strike_analysis_*.html` files.")
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
