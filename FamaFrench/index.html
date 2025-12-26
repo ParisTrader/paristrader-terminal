@@ -166,7 +166,7 @@
                 <span style="font-size:0.8em">💡 小提示: 避免投資組合中都是紅色 (高度正相關) 的資產。</span>
             </div>
             <div class="corr-controls">
-               <input type="text" id="corrInput" class="corr-input" value="GOOGL,RKLB,SLV,ALB,RTX,STT,AVGO,SOFI" onkeyup="if(event.key==='Enter') calculateCorrelation()">
+                <input type="text" id="corrInput" class="corr-input" value="GOOGL,RKLB,SLV,ALB,RTX,STT,AVGO,SOFI" onkeyup="if(event.key==='Enter') calculateCorrelation()">
                 <button class="action-btn" onclick="calculateCorrelation()">計算相關性</button>
             </div>
             
@@ -237,11 +237,18 @@
     var returnsCSV = `INJECT_RETURNS_CSV`;
 
     let stockData = {};
-    let stockReturnsData = null; // [新增]
+    let stockReturnsData = null; 
     let myChart = null;
     let trendChart = null;
     
-    const axisLabels = ['波動風險 (Beta)', '股價動能 (Mom)', '獲利品質 (Qual)', '市值規模 (Size)', '便宜估值 (Val)'];
+    // [UPDATED] Reordered axis labels to match requested layout
+    // Order: Top -> Clockwise
+    // 1. Beta (Top)
+    // 2. Quality (Right)
+    // 3. Momentum (Bottom Right)
+    // 4. Value (Bottom Left)
+    // 5. Size (Left)
+    const axisLabels = ['波動風險 (Market Beta)', '獲利品質 (Quality)', '股價動能 (Momentum)', '便宜估值 (Value)', '市值規模 (Small Size)'];
     
     const presets = {
         'buffett': [['KO', 40], ['AXP', 20], ['BAC', 20], ['CVX', 10], ['KHC', 10]],
@@ -280,6 +287,11 @@
         }
         
         if(tabId === 'single' || tabId === 'portfolio') document.getElementById('trend-wrapper').style.display = 'none';
+        
+        // Auto-calculate for correlation tab
+        if (tabId === 'correlation') {
+            setTimeout(calculateCorrelation, 100); 
+        }
     }
 
     // --- Charting ---
@@ -301,21 +313,30 @@
             data: { labels: axisLabels, datasets: datasets },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                scales: { r: { min: 0, max: 10, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#333' }, grid: { color: '#e0e0e0' }, ticks: { display: false } } },
+                scales: { 
+                    r: { 
+                        min: 0, max: 10, 
+                        pointLabels: { font: { size: 12, weight: 'bold' }, color: '#333' }, 
+                        grid: { color: '#e0e0e0' }, 
+                        ticks: { display: false },
+                        startAngle: 0 // Optional: can adjust rotation if needed
+                    } 
+                },
                 plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: function(context) { let val = context.raw; let label = context.dataset.label || ''; let comment = ""; if(val > 7.5) comment = " (極高🔥)"; else if(val < 3) comment = " (偏低🧊)"; return `${label}: ${val}${comment}`; } } } }
             },
             plugins: [radarBackgroundPlugin]
         });
     }
 
-    // [修正] 數據讀取函數: 自動除以 10
+    // [UPDATED] Reordered scores to match new axisLabels order
+    // Order: Beta -> Quality -> Momentum -> Value -> Size
     function getScores(d) {
         return [
-            parseFloat(d.Score_Beta) / 10,
-            parseFloat(d.Score_Mom) / 10,
-            parseFloat(d.Score_Quality) / 10,
-            parseFloat(d.Score_Size) / 10,
-            parseFloat(d.Score_Value) / 10
+            parseFloat(d.Score_Beta) / 10,    // 1. Beta (Top)
+            parseFloat(d.Score_Quality) / 10, // 2. Quality (Right)
+            parseFloat(d.Score_Mom) / 10,     // 3. Momentum (Bottom Right)
+            parseFloat(d.Score_Value) / 10,   // 4. Value (Bottom Left)
+            parseFloat(d.Score_Size) / 10     // 5. Size (Left)
         ];
     }
 
@@ -348,6 +369,7 @@
         ]);
     }
 
+    // ... (rest of functions remain identical) ...
     function loadPreset(type) {
         let tbody = document.querySelector('#portfolioTable tbody'); tbody.innerHTML = '';
         let items = presets[type];
@@ -382,12 +404,11 @@
         showInsightPanel("我的投資組合", "加權計算");
         document.getElementById('tags-container').innerHTML = '';
         document.getElementById('trend-wrapper').style.display = 'none';
-        let pfData = { Score_Beta: portfolioScores[0], Score_Mom: portfolioScores[1], Score_Quality: portfolioScores[2], Score_Size: portfolioScores[3], Score_Value: portfolioScores[4] };
+        let pfData = { Score_Beta: portfolioScores[0], Score_Quality: portfolioScores[1], Score_Mom: portfolioScores[2], Score_Value: portfolioScores[3], Score_Size: portfolioScores[4] };
         generateInsights(pfData, 'portfolio');
         renderRadar([{ label: '組合 DNA', data: portfolioScores, borderColor: '#8e44ad', backgroundColor: 'rgba(142, 68, 173, 0.25)', pointBackgroundColor: '#8e44ad' }]);
     }
 
-    // --- [NEW] Correlation Logic ---
     function calculateCorrelation() {
         if (!stockReturnsData) return alert("錯誤：回報數據尚未載入 (stock_returns_data.csv)");
         let inputStr = document.getElementById('corrInput').value;
@@ -408,7 +429,6 @@
         });
         if (availableTickers.length < 2) return alert("有效股票不足 (請確認代碼存在於資料庫)");
 
-        // [NEW] Generate Summary Logic
         let totalCorr = 0;
         let count = 0;
 
@@ -432,7 +452,6 @@
                     corr = getPearsonCorrelation(dataSeries[rowTicker], dataSeries[colTicker]);
                     displayVal = corr.toFixed(2);
                     
-                    // Accumulate for summary (Upper triangle only)
                     if (j > i) {
                         totalCorr += corr;
                         count++;
@@ -455,7 +474,6 @@
         html += '</tbody></table>';
         document.getElementById('correlation-container').innerHTML = html;
 
-        // [NEW] Display Summary
         let summaryDiv = document.getElementById('corr-summary');
         if (count > 0) {
             let avgCorr = totalCorr / count;
@@ -541,12 +559,10 @@
 
     function showInsightPanel(t, d) { document.getElementById('insight-panel').style.display = 'block'; document.getElementById('insight-title-text').innerText = "📊 分析報告: " + t; document.getElementById('data-date').innerText = d; }
     
-    // [關鍵修正]：將所有分數除以 10
     function generateInsights(data, mode) {
         const ul = document.getElementById('insight-content'); ul.innerHTML = '';
         const addLi = (title, text) => { let li = document.createElement('li'); li.innerHTML = `<span class="insight-highlight">${title}</span> ${text}`; ul.appendChild(li); };
         
-        // 修正點：除以 10
         let beta = parseFloat(data.Score_Beta) / 10;
         let val = parseFloat(data.Score_Value) / 10;
         let size = parseFloat(data.Score_Size) / 10;
