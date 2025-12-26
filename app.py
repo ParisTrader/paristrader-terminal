@@ -225,9 +225,16 @@ def load_html_file(file_path):
         return f"<div style='padding:20px; color:red;'>⚠️ File not found: {file_path}</div>"
 
 
+import os
+import streamlit.components.v1 as components
+
+
 def load_stock_dna_with_injection():
-    html_path = os.path.join("FamaFrench", "index.html")
-    csv_path = os.path.join("FamaFrench", "stock_factor_data.csv")
+    # 1. Get absolute paths to ensure it works from any directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    html_path = os.path.join(current_dir, "FamaFrench", "index.html")
+    csv_factor_path = os.path.join(current_dir, "FamaFrench", "stock_factor_data.csv")
+    csv_returns_path = os.path.join(current_dir, "FamaFrench", "stock_returns_data.csv")
 
     if not os.path.exists(html_path):
         return f"<div style='color:red'>HTML not found: {html_path}</div>"
@@ -235,18 +242,52 @@ def load_stock_dna_with_injection():
     with open(html_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
 
-    if os.path.exists(csv_path):
-        with open(csv_path, 'r', encoding='utf-8') as f:
+    # ---------------------------------------------------------
+    # 1. Inject Factor Data (Your original logic)
+    # ---------------------------------------------------------
+    if os.path.exists(csv_factor_path):
+        with open(csv_factor_path, 'r', encoding='utf-8') as f:
             csv_data = f.read()
+            # Clean up backticks just in case
+            csv_data = csv_data.replace('`', '')
+
+        # JS to inject: Create variable -> Parse variable -> Disable download
         injection_js = f"""
         var csvData = `{csv_data}`;
         Papa.parse(csvData, {{
             download: false, 
         """
+
         target_str = 'Papa.parse("stock_factor_data.csv", {'
         if target_str in html_content:
             html_content = html_content.replace(target_str, injection_js)
-            html_content = html_content.replace('download: true,', '')
+
+    # ---------------------------------------------------------
+    # 2. Inject Returns Data (The NEW addition)
+    # ---------------------------------------------------------
+    if os.path.exists(csv_returns_path):
+        with open(csv_returns_path, 'r', encoding='utf-8') as f:
+            returns_data = f.read()
+            returns_data = returns_data.replace('`', '')
+
+        # JS to inject: Use a DIFFERENT variable name (returnsCSVData)
+        injection_js_ret = f"""
+        var returnsCSVData = `{returns_data}`;
+        Papa.parse(returnsCSVData, {{
+            download: false, 
+        """
+
+        target_str_ret = 'Papa.parse("stock_returns_data.csv", {'
+        if target_str_ret in html_content:
+            html_content = html_content.replace(target_str_ret, injection_js_ret)
+
+    # ---------------------------------------------------------
+    # 3. Global Cleanup
+    # ---------------------------------------------------------
+    # Since we injected 'download: false', we remove the original 'download: true'
+    # to avoid syntax errors or conflicting keys in the JS object.
+    html_content = html_content.replace('download: true,', '')
+
     return html_content
 
 
@@ -547,6 +588,8 @@ elif target_page == "Stock DNA":
         components.html(html_content, height=1200, scrolling=True)
     else:
         st.error("FamaFrench/index.html not found")
+
+
 
 # [PAGE] Thematic Basket
 elif target_page == "Thematic Basket":
