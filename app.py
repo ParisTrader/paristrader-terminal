@@ -700,19 +700,30 @@ elif target_page == "Volatility Target":
 # [PAGE] Option
 elif target_page == "Option":
     st.title("🎲 Option Analytics")
-    # st.caption("Strike Price Analysis & Volatility Surface") # Optional caption
 
+    # 設定資料夾路徑 (請確認您的 HTML 是存在根目錄的 Option 資料夾，還是 MarketDashboard/Option ?)
     path = "Option"
-    # Match the filename pattern provided by the user
-    html_content, filename = get_latest_file_content(path, "option_strike_analysis_*.html")
+
+    # 設定檔案搜尋模式 (注意大小寫!)
+    # 如果您的檔案是 Option_Strike_Analysis_2025... 請改為 "Option_Strike_*.html"
+    search_pattern = "option_strike_analysis_*.html"
+
+    html_content, filename = get_latest_file_content(path, search_pattern)
 
     if html_content:
         st.caption(f"📅 Report Date: {filename}")
-        # Adjust height as needed, usually 2000+ for detailed reports
         components.html(html_content, height=2000, scrolling=True)
     else:
         st.warning("⚠️ No Option Strike Analysis reports found.")
-        st.info(f"Please ensure `{path}` folder exists and contains `option_strike_analysis_*.html` files.")
+        st.info(f"Please ensure `{path}` folder exists and contains `{search_pattern}` files.")
+
+        # --- [DEBUG] 幫您檢查資料夾內到底有什麼 ---
+        if os.path.exists(path):
+            files = os.listdir(path)
+            st.error(f"📂 Debug: Found these files in '{path}': {files}")
+        else:
+            st.error(f"❌ Debug: The folder '{path}' does NOT exist.")
+
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
