@@ -2,19 +2,20 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Factor DNA: Retail Pro Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        /* --- 1. 原有樣式 (完全保持不變) --- */
+        /* --- 1. Global Styles --- */
         :root { --primary-color: #007bff; --bg-color: #f4f7f6; --card-bg: #ffffff; --text-main: #2c3e50; --text-sub: #7f8c8d; --danger: #e74c3c; --success: #27ae60; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-main); line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         header { text-align: center; margin-bottom: 30px; }
         h1 { margin: 0; color: #1a1a1a; letter-spacing: 1px; font-size: 1.8rem; }
         .subtitle { color: var(--text-sub); margin-top: 8px; font-size: 0.95em; }
-        
+
+        /* --- 2. Tabs --- */
         .tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 8px; flex-wrap: wrap; }
         .tab-btn { padding: 10px 18px; border: none; background: #eef2f5; border-radius: 20px; cursor: pointer; font-weight: 600; color: #666; transition: 0.2s; font-size: 0.9rem; flex: 1 1 auto; max-width: 150px; }
         .tab-btn.active { background: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(0,123,255,0.25); }
@@ -23,6 +24,7 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- 3. Control Panels --- */
         .control-panel { text-align: center; margin-bottom: 20px; background: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #edf2f7; }
         input[type="text"], input[type="number"] { padding: 12px 15px; border: 2px solid #e1e4e8; border-radius: 12px; text-align: center; outline: none; font-weight: bold; font-size: 1rem; width: 100px; max-width: 100%; }
         input[type="text"] { width: 140px; text-transform: uppercase; }
@@ -30,6 +32,7 @@
         .action-btn { background: var(--success); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; margin-left: 5px; box-shadow: 0 4px 6px rgba(39,174,96,0.2); transition: 0.2s; }
         .action-btn:active { transform: scale(0.96); }
 
+        /* --- 4. Filtering --- */
         .filter-section { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
         .filter-btn { background: white; border: 1px solid #dcdfe6; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; color: #555; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
         .filter-btn:hover { border-color: var(--primary-color); color: var(--primary-color); background: #f0f7ff; }
@@ -38,6 +41,7 @@
         .stock-btn { background: #f1f3f5; border: none; color: #333; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; }
         .stock-btn:hover { background: var(--primary-color); color: white; }
 
+        /* --- 5. Portfolio Table --- */
         .portfolio-table { width: 100%; max-width: 100%; margin: 0 auto 15px auto; border-collapse: separate; border-spacing: 0 8px; }
         .portfolio-table td { padding: 0 5px; }
         .portfolio-table input { width: 100%; box-sizing: border-box; }
@@ -47,14 +51,17 @@
         .preset-btn:hover { opacity: 1; transform: translateY(-1px); }
         .preset-btn.buffett { background: #27ae60; } .preset-btn.ark { background: #e74c3c; } .preset-btn.paris { background: #8e44ad; }
 
+        /* --- 6. Chart & Layout --- */
         .content-grid { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 10px; }
         .chart-section { flex: 1 1 100%; min-width: 0; }
-        .canvas-container { position: relative; width: 100%; height: 380px; margin: 0 auto; } 
+        .canvas-container { position: relative; width: 100%; height: 380px; margin: 0 auto; }
         .trend-container { margin-top: 25px; background: #fff; border-radius: 16px; border: 1px solid #eee; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: none; }
         .trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
         .trend-title { font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; }
         .trend-badge { font-size: 0.85em; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
         .status-safe { background: #e8f5e9; color: #2e7d32; } .status-danger { background: #ffebee; color: #c62828; } .status-neutral { background: #e3f2fd; color: #1565c0; }
+
+        /* --- 7. Insights --- */
         .insight-section { width: 100%; background: #fff; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary-color); box-shadow: 0 5px 20px rgba(0,0,0,0.05); display: none; box-sizing: border-box; }
         .insight-title { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; color: var(--text-main); border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .insight-list { padding: 0; list-style: none; margin: 0; }
@@ -65,10 +72,10 @@
         .tag { padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
         .tag.blue { background: #e1f5fe; color: #0277bd; } .tag.red { background: #ffebee; color: #c62828; } .tag.green { background: #f1f8e9; color: #33691e; }
         .compliance-section { margin-top: 40px; font-size: 0.75rem; color: #999; background: #f8f9fa; padding: 20px; border-radius: 10px; line-height: 1.5; }
-        
+
         @media (min-width: 768px) { .chart-section { flex: 0 0 55%; } .insight-section { flex: 1; } .content-grid { align-items: flex-start; } .preset-btn { padding: 8px 20px; } }
 
-        /* --- [NEW] 相關性矩陣樣式 --- */
+        /* --- 8. Correlation Matrix Styles --- */
         .corr-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
         .corr-input { width: 300px !important; text-align: left !important; }
         .corr-table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: 10px; margin-top: 15px; background: #fff; }
@@ -77,7 +84,7 @@
         .corr-table th { background-color: #f8f9fa; color: #2c3e50; font-weight: 700; white-space: nowrap; position: sticky; top: 0; }
         .corr-table td:first-child { font-weight: bold; background-color: #fcfcfc; position: sticky; left: 0; border-right: 2px solid #eee; z-index: 10; }
         .corr-legend { font-size: 0.8rem; color: #999; margin-top: 10px; text-align: right; }
-        
+
         /* [NEW] Correlation Summary Styles */
         .corr-summary { text-align: left; margin-bottom: 20px; display: none; }
         .corr-summary-box { padding: 15px; border-radius: 10px; margin-bottom: 10px; }
@@ -169,15 +176,15 @@
                 <input type="text" id="corrInput" class="corr-input" value="GOOGL,RKLB,SLV,ALB,RTX,STT,AVGO,SOFI" onkeyup="if(event.key==='Enter') calculateCorrelation()">
                 <button class="action-btn" onclick="calculateCorrelation()">計算相關性</button>
             </div>
-            
+
             <div id="corr-summary" class="corr-summary"></div>
 
             <div class="corr-table-wrapper" id="correlation-container">
                 <div style="text-align:center; padding: 40px; color:#bdc3c7;">請輸入代號並點擊計算...</div>
             </div>
-            
+
             <div class="corr-legend">
-                <span style="color:#e74c3c; font-weight:bold;">紅色 (>0.7)</span>: 高度相關 | 
+                <span style="color:#e74c3c; font-weight:bold;">紅色 (>0.7)</span>: 高度相關 |
                 <span style="color:#27ae60; font-weight:bold;">綠色 (<0)</span>: 負相關
             </div>
         </div>
@@ -203,7 +210,7 @@
                 <canvas id="radarChart"></canvas>
             </div>
             <div id="tags-container"></div>
-            
+
             <div id="trend-wrapper" class="trend-container">
                 <div class="trend-header">
                     <div class="trend-title">💓 風險心電圖 (Beta Trend)</div>
@@ -237,19 +244,13 @@
     var returnsCSV = `INJECT_RETURNS_CSV`;
 
     let stockData = {};
-    let stockReturnsData = null; 
+    let stockReturnsData = null;
     let myChart = null;
     let trendChart = null;
-    
-    // [UPDATED] Reordered axis labels to match requested layout
-    // Order: Top -> Clockwise
-    // 1. Beta (Top)
-    // 2. Quality (Right)
-    // 3. Momentum (Bottom Right)
-    // 4. Value (Bottom Left)
-    // 5. Size (Left)
+
+    // [AXIS CONFIG] Top -> Clockwise: Beta -> Quality -> Momentum -> Value -> Size (Small)
     const axisLabels = ['波動風險 (Market Beta)', '獲利品質 (Quality)', '股價動能 (Momentum)', '便宜估值 (Value)', '市值規模 (Small Size)'];
-    
+
     const presets = {
         'buffett': [['KO', 40], ['AXP', 20], ['BAC', 20], ['CVX', 10], ['KHC', 10]],
         'ark': [['TSLA', 30], ['COIN', 25], ['ROKU', 25], ['U', 20]],
@@ -285,12 +286,11 @@
         } else {
             document.getElementById('main-display-area').style.display = 'flex';
         }
-        
+
         if(tabId === 'single' || tabId === 'portfolio') document.getElementById('trend-wrapper').style.display = 'none';
-        
-        // Auto-calculate for correlation tab
+
         if (tabId === 'correlation') {
-            setTimeout(calculateCorrelation, 100); 
+            setTimeout(calculateCorrelation, 100);
         }
     }
 
@@ -313,14 +313,14 @@
             data: { labels: axisLabels, datasets: datasets },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                scales: { 
-                    r: { 
-                        min: 0, max: 10, 
-                        pointLabels: { font: { size: 12, weight: 'bold' }, color: '#333' }, 
-                        grid: { color: '#e0e0e0' }, 
+                scales: {
+                    r: {
+                        min: 0, max: 10,
+                        pointLabels: { font: { size: 12, weight: 'bold' }, color: '#333' },
+                        grid: { color: '#e0e0e0' },
                         ticks: { display: false },
-                        startAngle: 0 // Optional: can adjust rotation if needed
-                    } 
+                        startAngle: 0
+                    }
                 },
                 plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: function(context) { let val = context.raw; let label = context.dataset.label || ''; let comment = ""; if(val > 7.5) comment = " (極高🔥)"; else if(val < 3) comment = " (偏低🧊)"; return `${label}: ${val}${comment}`; } } } }
             },
@@ -328,15 +328,14 @@
         });
     }
 
-    // [UPDATED] Reordered scores to match new axisLabels order
-    // Order: Beta -> Quality -> Momentum -> Value -> Size
+    // [CHART SCALING] Returns 0-10 scale for Charting (Assumes raw is 0-100)
     function getScores(d) {
         return [
-            parseFloat(d.Score_Beta) / 10,    // 1. Beta (Top)
-            parseFloat(d.Score_Quality) / 10, // 2. Quality (Right)
-            parseFloat(d.Score_Mom) / 10,     // 3. Momentum (Bottom Right)
-            parseFloat(d.Score_Value) / 10,   // 4. Value (Bottom Left)
-            parseFloat(d.Score_Size) / 10     // 5. Size (Left)
+            parseFloat(d.Score_Beta) / 10,
+            parseFloat(d.Score_Quality) / 10,
+            parseFloat(d.Score_Mom) / 10,
+            parseFloat(d.Score_Value) / 10,
+            parseFloat(d.Score_Size) / 10
         ];
     }
 
@@ -346,9 +345,26 @@
         if(!data) { alert('找不到此代碼 (可能未在資料庫中)'); return; }
         showInsightPanel(ticker, data.Last_Date);
         renderTags(data.Baskets);
-        generateInsights(data, 'single');
+
+        // Single chart uses data scaled for the chart (0-10)
+        // But GenerateInsights expects 0-10 scale.
+        // If getScores returns 0-10, we are good.
+        // Wait, getScores divides by 10. If raw is 85, getScores returns 8.5. This is 0-10.
+        // So we pass the object 'data' to generateInsights, which reads raw '85'.
+        // generateInsights needs to divide by 10 internally to match the 0-10 logic.
+
+        let scoresForInsights = {
+            Score_Beta: parseFloat(data.Score_Beta) / 10,
+            Score_Value: parseFloat(data.Score_Value) / 10,
+            Score_Size: parseFloat(data.Score_Size) / 10,
+            Score_Quality: parseFloat(data.Score_Quality) / 10,
+            Score_Mom: parseFloat(data.Score_Mom) / 10
+        };
+
+        generateInsights(scoresForInsights, 'single');
         renderRadar([{ label: ticker, data: getScores(data), borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.25)', pointBackgroundColor: '#007bff' }]);
-        if (data.Beta_Trend) { document.getElementById('trend-wrapper').style.display = 'block'; renderTrendChart(data.Beta_Trend, ticker); } 
+
+        if (data.Beta_Trend) { document.getElementById('trend-wrapper').style.display = 'block'; renderTrendChart(data.Beta_Trend, ticker); }
         else { document.getElementById('trend-wrapper').style.display = 'none'; }
         document.getElementById('filter-results-container').style.display = 'none';
     }
@@ -359,7 +375,7 @@
         let dataA = stockData[tA]; let dataB = stockData[tB];
         if(!dataA || !dataB) { alert('請輸入有效的股票代碼'); return; }
         showInsightPanel(`${tA} vs ${tB}`, dataA.Last_Date);
-        document.getElementById('tags-container').innerHTML = ''; 
+        document.getElementById('tags-container').innerHTML = '';
         document.getElementById('trend-wrapper').style.display = 'none';
         let ul = document.getElementById('insight-content');
         ul.innerHTML = `<li><strong>比較:</strong> 重疊區域顯示因子差異。</li><li><strong>${tA}:</strong> Beta ${dataA.Score_Beta}</li><li><strong>${tB}:</strong> Beta ${dataB.Score_Beta}</li>`;
@@ -369,7 +385,6 @@
         ]);
     }
 
-    // ... (rest of functions remain identical) ...
     function loadPreset(type) {
         let tbody = document.querySelector('#portfolioTable tbody'); tbody.innerHTML = '';
         let items = presets[type];
@@ -391,21 +406,41 @@
 
     function updatePortfolioChart() {
         let rows = document.querySelectorAll('#portfolioTable tbody tr');
-        let portfolioScores = [0,0,0,0,0]; let totalWeight = 0;
+        let portfolioScores = [0,0,0,0,0]; // For Chart (0-10)
+        let totalWeight = 0;
+
         for(let row of rows) {
             let ticker = row.querySelector('.portfolio-input').value.toUpperCase().trim();
             let weight = parseFloat(row.querySelector('.weight-input').value);
             if(!ticker || !stockData[ticker]) continue;
             totalWeight += weight;
+
+            // getScores returns 0-10 (e.g. 8.5)
             let s = getScores(stockData[ticker]);
-            for(let i=0; i<5; i++) portfolioScores[i] += s[i] * (weight/100);
+
+            for(let i=0; i<5; i++) {
+                portfolioScores[i] += s[i] * (weight/100.0);
+            }
         }
+
         if(Math.abs(totalWeight - 100) > 1) { alert(`目前總權重為 ${totalWeight}%，請調整至 100%`); return; }
         showInsightPanel("我的投資組合", "加權計算");
         document.getElementById('tags-container').innerHTML = '';
         document.getElementById('trend-wrapper').style.display = 'none';
-        let pfData = { Score_Beta: portfolioScores[0], Score_Quality: portfolioScores[1], Score_Mom: portfolioScores[2], Score_Value: portfolioScores[3], Score_Size: portfolioScores[4] };
+
+        // Prepare object for Insights (Expects 0-10 scale)
+        // portfolioScores is already 0-10
+        let pfData = {
+            Score_Beta: portfolioScores[0],
+            Score_Quality: portfolioScores[1],
+            Score_Mom: portfolioScores[2],
+            Score_Value: portfolioScores[3],
+            Score_Size: portfolioScores[4]
+        };
+
         generateInsights(pfData, 'portfolio');
+
+        // Render Chart (Scores are 0-10)
         renderRadar([{ label: '組合 DNA', data: portfolioScores, borderColor: '#8e44ad', backgroundColor: 'rgba(142, 68, 173, 0.25)', pointBackgroundColor: '#8e44ad' }]);
     }
 
@@ -420,7 +455,7 @@
         let dataSeries = {};
         let availableTickers = [];
         let firstRow = stockReturnsData[0];
-        
+
         tickers.forEach(t => {
             if (firstRow.hasOwnProperty(t)) {
                 availableTickers.push(t);
@@ -451,15 +486,15 @@
                 } else {
                     corr = getPearsonCorrelation(dataSeries[rowTicker], dataSeries[colTicker]);
                     displayVal = corr.toFixed(2);
-                    
+
                     if (j > i) {
                         totalCorr += corr;
                         count++;
                     }
 
                     if (corr > 0.7) {
-                        let opacity = (corr - 0.7) * 3.3; 
-                        bgStyle = `background-color: rgba(231, 76, 60, ${0.1 + opacity});`; 
+                        let opacity = (corr - 0.7) * 3.3;
+                        bgStyle = `background-color: rgba(231, 76, 60, ${0.1 + opacity});`;
                         if (corr > 0.85) textColor = "#c0392b";
                     } else if (corr < -0.2) {
                         let opacity = Math.abs(corr);
@@ -539,8 +574,8 @@
         let currentBeta = dataPoints[dataPoints.length - 1];
         let badge = document.getElementById('trend-badge');
         let msg = "";
-        if (currentBeta > 1.3) { badge.innerText = "⚠️ 高風險"; badge.className = "trend-badge status-danger"; msg = `<strong>${ticker} 正在發燒：</strong>目前的波動度是市場的 ${currentBeta} 倍。`; } 
-        else if (currentBeta < 0.8) { badge.innerText = "🛡️ 防禦型"; badge.className = "trend-badge status-safe"; msg = `<strong>${ticker} 很冷靜：</strong>目前的波動度低於大盤。`; } 
+        if (currentBeta > 1.3) { badge.innerText = "⚠️ 高風險"; badge.className = "trend-badge status-danger"; msg = `<strong>${ticker} 正在發燒：</strong>目前的波動度是市場的 ${currentBeta} 倍。`; }
+        else if (currentBeta < 0.8) { badge.innerText = "🛡️ 防禦型"; badge.className = "trend-badge status-safe"; msg = `<strong>${ticker} 很冷靜：</strong>目前的波動度低於大盤。`; }
         else { badge.innerText = "⚖️ 跟隨大盤"; badge.className = "trend-badge status-neutral"; msg = `<strong>${ticker} 隨波逐流：</strong>它的風險屬性與大盤指數 (S&P 500) 相當接近。`; }
         document.getElementById('trend-comment').innerHTML = msg;
         trendChart = new Chart(ctx, {
@@ -558,34 +593,55 @@
     }
 
     function showInsightPanel(t, d) { document.getElementById('insight-panel').style.display = 'block'; document.getElementById('insight-title-text').innerText = "📊 分析報告: " + t; document.getElementById('data-date').innerText = d; }
-    
+
+    // [INSIGHT LOGIC] Optimized & Fixed Cross-Analysis
     function generateInsights(data, mode) {
         const ul = document.getElementById('insight-content'); ul.innerHTML = '';
         const addLi = (title, text) => { let li = document.createElement('li'); li.innerHTML = `<span class="insight-highlight">${title}</span> ${text}`; ul.appendChild(li); };
-        
-        let beta = parseFloat(data.Score_Beta) / 10;
-        let val = parseFloat(data.Score_Value) / 10;
-        let size = parseFloat(data.Score_Size) / 10;
-        let qual = parseFloat(data.Score_Quality) / 10;
-        let mom = parseFloat(data.Score_Mom) / 10;
+
+        let beta = parseFloat(data.Score_Beta);
+        let val = parseFloat(data.Score_Value);
+        let size = parseFloat(data.Score_Size);
+        let qual = parseFloat(data.Score_Quality);
+        let mom = parseFloat(data.Score_Mom);
 
         if (mode === 'portfolio') {
-            if (beta > 7) addLi("心臟夠大顆嗎？", "您的組合波動度很高。在大牛市會賺很爽，但空頭來襲時會受重傷。建議加入一些防禦型配置 (如 KO, JNJ)。");
-            else if (beta < 4) addLi("退休養老型：", "您的組合非常穩健保守，晚上睡得著覺，但在市場大漲時績效可能會落後。");
-            else addLi("攻守平衡：", "目前的配置相當標準，既有攻擊力也有防護罩。");
-            if (val < 3 && qual < 4) addLi("注意泡沫風險：", "您持有很多「高本益比 + 低獲利」的股票。這是典型的投機組合，請密切關注利率變化。");
+            // Beta: Risk Analysis
+            if (beta > 6.5) {
+                addLi("⚠️ 激進攻擊型：", "您的組合波動度顯著高於大盤。牛市時能創造超額報酬，但需警惕空頭來襲時的回撤風險。建議配置部分現金或防禦股。");
+            } else if (beta < 3.5) {
+                addLi("🛡️ 保守防禦型：", "您的組合波動極低，抗跌能力強，適合退休規劃或保守資金。但在大牛市中績效可能會落後大盤。");
+            } else {
+                addLi("⚖️ 攻守平衡：", "目前的配置相當標準 (Market Weight)，既保留了跟隨大盤上漲的動力，也有一定的抗跌韌性。");
+            }
+
+            // Cross Analysis: Value vs Quality
+            if (val < 3.5 && qual < 4.0) {
+                addLi("🚨 泡沫警示 (Speculative)：", "組合中持有過多「高估值 (昂貴) + 低品質 (獲利差)」的標的。這是典型的投機風格，極度依賴市場情緒，升息環境下風險極大。");
+            } else if (val < 3.5 && qual > 7.0) {
+                addLi("💎 成長溢價 (Quality Growth)：", "雖然估值較貴 (Value低)，但公司品質極佳。市場願意為這些好公司支付溢價，這是優質成長股的特徵。");
+            } else if (val > 7.0 && qual < 4.0) {
+                addLi("⚠️ 價值陷阱 (Value Trap)：", "股票看起來很便宜 (Value高)，但基本面較差。請確認這些公司是否正面臨結構性衰退，不要只因為便宜就買。");
+            } else if (val > 7.0 && qual > 7.0) {
+                addLi("🦄 深度價值 (Deep Value)：", "恭喜！您找到了一籃子「既便宜、品質又好」的股票。這是巴菲特最愛的區域，長期持有勝率極高。");
+            }
+
         } else {
-            if (beta > 8) addLi("瘋狗浪警示：", "波動極大！這類股票適合短線操作，長抱容易像坐雲霄飛車。");
-            else if (beta < 3) addLi("資金避風港：", "市場崩盤時，這類股票通常跌得比較少。");
-            if (val > 8) addLi("深度特價品：", "股價相對於基本面非常便宜 (Deep Value)。可能是被錯殺的黃金，也可能是價值陷阱。");
-            if (val < 2) addLi("昂貴的夢想：", "市場給予極高估值 (High Growth)。股價是靠未來的想像空間支撐，財報不能出錯。");
-            if (qual > 7) addLi("資優生體質：", "公司很會賺錢 (High Profitability)，財務穩健，適合長期存股。");
-            if (qual < 3) addLi("體質虛弱：", "公司獲利能力不佳。如果股價在漲，通常是靠題材炒作。");
-            if (mom > 8) addLi("人氣王：", "近期股價強勢噴出，順勢交易者最愛。但要小心乖離過大回調。");
-            if (mom < 2) addLi("冷宮股：", "股價趨勢向下，市場目前不愛它。除非您是逆勢交易高手，否則別急著接刀。");
+            // Single Stock Logic (Unchanged)
+            if (beta > 8) addLi("🔥 瘋狗浪屬性：", "波動極大！適合短線動能交易，長線持有需心臟強大。");
+            else if (beta < 3) addLi("🧊 資金避風港：", "市場崩盤時，這類股票通常跌得比較少，適合防禦。");
+
+            if (val > 8) addLi("💰 特價拍賣中：", "股價相對於基本面非常便宜。可能是被錯殺的黃金，也可能是即將倒閉的價值陷阱。");
+            else if (val < 2) addLi("💸 昂貴的夢想：", "市場給予極高估值，股價由「未來的成長想像」支撐。財報一旦不如預期，修正會很劇烈。");
+
+            if (qual > 8) addLi("👑 資優生體質：", "擁有強大的護城河與獲利能力，財務穩健，是長期存股的首選。");
+            else if (qual < 3) addLi("🏥 體質虛弱：", "獲利能力不佳或財務槓桿過高。如果股價在上漲，通常是靠題材炒作。");
+
+            if (mom > 8) addLi("🚀 人氣王：", "近期股價強勢噴出，趨勢向上。順勢交易者最愛，但需留意乖離過大。");
+            else if (mom < 2) addLi("❄️ 冷宮股：", "股價趨勢向下，市場目前不愛它。除非您是逆勢交易高手，否則別急著接刀。");
         }
     }
-    
+
     function filterStocks(c) {
         let div = document.getElementById('filter-results-buttons'); div.innerHTML = ''; let count = 0;
         for(let t in stockData) {
