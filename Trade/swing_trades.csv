@@ -1,6 +1,5 @@
 Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,Status,PnLUSD,Notes
 GOOGL,LONG,2025/11/19,298.0,313.51,500,156755.0,OPEN,7755.0,Gemini 3 AI dominance. Fundamental value gap.
-SI=F,LONG,2025/12/5,53.36,76.486,1000,76486.0,OPEN,23126.0,Breakout at resistance with new US policy.
 RKLB,LONG,2025/12/9,53.4,70.65,1500,105975.0,OPEN,25875.0,SpaceX sympathy play. Options flow bullish.
 AMC,SHORT,2025/12/9,2.33,1.69,53000,89570.0,OPEN,33920.0,"Persistent revenue declines vs. pre-COVID levels, Heavy debt burden.Share dilution risks. financing long on space stock(memes to high beta)"
 ALB,LONG,2025/12/17,135.0,150.01,500,75005.0,OPEN,7505.0,late 2025 on recovering lithium prices and demand signals.The stock remains undervalued relative to cycle recovery upside.
@@ -14,3 +13,4 @@ NVDA,SHORT,2025/11/18,179.28,188.0,1000,179280.0,CLOSED,-8720.0,AI reset theme
 USDJPY,LONG,2025/12/18,155.714,157.0,20000,20000.0,CLOSED,25720.0,Betting on Friday event on raising interest rate.dovish hike
 NQ=F,SHORT,2025/12/17,25358.0,25750.0,1,507160.0,CLOSED,-7840.0,"day chart tp break to tp2.(March future),SL on 22Dec"
 META,LONG,2025/12/23,671.2,661.0,100,66100.0,CLOSED,-1020.0,Option abnormal move
+SI=F,LONG,2025/12/5,53.36,79.0,1000,76486.0,CLOSED,25640.0,Breakout at resistance with new US policy.
