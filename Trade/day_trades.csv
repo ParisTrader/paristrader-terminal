@@ -1,3 +1,0 @@
-Ticker,Direction,EntryDate,EntryPrice,LastPrice,Quantity,USDNotional,HKDNotional,Status,PnLUSD,PnLHKD,Notes
-NVDA,SHORT,2025/11/26,179.28,176.46,300,53784,"419,515.20",CLOSED,846,6598.8,day chart engufling tp in fate
-TSLA,LONG,2025/12/12,449,460,150,67350,"525,330.00",CLOSED,1650,12870,day chart engufling tp in fate
