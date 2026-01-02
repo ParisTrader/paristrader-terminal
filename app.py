@@ -398,6 +398,20 @@ with st.sidebar:
             }
         )
 
+    elif selected_nav == "Option":
+        st.caption("DERIVATIVES ANALYTICS")
+        target_page = option_menu(
+            menu_title=None,
+            options=["US Option", "HK Option"],
+            icons=["currency-dollar", "globe-asia-australia"],  # US用美元符號, HK用亞洲地球符號
+            styles={
+                "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)",
+                              "border-radius": "10px"},
+                "nav-link": {"font-size": "14px", "margin": "3px", "--hover-color": "#374151"},
+                "nav-link-selected": {"background-color": "#4B5563"},
+            }
+        )
+
     elif selected_nav == "MT5 EA":
         st.caption("AUTOMATED TRADING")
         target_page = option_menu(
@@ -697,15 +711,17 @@ elif target_page == "Volatility Target":
         st.warning("⚠️ Volatility Tool not found.")
         st.info("Please ensure `vol_tool_*.html` exists in the `VolTarget` folder.")
 
-# [PAGE] Option
-elif target_page == "Option":
-    st.title("🎲 Option Analytics")
+# ==========================================
+# [PAGE] US Option (原有的 Option Strike Analysis)
+# ==========================================
+elif target_page == "US Option":
+    st.title("🇺🇸 US Option Strike Analysis")
+    st.caption("Tracking Unusual Options Activity & Gamma Levels")
 
-    # 設定資料夾路徑 (請確認您的 HTML 是存在根目錄的 Option 資料夾，還是 MarketDashboard/Option ?)
+    # 設定資料夾路徑
     path = "Option"
 
-    # 設定檔案搜尋模式 (注意大小寫!)
-    # 如果您的檔案是 Option_Strike_Analysis_2025... 請改為 "Option_Strike_*.html"
+    # 設定 US Option 的檔案搜尋模式
     search_pattern = "option_strike_analysis_*.html"
 
     html_content, filename = get_latest_file_content(path, search_pattern)
@@ -714,16 +730,31 @@ elif target_page == "Option":
         st.caption(f"📅 Report Date: {filename}")
         components.html(html_content, height=2000, scrolling=True)
     else:
-        st.warning("⚠️ No Option Strike Analysis reports found.")
+        st.warning("⚠️ No US Option reports found.")
         st.info(f"Please ensure `{path}` folder exists and contains `{search_pattern}` files.")
 
-        # --- [DEBUG] 幫您檢查資料夾內到底有什麼 ---
-        if os.path.exists(path):
-            files = os.listdir(path)
-            st.error(f"📂 Debug: Found these files in '{path}': {files}")
-        else:
-            st.error(f"❌ Debug: The folder '{path}' does NOT exist.")
+# ==========================================
+# [PAGE] HK Option (新的 Market Analysis v6)
+# ==========================================
+elif target_page == "HK Option":
+    st.title("🇭🇰 HK Option Market Analysis")
+    st.caption("Market Scanner, Stock Ranking & Heatmaps")
 
+    # 設定資料夾路徑 (假設 HK 檔案也在 Option 資料夾內)
+    path = "Option"
+
+    # 設定 HK Option 的檔案搜尋模式 (v6 版本)
+    search_pattern = "HK_Option_Market_Analysis_v6_*.html"
+
+    html_content, filename = get_latest_file_content(path, search_pattern)
+
+    if html_content:
+        st.caption(f"📅 Report Date: {filename}")
+        components.html(html_content, height=2000, scrolling=True)
+    else:
+        st.warning("⚠️ No HK Option reports found.")
+        st.info(f"Please ensure `{path}` folder exists and contains `{search_pattern}` files.")
+        
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
