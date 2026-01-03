@@ -80,7 +80,7 @@ def login_system():
 # 1. Page Configuration
 # ==========================================
 st.set_page_config(
-    page_title="ParisTrader Professional Research",
+    page_title="ParisTrader - Quant Trading & Market Analysis | 2026香港投資銀行學習",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -347,6 +347,21 @@ with st.sidebar:
         }
     )
 
+    # 在您的 option_menu 下方加入這段，將選單同步到網址參數
+    if selected_nav:
+        st.query_params["page"] = selected_nav
+
+    # 程式啟動時，讀取參數來決定預設頁面
+    default_index = 0
+    if "page" in st.query_params:
+        try:
+            # 找出該參數對應的 index
+            # (這裡需要您維護一個選單 list 來查找 index)
+            pass
+        except:
+            pass
+
+
     # Default routing: Assume target is what is clicked in main sidebar
     target_page = selected_nav
 
@@ -436,8 +451,8 @@ if target_page == "Home":
 
     with col_main:
         st.markdown("""
-        <h1 style='color:white;'>Ibank-grade App</h1>
-        <h3 style='color:#94a3b8;'>Exclusive real-time access to all powerful features for VIP members</h3>
+        <h1 style='color:white;'>Ibank級量化交易App</h1>
+        <h3 style='color:#94a3b8;'>美股分析|期權策略|期貨自動交易EA Algo</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
         2026年了,你不是還只看圖畫線交易吧?!
         </p>
