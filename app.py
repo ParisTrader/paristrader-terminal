@@ -430,17 +430,19 @@ with st.sidebar:
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
 
 # --- Content Routing (Based on target_page) ---
-
 # [PAGE] HOME
 if target_page == "Home":
     col_main, col_profile = st.columns([0.7, 0.3], gap="large")
 
     with col_main:
         st.markdown("""
-        <h1 style='color:white;'>Your Quant Trading Resource Hub</h1>
-        <h3 style='color:#94a3b8;'>Investment bank-grade apps to help you beat the market.</h3>
+        <h1 style='color:white;'>Ibank-grade App</h1>
+        <h3 style='color:#94a3b8;'>Exclusive real-time access to all powerful features for VIP members</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
-        Exclusive real-time access to all powerful features for VIP members.
+        2026年了,你不是還只看圖畫線交易吧?!
+        </p>
+                <p style='font-size: 1.1em; color: #64748b;'>
+        有志加入投行工作,或成為持續盈利交易員必備學習資源平台!
         </p>
         """, unsafe_allow_html=True)
 
@@ -468,6 +470,26 @@ if target_page == "Home":
         """, height=100)
 
         st.markdown("<br>", unsafe_allow_html=True)
+
+        # ==========================================
+        # 🆕 新增功能：網站教學影片 & 分析文章連結
+        # ==========================================
+        st.subheader("📺 網站使用教學")
+        st.video("https://www.youtube.com/watch?v=HCR5DDy8Nb0")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # 下周大市分析連結按鈕
+        st.link_button(
+            label="📊 點擊閱讀：下周大市分析 (Weekly Market Analysis)",
+            url="https://parisprogram.uk/zh/member/post/RPT-20260103199214386?hash=df6a6830b6176c7ea95cc12ebe1c8de50a2b1f90fa8a79ddbbb5be18dcd92c39",
+            type="primary",  # 使用主要按鈕樣式使其更顯眼
+            use_container_width=True
+        )
+
+        st.markdown("---")
+        # ==========================================
+
         st.subheader("🧠 Week Ahead")
 
         with st.container():
@@ -754,7 +776,7 @@ elif target_page == "HK Option":
     else:
         st.warning("⚠️ No HK Option reports found.")
         st.info(f"Please ensure `{path}` folder exists and contains `{search_pattern}` files.")
-        
+
 # [PAGE] Volume Profile
 elif target_page == "Volume Profile":
     st.title("📊 Volume Profile Analysis")
