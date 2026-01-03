@@ -1,59 +1,34 @@
-📅 Weekly Summary: Market Dynamics During the Christmas Holiday
-With the Christmas holiday approaching, data releases are relatively sparse this week. However, key indicators—specifically bond auctions, GDP revisions, and employment data—remain crucial. We are closely monitoring how these events influence expectations for Fed policy, inflation, and growth signals.
+🚀展望週: 1月5日 - 1月9日    焦點: 聖誕行情缺席、核能板塊爆發、BABA 資金流異常
+The Big Picture: 聖誕老人沒來 (Santa Rally Failed)
+「動靜很大，意義很小 」——這是上週市場的最佳註解。
 
-⚠️ ParisTrader Note: Due to thin liquidity on December 25-26, we are halting all intraday trading and EA operations. Please manage your risk accordingly.
+S&P 500 在傳統的「聖誕行情」期間（年末5日+年初2日）表現令人失望，在全球主要市場排名墊底。與之形成鮮明對比的是台灣與韓國市場，在 AI 硬體需求的推動下強勢上漲。
+市場面臨的問題並非壞消息，而是缺乏新資訊。 市場情緒偏鴿派，強化了市場對未來降息的預期，但未能緩解長期殖利率持續承壓，也未能提振風險偏好。成交量極低，跨資產價格波動更像是年末調整而非市場信心的體現。
+即使是白銀或科技股的日內波動，在流動性枯竭後也難以持續。
+美股現狀: 2025 年末的流動性枯竭導致價格在狹窄區間內震盪。VIX 雖低，但市場缺乏推動新高的燃料。
+2026 宏觀主軸: GDP 與就業市場的「脫鉤 」。
+GDP 強勁 (Q4 預估 +1%): 儘管有政府關門影響，但在 AI 帶動的生產力暴增 (Q3 預估 +5.4%) 支持下，經濟增長依然堅韌。
+就業疲軟 (失業率 4.6%): 企業利用 AI 提高產出而非增聘人手。這將迫使 Fed 在 2026 年降息 100 bps 以支撐勞動力市場。
 
-📊 Key Economic Calendar (ET)
-Monday, Dec 22: Bond Market Test
+Week Ahead: 關鍵財經日曆
+本週數據較為清淡，重點關注就業數據對 Fed 降息路徑的指引。
 
-13:00 2-Year Treasury Auction ($69B): Strong demand could reflect expectations for lower short-term yields; weak demand may signal capital outflow risks.
+週一 (Jan 5):
 
-Tuesday, Dec 23: Growth & Confidence
+10:00 ISM Manufacturing (預估 48.3): 預計仍處於收縮區間，但就業分項可能改善。
 
-08:30 Q3 GDP (2nd Revision): Est. 3.3% (Consensus 3.2%). Resilient growth, driven by AI and data center investment, could boost equity optimism, though a Q4 government shutdown may weigh on full-year projections.
+週三 (Jan 7):
 
-08:30 Durable Goods: Watch for "Ex-Transport" data; AI-related electrical equipment investment is a key bright spot.
+10:00 ISM Services: 關注服務業是否受就業支撐。
 
-10:00 Consumer Confidence: Improved employment supports confidence; a beat here favors retail stocks.
+10:00 JOLTS (職位空缺): 預估 7.7M。若低於預期，將強化降息理由。
 
-Wednesday, Dec 24: Jobs & Inflation Expectations
+週四 (Jan 8):
 
-08:30 Initial Jobless Claims: Est. 225k. Lower-than-expected numbers would reinforce labor market resilience, potentially dampening calls for Fed rate cuts.
+08:30 生產力數據 (Productivity): 預計 +5.4% (Blockbuster!)。這是 AI 提升效率的鐵證，利好科技股基本面。
 
-11:30 7-Year Treasury Auction: A key test for long-end yields and inflation expectations.
+Earnings: 本週財報相對冷清 (Second-tier names only)，如 Acuity (AYI) 和 Commercial Metals (CMC)。市場焦點主要在宏觀數據。
 
-Dec 25-26 (Thu/Fri): Christmas Holiday. Markets closed / No major data.
+週五 (Jan 9):
 
-🚀 Asset Class Outlook & Strategy
-1. FX: Dollar Selling Pressure & The JPY Carry
-
-Analysis: Despite selling pressure on the Yen, the USD faces broader outflows. However, with Japan's real yields remaining negative, USD/JPY has decoupled from interest rate differentials, rendering verbal intervention ineffective.
-
-ParisTrader View: Central bank dynamics in Asia continue to favor carry trade strategies.
-
-Action: Reduce short-term USD longs; pivot to EUR or CAD. Continue to hold Long USDJPY (Our swing strategy performed excellently last week!).
-
-2. Equities: AI Fatigue & New Directions for 2026
-
-Analysis: The AI trade is showing signs of valuation fatigue (selling in Nvidia/Oracle) but hasn't collapsed, stabilized by strong earnings from Micron. Soft data has not altered the probability of a January rate cut.
-
-ParisTrader View: While maintaining AI exposure, we are diversifying into new themes for 2026.
-
-Action: Allocate towards Space, AI Power/Energy, and Autonomous Driving sectors.
-
-📢 Coming Soon: I will be releasing a video detailing the high-probability trends and sectors for 2026.
-
-3. Commodities: The Silver & Copper "Super Cycle"
-
-Analysis: ETF flows are shifting to Silver. Copper is nearing record highs, driven by AI infrastructure needs and supply disruptions (Chile/Peru). Gold faces softer demand despite its annual rally.
-
-ParisTrader View: Copper and Silver are in a "Commodity Control Cycle," where policy distortions outweigh simple supply/demand.
-
-Action:
-
-Silver/Copper: Rotate into Long positions as an AI/Electrification play (We entered Silver 2 weeks ago with solid returns).
-
-Gold: Hold as a hedge; use our XAUUSD M1 EA for intraday scalping.
-
-🔮 Year-End Lookahead (Dec 29-31)
-As we close out 2025, focus shifts to Pending Home Sales, Case-Shiller Home Price Index, and FOMC Minutes. These will shape expectations for the anticipated 100 bps Fed rate cuts in 2026. If economic data confirms resilience, the year-end optimism is likely to extend into the new year.
+08:30 Nonfarm Payrolls (非農): 預估 +80k，失業率 4.6%。這是本週重頭戲，若數據疲軟，美債收益率將下行，利好成長股。
