@@ -477,10 +477,10 @@ if target_page == "Home":
 
     with col_main:
         st.markdown("""
-        <h1 style='color:white;'>Ibank級量化交易App</h1>
+        <h1 style='color:white;'>前Ibanker開發-香港首個機構級數據</h1>
         <h3 style='color:#94a3b8;'>美股分析|期權策略|期貨自動交易EA Algo</h3>
         <p style='font-size: 1.1em; color: #64748b;'>
-        2026年了,你不是還只看圖畫線交易吧?!
+        2026散戶黑科技,你不是只看圖表交易吧?!
         </p>
                 <p style='font-size: 1.1em; color: #64748b;'>
         有志加入投行工作,或成為持續盈利交易員必備學習資源平台!
