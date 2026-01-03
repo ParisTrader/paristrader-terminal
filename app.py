@@ -444,6 +444,32 @@ with st.sidebar:
     st.markdown("---")
     st.link_button("✈️VIP Channel", "https://parisprogram.uk/", use_container_width=True)
 
+
+# ==========================================
+# 🔒 權限控制中心 (Security Check)
+# ==========================================
+# 定義需要鎖定（強制登入）的頁面名稱
+# 這裡包含：My Trade, 指定的 Stock 功能, 以及所有 Option 和 Future 的子頁面
+locked_pages = [
+    "My Trade",
+    "Stock DNA",
+    "ETF Smart Money",
+    "Insider Trading",
+    "Short Squeeze",
+    "Volatility Target",
+    # Option 的子頁面
+    "US Option", "HK Option",
+    # Future 的子頁面
+    "Volume Profile", "Intraday Volatility", "HSI CBBC Ladder"
+]
+
+# 邏輯：如果當前目標頁面在鎖定清單中，且未登入，則呼叫 login_system() 並停止執行
+if target_page in locked_pages:
+    if not login_system():
+        st.stop()
+
+
+
 # --- Content Routing (Based on target_page) ---
 # [PAGE] HOME
 if target_page == "Home":
